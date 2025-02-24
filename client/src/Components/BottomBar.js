@@ -15,10 +15,10 @@ const BottomBar = () => {
     return (
         <div className="bottom-bar">
             <Link 
-                to="/register" 
-                className={`bottom-button ${isActive('/register') ? 'active' : ''}`}
+                to="/attendance" 
+                className={`bottom-button ${isActive('/attendance') ? 'active' : ''}`}
             >
-                <Icon1 className={`menu-icon ${isActive('/register') ? 'active-icon' : ''}`} />
+                <Icon1 className={`menu-icon ${isActive('/attendance') ? 'active-icon' : ''}`} />
                 등록
             </Link>
             <Link 
@@ -29,10 +29,10 @@ const BottomBar = () => {
                 업무
             </Link>
             <Link 
-                to="/schedule" 
-                className={`bottom-button ${isActive('/schedule') ? 'active' : ''}`}
+                to="/workLogs" 
+                className={`bottom-button ${isActive('/workLogs') ? 'active' : ''}`}
             >
-                <Icon3 className={`menu-icon ${isActive('/schedule') ? 'active-icon' : ''}`} />
+                <Icon3 className={`menu-icon ${isActive('/workLogs') ? 'active-icon' : ''}`} />
                 스케줄
             </Link>
             <Link 

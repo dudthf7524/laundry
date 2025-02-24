@@ -5,12 +5,12 @@ import AuthLayout from "./Layouts/AuthLayout";
 import './Styles/App.css';
 import './Styles/Pages.css';
 import './Assets/Font/Font.css';
-import Login from './Pages/Login';
-import Join from './Pages/Join';
-import Register from './Pages/Register';
-import Task from './Pages/Task';
-import Schedule from './Pages/Schedule';
-import Profile from './Pages/Profile';
+import Login from './Pages/login';
+import Join from './Pages/join';
+import Attendance from './Pages/attendance';
+import Task from './Pages/task';
+import WorkLogs from './Pages/workLogs';
+import Profile from './Pages/profile';
 
 function App() {
   return (
@@ -25,9 +25,9 @@ function App() {
 
           {/* BarLayout Routes */}
           <Route element={<BarLayout />}>
-            <Route path="/register" element={<Register />} />
+            <Route path="/attendance" element={<Attendance />} />
             <Route path="/task" element={<Task />} />
-            <Route path="/schedule" element={<Schedule />} />
+            <Route path="/workLogs" element={<WorkLogs />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
         </Routes>
