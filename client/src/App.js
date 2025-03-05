@@ -11,7 +11,7 @@ import Attendance from './Pages/attendance';
 import Task from './Pages/task';
 import WorkLogs from './Pages/workLogs';
 import Profile from './Pages/profile';
-
+import User from './adminPages/user';
 function App() {
   return (
     <div className="App">
@@ -30,6 +30,12 @@ function App() {
             <Route path="/workLogs" element={<WorkLogs />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
+
+
+
+
+          <Route path="/admin/user" element={<User />} />
+
         </Routes>
       </Router>
     </div>

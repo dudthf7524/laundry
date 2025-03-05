@@ -84,8 +84,8 @@ module.exports = (sequelize) => {
 
   // 관계 설정
   TbSchedules.associate = (models) => {
-    if (models.TB_USERS) {
-      TbSchedules.belongsTo(models.TB_USERS, {
+    if (models.user) {
+      TbSchedules.belongsTo(models.user, {
         foreignKey: 'employee_id',
         targetKey: 'user_id',
       });

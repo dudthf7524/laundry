@@ -1,43 +1,45 @@
 const { DataTypes } = require('sequelize');
+const auth = require('./auth');
 
 module.exports = (sequelize) => {
-  const TbUsers = sequelize.define('TB_USERS', {
+  const user = sequelize.define('user', {
+    user_code:{
+      type: DataTypes.INTEGER, 
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     user_id: {
       type: DataTypes.STRING,
-      primaryKey: true,
       allowNull: false,
-      comment: '유저 아이디',
+      unique : true,
+    },
+    user_password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    user_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    user_nickname: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     auth_code: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "USER",
-      comment: '권한 코드',
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      comment: '유저 이름',
-    },
-    nickname: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      comment: '유저 닉네임',
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      comment: '비밀번호',
+      defaultValue: "A4",
     },
   }, {
-    tableName: 'TB_USERS',
-    timestamps: false,
+    underscored: true,
+    tableName: 'user',
   });
 
   // 관계 설정
-  TbUsers.associate = (models) => {
-    if (models.TB_AUTHS) {
-      TbUsers.belongsTo(models.TB_AUTHS, {
+  user.associate = (models) => {
+    if (models.auth) {
+      user.belongsTo(models.auth, {
         foreignKey: 'auth_code',
         targetKey: 'auth_code',
       });
@@ -46,5 +48,5 @@ module.exports = (sequelize) => {
     }
   };
 
-  return TbUsers;
+  return user;
 };

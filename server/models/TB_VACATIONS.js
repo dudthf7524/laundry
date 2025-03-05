@@ -56,8 +56,8 @@ module.exports = (sequelize) => {
 
   // 관계 설정
   TbVacations.associate = (models) => {
-    if (models.TB_USERS) {
-      TbVacations.belongsTo(models.TB_USERS, {
+    if (models.user) {
+      TbVacations.belongsTo(models.user, {
         foreignKey: 'employee_id',
         targetKey: 'user_id',
       });

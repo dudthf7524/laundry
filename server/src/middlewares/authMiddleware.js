@@ -3,7 +3,7 @@ const { secret } = require("../config/jwt");
 
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  console.log(authHeader)
+  
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ message: "Unauthorized: No token provided" });
   }
@@ -12,6 +12,9 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, secret);
+    console.log("decoded")
+    console.log(decoded)
+    console.log("decoded")
     req.user = decoded; // 요청 객체에 사용자 정보 추가
     next();
   } catch (error) {

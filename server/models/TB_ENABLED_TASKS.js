@@ -26,7 +26,7 @@ module.exports = (sequelize) => {
 
   // 관계 설정
   TbEnabledTasks.associate = (models) => {
-    TbEnabledTasks.belongsTo(models.TB_USERS, {
+    TbEnabledTasks.belongsTo(models.user, {
       foreignKey: 'user_id',
       targetKey: 'user_id',
     });

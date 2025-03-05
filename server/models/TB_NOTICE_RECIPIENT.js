@@ -35,8 +35,8 @@ module.exports = (sequelize) => {
       console.error('TB_NOTICE 모델이 존재하지 않습니다.');
     }
 
-    if (models.TB_USERS) {
-      TbNoticeRecipient.belongsTo(models.TB_USERS, {
+    if (models.user) {
+      TbNoticeRecipient.belongsTo(models.user, {
         foreignKey: 'employee_id',
         targetKey: 'user_id',
       });

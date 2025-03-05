@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const TbAuths = sequelize.define('TB_AUTHS', {
+  const auth = sequelize.define('auth', {
     auth_code: {
       type: DataTypes.STRING,
       primaryKey: true,
@@ -14,14 +14,14 @@ module.exports = (sequelize) => {
       comment: '권한 이름',
     },
   }, {
-    tableName: 'TB_AUTHS',
+    tableName: 'auth',
     timestamps: false,
   });
 
   // 관계 설정
-  TbAuths.associate = (models) => {
-    if (models.TB_USERS) {
-      TbAuths.hasMany(models.TB_USERS, {
+  auth.associate = (models) => {
+    if (models.user) {
+      auth.hasMany(models.user, {
         foreignKey: 'auth_code',
         sourceKey: 'auth_code',
       });
@@ -30,5 +30,5 @@ module.exports = (sequelize) => {
     }
   };
 
-  return TbAuths;
+  return auth;
 };

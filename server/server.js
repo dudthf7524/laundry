@@ -4,13 +4,15 @@ const path = require('path');
 const morgan = require('morgan');
 const cors = require('cors');
 const { sequelize } = require('./models');
-const TbAuths = require("./models").TB_AUTHS;
+const { auth } = require("./models");
 const cookieParser = require('cookie-parser');
 const userRoute = require('./src/routes/userRoute');
 const noticeRoute = require('./src/routes/noticeRoute');
 const scheduleRoute = require('./src/routes/scheduleRoute');
 const processRoute = require('./src/routes/processRoute');
 const workRoutes = require('./src/routes/workRoute');
+const user = require('./routes/user');
+
 
 const app = express();
 const PORT = 8080; // ✅ 포트 변수 위치 변경
@@ -31,11 +33,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // API 라우트 설정
-app.use('/api/user', userRoute);
+// app.use('/user', userRoute);
 app.use('/api/notice', noticeRoute);
 app.use('/api/schedule', scheduleRoute);
 app.use('/api/process', processRoute);
 app.use('/works', workRoutes);
+
+app.use('/user', user);
 
 (async () => {
   try {
@@ -62,14 +66,16 @@ app.use('/works', workRoutes);
 async function addDefaultAuths() {
   try {
     const defaultAuths = [
-      { auth_code: "USER", auth_name: "기본 권한" },
-      { auth_code: "ADMIN", auth_name: "관리자 권한" },
+      { auth_code: "A1", auth_name: "마스터" },
+      { auth_code: "A2", auth_name: "서브 마스터" },
+      { auth_code: "A3", auth_name: "매니저" },
+      { auth_code: "A4", auth_name: "직원" },
     ];
 
-    for (const auth of defaultAuths) {
-      await TbAuths.findOrCreate({
-        where: { auth_code: auth.auth_code },
-        defaults: auth,
+    for (const authOne of defaultAuths) {
+      await auth.findOrCreate({
+        where: { auth_code: authOne.auth_code },
+        defaults: authOne,
       });
     }
 

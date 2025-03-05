@@ -46,8 +46,8 @@ module.exports = (sequelize) => {
 
   // 관계 설정
   TbNotice.associate = (models) => {
-    if (models.TB_USERS) {
-      TbNotice.belongsTo(models.TB_USERS, {
+    if (models.user) {
+      TbNotice.belongsTo(models.user, {
         foreignKey: 'admin_id',
         targetKey: 'user_id',
       });

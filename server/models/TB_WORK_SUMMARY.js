@@ -56,7 +56,7 @@ module.exports = (sequelize) => {
 
   // 관계 설정
   TbWorkSummary.associate = (models) => {
-    TbWorkSummary.belongsTo(models.TB_USERS, {
+    TbWorkSummary.belongsTo(models.user, {
       foreignKey: 'employee_id',
       targetKey: 'user_id',
     });
