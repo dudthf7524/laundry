@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../Api';
-import '../Styles/Auth.css';
+import '../css/login.css';
+import { useDispatch } from 'react-redux';
+import { USER_LOGIN_REQUEST } from "../reducers/user";
+import { USER_AUTH_REQUEST } from "../reducers/user";
+import { useSelector } from "react-redux";
 
 const Login = () => {
     const navigate = useNavigate();
+    const { user } = useSelector((state) => state.user);
+    console.log(user)
     const [credentials, setCredentials] = useState({
         user_id: '',
         user_password: ''
@@ -53,20 +59,21 @@ const Login = () => {
 
 
     const userAuth = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                return;
-            }
-            const response = await axios.get("/user/auth", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+        dispatch({
+            type: USER_AUTH_REQUEST,
+            data: credentials,
+        });
+    };
 
-        } catch (error) {
-            console.error("로그인 인증 실패:", error);
-        }
+
+    const dispatch = useDispatch();
+
+    const login = (e) => {
+        e.preventDefault();
+        dispatch({
+            type: USER_LOGIN_REQUEST,
+            data: credentials,
+        });
     };
 
 
@@ -75,7 +82,7 @@ const Login = () => {
             <div className="login">
                 <h1>laundry</h1>
                 <h2>로그인</h2>
-                <form onSubmit={handleLogin}>
+                <form onSubmit={login}>
                     <input
                         type="text"
                         name="user_id"
@@ -95,9 +102,9 @@ const Login = () => {
                 {error && <p className="error-message">{error}</p>}
                 <p className="login-link" onClick={handleSignupClick}>회원가입</p>
             </div>
-            <div class="ocean">
-                <div class="wave"></div>
-                <div class="wave"></div>
+            <div className="ocean">
+                <div className="wave"></div>
+                <div className="wave"></div>
             </div>
         </>
     );

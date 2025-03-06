@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import BarLayout from "./Layouts/BarLayout";
 import AuthLayout from "./Layouts/AuthLayout";
@@ -12,7 +12,21 @@ import Task from './Pages/task';
 import WorkLogs from './Pages/workLogs';
 import Profile from './Pages/profile';
 import User from './adminPages/user';
+import { useDispatch } from 'react-redux';
+import { USER_AUTH_REQUEST } from "./reducers/user";
+import FixedTime from './adminPages/fixedTime';
+
+
 function App() {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({
+      type: USER_AUTH_REQUEST,
+    });
+  }, []);
+
   return (
     <div className="App">
       <Router>
@@ -35,6 +49,7 @@ function App() {
 
 
           <Route path="/admin/user" element={<User />} />
+          <Route path="/admin/time" element={<FixedTime />} />
 
         </Routes>
       </Router>

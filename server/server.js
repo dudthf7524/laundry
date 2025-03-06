@@ -1,24 +1,22 @@
 const express = require('express');
-const { specs, swaggerUi } = require('./swagger');
 const path = require('path');
 const morgan = require('morgan');
 const cors = require('cors');
 const { sequelize } = require('./models');
 const { auth } = require("./models");
 const cookieParser = require('cookie-parser');
-const userRoute = require('./src/routes/userRoute');
-const noticeRoute = require('./src/routes/noticeRoute');
-const scheduleRoute = require('./src/routes/scheduleRoute');
-const processRoute = require('./src/routes/processRoute');
-const workRoutes = require('./src/routes/workRoute');
 const user = require('./routes/user');
+const authr = require('./routes/auth');
 
+const passportConfig = require("./passport/cookie");
+const passport = require("passport");
+const session = require("express-session");
 
 const app = express();
-const PORT = 8080; // ✅ 포트 변수 위치 변경
+const PORT = 8080;
 
-// Swagger API 문서 설정
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+passportConfig();
+app.use(express.json());
 
 // CORS 설정
 app.use(cors({
@@ -32,14 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// API 라우트 설정
-// app.use('/user', userRoute);
-app.use('/api/notice', noticeRoute);
-app.use('/api/schedule', scheduleRoute);
-app.use('/api/process', processRoute);
-app.use('/works', workRoutes);
 
-app.use('/user', user);
 
 (async () => {
   try {
@@ -84,3 +75,29 @@ async function addDefaultAuths() {
     console.error("❌ 기본 권한 데이터 추가 중 오류 발생:", error);
   }
 }
+
+app.use(
+  session({
+    secret: "암호화에 쓸 비번", // 세션 암호화 키
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true, // 클라이언트에서 쿠키를 접근하지 못하도록
+      secure: false, // HTTPS에서만 작동하도록 설정
+      maxAge: 24 * 60 * 60 * 1000, // 쿠키 만료 시간 설정 (1일)
+    },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// API 라우트 설정
+app.use('/user', user);
+app.use('/auth', authr);
+
+
+
+
+
+

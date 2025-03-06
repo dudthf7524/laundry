@@ -31,18 +31,23 @@ const userJoin = async (data) => {
 
 };
 
-const userLogin = async (data) => {
+const userLogin = async (user_id, user_password) => {
     try {
-        const result = await user.findOne({ where: { user_id: data.user_id }, raw: true })
-        if (result) {
-            if (result.user_password === data.user_password) {
-                return { user: result, check: 1 };
-            } else {
-                return { check: 0 };
+        const result = await user.findOne({ where: { user_id: user_id }, raw: true })
+        
+        if(result){
+            if(result.user_password === user_password){
+                return result;
+            }else{
+                return "0";
             }
-        } else {
-            return { check: -1 };
+        }else{
+            return "-1"
         }
+
+        
+        
+
 
     } catch (error) {
         console.error(error);
@@ -53,12 +58,12 @@ const userLogin = async (data) => {
 const userList = async () => {
     try {
         const result = await user.findAll({
-            attributes: ['user_code','user_name', 'user_nickname'], 
+            attributes: ['user_code', 'user_name', 'user_nickname'],
             include: [
                 {
                     model: auth,
                     attributes: ['auth_name'], // work_pattern 테이블에서 필요한 컬럼 선택
-                    required: true, 
+                    required: true,
                 },
             ],
 
@@ -70,7 +75,29 @@ const userList = async () => {
     } catch (error) {
         console.error(error);
     }
+};
 
+const userUpdateAuth = async (data) => {
+    console.log("데이터베이스")
+    console.log(data)
+    try {
+        const result = await user.update(
+            {
+                auth_code: data.auth_code, // 변경할 값
+            },
+            {
+                where: {
+                    user_code: data.user_code, // 특정 work_time_id를 가진 행 업데이트
+                },
+            },
+
+        )
+        
+        return result;
+
+    } catch (error) {
+        console.error(error);
+    }
 };
 
 module.exports = {
@@ -78,5 +105,6 @@ module.exports = {
     userJoin,
     userLogin,
     userList,
+    userUpdateAuth,
 
 };

@@ -3,8 +3,8 @@ const auth = require('./auth');
 
 module.exports = (sequelize) => {
   const user = sequelize.define('user', {
-    user_code:{
-      type: DataTypes.INTEGER, 
+    user_code: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
     user_id: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique : true,
+      unique: true,
     },
     user_password: {
       type: DataTypes.STRING,
@@ -38,14 +38,15 @@ module.exports = (sequelize) => {
 
   // 관계 설정
   user.associate = (models) => {
-    if (models.auth) {
-      user.belongsTo(models.auth, {
-        foreignKey: 'auth_code',
-        targetKey: 'auth_code',
-      });
-    } else {
-      console.error('TB_AUTHS 모델이 존재하지 않습니다.');
-    }
+
+    user.belongsTo(models.auth, {
+      foreignKey: 'auth_code',
+      targetKey: 'auth_code',
+    });
+    user.hasOne(models.fixed_time, {
+      foreignKey: 'auth_code',
+      sourceKey: 'auth_code',
+    });
   };
 
   return user;

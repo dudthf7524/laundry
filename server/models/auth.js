@@ -20,14 +20,11 @@ module.exports = (sequelize) => {
 
   // 관계 설정
   auth.associate = (models) => {
-    if (models.user) {
-      auth.hasMany(models.user, {
-        foreignKey: 'auth_code',
-        sourceKey: 'auth_code',
-      });
-    } else {
-      console.error('TB_USERS 모델이 존재하지 않습니다.');
-    }
+    auth.hasMany(models.user, {
+      foreignKey: 'auth_code',
+      sourceKey: 'auth_code',
+    });
+
   };
 
   return auth;

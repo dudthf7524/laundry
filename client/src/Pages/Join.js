@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../Api'; // 작성한 axios 인스턴스 사용
-import '../Styles/Auth.css';
-
+import '../css/join.css';
 const Join = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -85,7 +84,7 @@ const Join = () => {
 
     return (
         <>
-            <div className="login">
+            <div className="join">
                 <h1>laundry</h1>
                 <h2>회원가입</h2>
                 <form onSubmit={handleJoin}>

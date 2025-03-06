@@ -1,9 +1,58 @@
 const express = require('express');
 const router = express.Router();
 const user = require('../databases/user');
-const jwt = require('jsonwebtoken');
-const { secret, expiresIn } = require('../configToken/jwt');
-const authMiddleware = require('../src/middlewares/authMiddleware');
+
+const passport = require('passport');
+
+
+router.post("/join", async (req, res) => {
+
+    const data = req.body;
+    try {
+        const result = await user.userJoin(data)
+        res.json(result);
+
+    } catch (error) {
+        console.error(error)
+    }
+});
+
+router.post('/login', async (req, res, next) => {
+
+    passport.authenticate('user', (error, user, info) => {
+        console.log("user")
+        console.log(user)
+        console.log(error)
+        console.log(info)
+        console.log("user")
+        if (error) return res.status(500).json({ message: '서버 오류가 발생했습니다.', error });
+        if (user === "-1") return res.status(401).json(user);
+        if (user === "0") return res.status(401).json(user);
+
+        req.login(user, (err) => {
+            console.log("user")
+            if (err) return next(err);
+
+            // 세션 상태 확인
+
+
+            return res.status(200).json({});
+        });
+    })(req, res, next);
+});
+
+router.get("/auth", (req, res) => {
+    res.json(req.user);
+});
+
+router.get("/list", async (req, res) => {
+    try {
+        const result = await user.userList()
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
 
 router.post("/check", async (req, res) => {
     const { user_id } = req.body;
@@ -20,52 +69,17 @@ router.post("/check", async (req, res) => {
 
     }
 
-
-
-
 });
 
-
-router.post("/join", async (req, res) => {
-
-    const data = req.body;
+router.post("/update/auth", async (req, res) => {
     try {
-        const result = await user.userJoin(data)
-        res.json(result);
-
-    } catch (error) {
-        console.error(error)
-    }
-});
-
-router.post("/login", async (req, res) => {
-
-    const data = req.body;
-    const result = await user.userLogin(data)
-    const check = result.check;
-    if (check === 1) {
-        const token = jwt.sign({ user_code: result.user.user_code, user_auth: result.user.auth_code }, secret, { expiresIn });
-        console.log("token")
-        console.log(token)
-        res.json({ check, token });
-
-    } else {
-        res.json({ check });
-    }
-
-});
-router.get("/auth", authMiddleware, async (req, res) => {
-    console.log(req.user)
-    console.log('aaaa')
-});
-
-router.get("/list", authMiddleware, async (req, res) => {
-    try {
-        const result = await user.userList()
+        const result = await user.userUpdateAuth(req.body);
         return res.json(result);
     } catch (error) {
         console.error(error)
+
     }
+
 });
 
 module.exports = router;

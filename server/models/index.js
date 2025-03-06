@@ -28,5 +28,4 @@ Object.keys(db).forEach((modelName) => {
     db[modelName].associate(db); // 관계 설정 호출
   }
 });
-
 module.exports = db;
