@@ -16,6 +16,7 @@ const User = () => {
     const [openModal, setOpenModal] = useState(false);
     const [selectedAuth, setSelectedAuth] = useState(""); // 선택된 근무 패턴
 
+    
     const { userLists } = useSelector((state) => state.user);
     const { authLists } = useSelector((state) => state.auth);
 

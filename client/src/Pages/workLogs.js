@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../Styles/Schedule.css';
+import BottomBar from '../Components/BottomBar';
 
 const Schedule = () => {
     const [calendarData, setCalendarData] = useState([]);
@@ -71,6 +72,7 @@ const Schedule = () => {
                     ))}
                 </div>
             </div>
+            <BottomBar />
         </>
     );
 };

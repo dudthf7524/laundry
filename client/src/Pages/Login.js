@@ -78,35 +78,33 @@ const Login = () => {
 
 
     return (
-        <>
-            <div className="login">
-                <h1>laundry</h1>
-                <h2>로그인</h2>
-                <form onSubmit={login}>
-                    <input
-                        type="text"
-                        name="user_id"
-                        placeholder="아이디"
-                        value={credentials.user_id}
-                        onChange={handleInputChange}
-                    />
-                    <input
-                        type="password"
-                        name="user_password"
-                        placeholder="비밀번호"
-                        value={credentials.user_password}
-                        onChange={handleInputChange}
-                    />
-                    <button type="submit">로그인</button>
-                </form>
-                {error && <p className="error-message">{error}</p>}
-                <p className="login-link" onClick={handleSignupClick}>회원가입</p>
-            </div>
+        <div className="login">
+            <h1>laundry</h1>
+            <h2>로그인</h2>
+            <form onSubmit={login}>
+                <input
+                    type="text"
+                    name="user_id"
+                    placeholder="아이디"
+                    value={credentials.user_id}
+                    onChange={handleInputChange}
+                />
+                <input
+                    type="password"
+                    name="user_password"
+                    placeholder="비밀번호"
+                    value={credentials.user_password}
+                    onChange={handleInputChange}
+                />
+                <button type="submit">로그인</button>
+            </form>
+            {error && <p className="error-message">{error}</p>}
+            <p className="login-link" onClick={handleSignupClick}>회원가입</p>
             <div className="ocean">
                 <div className="wave"></div>
                 <div className="wave"></div>
             </div>
-        </>
+        </div>
     );
 };
 

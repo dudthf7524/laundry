@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ReactComponent as Icon1 } from '../Assets/Images/star.svg';
+import '../css/task.css';
+import BottomBar from '../Components/BottomBar';
 
 const TaskPage = () => {
     const [options, setOptions] = useState([]);
@@ -30,13 +32,15 @@ const TaskPage = () => {
     };
 
     return (
-        <>
-            <div className="box notice">
-                <Icon1 className="icon"/>
+        <div className='task'>
+            <div></div>
+            <div className="notice">
+                <Icon1 className="icon" />
                 <p>안녕하세요 00님! 오늘 하루도 화이팅!</p>
             </div>
-            <div className="box bord-box">
-                <div className="custom-dropdown-container">
+            <div className="worker_select">
+
+                <div className="select_one">
                     <div
                         className="custom-dropdown-selected"
                         onClick={() => setIsOpen((prev) => !prev)}
@@ -57,33 +61,49 @@ const TaskPage = () => {
                         </ul>
                     )}
                 </div>
-                <p>총 230벌</p>
-                <p>평균 20 / 시간 당</p>
-                <div className="row-form">
+                <div className='select_two'>
+                    <div>
+                        총 230벌
+                    </div>
+                    <div>
+                        평균 20 / 시간 당
+                    </div>
+                </div>
+
+                <div className="select_three">
                     <button>QR촬영</button>
                     <button>선택</button>
                 </div>
             </div>
-            <div className="box bord-box">
-                <div className="row-form">
-                    <h4>업무시간</h4>
-                    <h4>총업무시간</h4>
+            <div className="work_time">
+                <div className="work_time_one">
+                    <div>업무시간</div>
+                    <div>총업무시간</div>
                 </div>
-                <div className="row-form">
-                    <p>13:40~15:40</p>
-                    <p>2:00</p>
+                <div className="work_time_two">
+                    <div>13:40~15:40</div>
+                    <div>2:00</div>
                 </div>
-                <p>시간당</p>
-                <p>분당</p>
-                <div className="row-form work">
+
+                <div className='work_time_three'>
+                    <div>
+                        시간당
+                    </div>
+                    <div>
+                        분당
+                    </div>
+                </div>
+               
+                <div className="work_time_button">
                     <button>업무시작</button>
                     <button>업무종료</button>
                 </div>
             </div>
-            <div className="box text">
+            <div>
                 오늘 업무 총평: 참 잘했어요
             </div>
-        </>
+            <BottomBar />
+        </div>
     );
 };
 

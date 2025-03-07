@@ -1,63 +1,66 @@
 .join {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 70%;
-    box-sizing: border-box;
-    margin-bottom: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 80%;
+  background-color: #f5f5f5;
+  justify-content: center;
 }
 
 .join h1 {
-    font-family: '양진체';
-    font-size: 36px;
-    margin-bottom: 5px;
-    background: linear-gradient(90deg, #ff7eb3, #ff758c, #ff6b73); /* 그라데이션 색상 */
-    -webkit-background-clip: text; /* 배경을 텍스트로 클립 */
-    -webkit-text-fill-color: transparent; /* 글자를 투명하게 만듦 */
-    text-align: center; /* 가운데 정렬 */
+  font-family: '양진체';
+  font-size: 36px;
+  margin-bottom: 5px;
+  background: linear-gradient(90deg, #ff7eb3, #ff758c, #ff6b73);
+  /* 그라데이션 색상 */
+  -webkit-background-clip: text;
+  /* 배경을 텍스트로 클립 */
+  -webkit-text-fill-color: transparent;
+  /* 글자를 투명하게 만듦 */
+  text-align: center;
+  /* 가운데 정렬 */
 }
 
 .join h2 {
-    font-size: 16px;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    color: #383838;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  color: #383838;
 }
 
 .join form div {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .join form div input {
-    width: 60%;
-    padding: 10px;
-    margin-top: 10px;
-    margin-right: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: 'Pretendard';
+  width: 60%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: 'Pretendard';
 }
 
 .join form div button {
-    width: 40%;
-    padding: 10px;
-    margin-top: 10px;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    display: flex;
-    border-radius: 5px;
-    background-color: #00b7ff;
-    color: #fff;
-    font-size: 12px;
-    cursor: pointer;
-    box-sizing: border-box;
+  width: 40%;
+  padding: 10px;
+  margin-top: 10px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  border-radius: 5px;
+  background-color: #00b7ff;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 
 .join form div button.disabled {
@@ -67,109 +70,116 @@
 }
 
 .join form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 20px;
-    border-radius: 5px;
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+  border-radius: 5px;
+  box-sizing: border-box;
 }
 
 .join form input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: 'Pretendard';
-    box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: 'Pretendard';
+  box-sizing: border-box;
 }
 
 .join form button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    display: flex;
-    border: none;
-    border-radius: 5px;
-    background-color: #00b7ff;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    box-sizing: border-box;
-    font-size: 12px;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  border: none;
+  border-radius: 5px;
+  background-color: #00b7ff;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-size: 12px;
 }
 
 .join form button:hover {
-    background-color: #0065b3;
+  background-color: #0065b3;
 }
 
 /* 로그인하기 텍스트 스타일 */
 .join-link {
-    cursor: pointer;
-    color: #00b7ff; /* 파란색 텍스트 */
-    margin-top: 20px; /* 위쪽 여백 */
-    font-size: 14px;
-    font-family: 'Pretendard', sans-serif;
+  cursor: pointer;
+  color: #00b7ff;
+  /* 파란색 텍스트 */
+  margin-top: 20px;
+  /* 위쪽 여백 */
+  font-size: 14px;
+  font-family: 'Pretendard', sans-serif;
 }
 
 .join-link:hover {
-    color: #0056b3; /* 마우스 오버 시 어두운 파란색 */
-    text-decoration: none;
+  color: #0056b3;
+  /* 마우스 오버 시 어두운 파란색 */
+  text-decoration: none;
 }
 
 .error-message {
-    position: relative;
-    bottom: 20px;
-    color: #ff6b73;
-    font-size: 12px;
-    margin-top: 10px;
+  position: relative;
+  bottom: 20px;
+  color: #ff6b73;
+  font-size: 12px;
+  margin-top: 10px;
 }
 
-.ocean { 
+.ocean {
   height: 0;
-  width:100%;
-  position:absolute;
-  bottom:0;
-  left:0;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 
 }
 
 .wave {
-    background: url('../Assets/Images/wave.svg') repeat-x; 
-    position: absolute;
-    top: -198px;
-    width: 6400px;
-    height: 198px;
-    animation: wave 7s cubic-bezier( 0.36, 0.45, 0.63, 0.53) infinite;
-    transform: translate3d(0, 0, 0);
+  background: url('../Assets/Images/wave.svg') repeat-x;
+  position: absolute;
+  top: -198px;
+  width: 10000px;
+  height: 198px;
+  animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+  transform: translate3d(0, 0, 0);
+}
+
+.wave:nth-of-type(2) {
+  top: -175px;
+  animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
+  opacity: 1;
+}
+
+@keyframes wave {
+  0% {
+    margin-left: 0;
   }
-  
-  .wave:nth-of-type(2) {
-    top: -175px;
-    animation: wave 7s cubic-bezier( 0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
-    opacity: 1;
+
+  100% {
+    margin-left: -1600px;
   }
-  
-  @keyframes wave {
-    0% {
-      margin-left: 0;
-    }
-    100% {
-      margin-left: -1600px;
-    }
+}
+
+@keyframes swell {
+
+  0%,
+  100% {
+    transform: translate3d(0, -25px, 0);
   }
-  
-  @keyframes swell {
-    0%, 100% {
-      transform: translate3d(0,-25px,0);
-    }
-    50% {
-      transform: translate3d(0,5px,0);
-    }
+
+  50% {
+    transform: translate3d(0, 5px, 0);
   }
+}

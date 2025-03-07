@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import BarLayout from "./Layouts/BarLayout";
 import AuthLayout from "./Layouts/AuthLayout";
 import './Styles/App.css';
-import './Styles/Pages.css';
 import './Assets/Font/Font.css';
 import Login from './Pages/login';
 import Join from './Pages/join';
@@ -31,23 +30,12 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-          {/* AuthLayout Routes */}
-          <Route element={<AuthLayout />}>
             <Route path="/" element={<Login />} />
             <Route path="/join" element={<Join />} />
-          </Route>
-
-          {/* BarLayout Routes */}
-          <Route element={<BarLayout />}>
             <Route path="/attendance" element={<Attendance />} />
             <Route path="/task" element={<Task />} />
             <Route path="/workLogs" element={<WorkLogs />} />
             <Route path="/profile" element={<Profile />} />
-          </Route>
-
-
-
-
           <Route path="/admin/user" element={<User />} />
           <Route path="/admin/time" element={<FixedTime />} />
 
