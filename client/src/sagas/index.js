@@ -2,6 +2,7 @@ import { all, fork } from "redux-saga/effects";
 import axios from "axios";
 import userSaga from "./user";
 import authSaga from "./auth";
+import workTypeSaga from "./workType";
 
 
 
@@ -14,5 +15,7 @@ export default function* rootSaga() {
   yield all([
     fork(userSaga),
     fork(authSaga),
+    fork(workTypeSaga),
+
   ]);
 }

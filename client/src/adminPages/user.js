@@ -16,7 +16,7 @@ const User = () => {
     const [openModal, setOpenModal] = useState(false);
     const [selectedAuth, setSelectedAuth] = useState(""); // 선택된 근무 패턴
 
-    
+
     const { userLists } = useSelector((state) => state.user);
     const { authLists } = useSelector((state) => state.auth);
 
@@ -38,10 +38,10 @@ const User = () => {
     });
 
     const update = async () => {
-        
-        if(!selected.user_code){
-           alert('권한을 변경할 직원을 선택하세요') 
-           return;
+
+        if (!selected.user_code) {
+            alert('권한을 변경할 직원을 선택하세요')
+            return;
         }
         setOpenModal(true)
     }
@@ -72,10 +72,8 @@ const User = () => {
         setSelectedAuth(event.target.value);
     };
     return (
-        <div>
-
-            <div className="user" style={{ height: "900px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-
+        <div className="user" style={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+            <div>
                 <div>변경할 직원을 선택해주세요 . <button type='button' onClick={() => update()}>권한변경</button></div>
                 <br></br>
                 <table cellPadding="20" border={1}>

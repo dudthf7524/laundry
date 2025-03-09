@@ -6,12 +6,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       primaryKey: true,
       allowNull: false,
-      comment: '권한 코드',
     },
     auth_name: {
       type: DataTypes.STRING,
       allowNull: false,
-      comment: '권한 이름',
     },
   }, {
     tableName: 'auth',

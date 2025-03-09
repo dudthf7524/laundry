@@ -4,9 +4,9 @@ const morgan = require('morgan');
 const cors = require('cors');
 const { sequelize } = require('./models');
 const { auth } = require("./models");
+const { workType } = require("./models");
 const cookieParser = require('cookie-parser');
-const user = require('./routes/user');
-const authr = require('./routes/auth');
+
 
 const passportConfig = require("./passport/cookie");
 const passport = require("passport");
@@ -14,6 +14,10 @@ const session = require("express-session");
 
 const app = express();
 const PORT = 8080;
+
+const userRoutes = require('./routes/user');
+const authRoutes = require('./routes/auth');
+const workTypeRoutes = require('./routes/workType');
 
 passportConfig();
 app.use(express.json());
@@ -45,7 +49,6 @@ app.use(cookieParser());
     // ✅ 🚀 서버 실행 (한 번만 실행)
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on http://localhost:${PORT}`);
-      console.log(`📜 API docs available at http://localhost:${PORT}/api-docs`);
     });
 
   } catch (error) {
@@ -67,6 +70,23 @@ async function addDefaultAuths() {
       await auth.findOrCreate({
         where: { auth_code: authOne.auth_code },
         defaults: authOne,
+      });
+    }
+
+    const defaultWorkTypes = [
+      { work_type_code: "WT1", work_type_name: "대표" },
+      { work_type_code: "WT2", work_type_name: "소장" },
+      { work_type_code: "WT3", work_type_name: "운영직원" },
+      { work_type_code: "WT4", work_type_name: "다림직원" },
+      { work_type_code: "WT5", work_type_name: "배송직원" },
+      { work_type_code: "WT6", work_type_name: "알바" },
+
+    ];
+
+    for (const workTypes of defaultWorkTypes) {
+      await workType.findOrCreate({
+        where: { work_type_code: workTypes.work_type_code },
+        defaults: workTypes,
       });
     }
 
@@ -93,8 +113,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // API 라우트 설정
-app.use('/user', user);
-app.use('/auth', authr);
+app.use('/user', userRoutes);
+app.use('/auth', authRoutes);
+app.use('/workType', workTypeRoutes);
+
 
 
 
