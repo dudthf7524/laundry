@@ -1,7 +1,7 @@
 .admin_menu_bar {
     float: left;
     width: 300px;
-    height: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -27,24 +27,21 @@
 }
 
 
-.fixed_time {
+.time {
   display: flex;
   justify-content: center;
   gap: 50px;
   flex-direction: column;
 }
 
-.fixed_time .title {
+.time .title {
  font-size: 40px;
  text-align: center;
     
 }
 
-.fixed_time .content {
+.time .content {
     font-size: 20px;
     text-align: center;
 }
 
-.fixed_time .option {
-   
-}

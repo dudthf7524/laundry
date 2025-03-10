@@ -11,12 +11,11 @@ import Profile from './Pages/profile';
 import User from './adminPages/user';
 import { useDispatch } from 'react-redux';
 import { USER_AUTH_REQUEST } from "./reducers/user";
-import FixedTime from './adminPages/fixedTime';
-import Work from './adminPages/work';
-import WorkType from './adminPages/workType';
-
-
-
+import Time from './adminPages/time';
+import UserList from './adminPages/userList';
+import TimeManagement from './adminPages/timeManagement';
+import Process from './adminPages/process';
+import ProcessRegister from './adminPages/processRegister';
 
 function App() {
 
@@ -40,24 +39,30 @@ function App() {
               <a href='/admin/user/list'>직원관리</a>
             </div>
             <div className='menu'>
+              <a href='/admin/process'>공정관리</a>
+            </div>
+            <div className='menu'>
               <a href='/admin/user'>권한관리</a>
             </div>
             <div className='menu'>
               <a href='/admin/time'>  직원별 출/퇴근 시간관리</a>
             </div>
             <div className='menu'>
-              <a href='#'>  근무 형태 관리</a>
-            </div>
-            <div className='menu'>
-              <a href='#'>  직원별 근무 형태 관리</a>
+              <a href='/admin/process'> 직원별 공정관리 </a>
             </div>
           </div>
           <Routes>
             <Route path="/admin">
+              <Route path="user/list" element={<UserList />} />
               <Route path="user" element={<User />} />
-              <Route path="time" element={<FixedTime />} />
-              <Route path="work" element={<Work />} />
-              <Route path="work/type" element={<WorkType />} />
+              <Route path="time" element={<Time />} />
+              <Route path="time/management" element={<TimeManagement />} />
+
+
+
+              <Route path="process" element={<Process />} />
+              <Route path="process/register" element={<ProcessRegister />} />
+
             </Route>
           </Routes>
         </div>

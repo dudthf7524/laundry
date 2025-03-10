@@ -2,9 +2,9 @@ import { all, fork } from "redux-saga/effects";
 import axios from "axios";
 import userSaga from "./user";
 import authSaga from "./auth";
-import workTypeSaga from "./workType";
-
-
+import timeSaga from "./time";
+import processSaga from "./process";
+import userProcessSaga from "./userProcess";
 
 import { API_URL } from "../constants";
 
@@ -15,7 +15,8 @@ export default function* rootSaga() {
   yield all([
     fork(userSaga),
     fork(authSaga),
-    fork(workTypeSaga),
-
+    fork(timeSaga),
+    fork(processSaga),
+    fork(userProcessSaga),
   ]);
 }

@@ -1,23 +1,23 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    const fixedTime = sequelize.define('fixed_time', {
-        fixed_time_id: {
+    const time = sequelize.define('time', {
+        time_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
             primaryKey: true,
             autoIncrement: true,
         },
         user_code: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
             unique: true,
         },
-        fixed_start_time: {
+        start_time: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        fixed_end_time: {
+        end_time: {
             type: DataTypes.STRING,
             allowNull: false,
         },
@@ -32,18 +32,18 @@ module.exports = (sequelize) => {
         },
     }, {
         timestamps: false,
-        tableName: 'fixed_time',
+        tableName: 'time',
     });
 
     // 관계 설정
-    fixedTime.associate = (models) => {
+    time.associate = (models) => {
 
-        fixedTime.belongsTo(models.user, {
-            foreignKey: 'auth_code',
-            targetKey: 'auth_code',
+        time.belongsTo(models.user, {
+            foreignKey: 'user_code',
+            targetKey: 'user_code',
         });
 
     };
 
-    return fixedTime;
+    return time;
 };

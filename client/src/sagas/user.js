@@ -106,8 +106,6 @@ function* watchUserAuthUpdate() {
 }
 
 function userAuthUpdateAPI(data) {
-    console.log('aaaaaaaaaaaa')
-    console.log(data)
 
     return axios.post("/user/update/auth", data);
 }

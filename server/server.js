@@ -3,8 +3,6 @@ const path = require('path');
 const morgan = require('morgan');
 const cors = require('cors');
 const { sequelize } = require('./models');
-const { auth } = require("./models");
-const { workType } = require("./models");
 const cookieParser = require('cookie-parser');
 
 
@@ -13,12 +11,18 @@ const passport = require("passport");
 const session = require("express-session");
 
 const app = express();
-const PORT = 8080;
+const port = 8080;
 
 const userRoutes = require('./routes/user');
 const authRoutes = require('./routes/auth');
-const workTypeRoutes = require('./routes/workType');
 
+const timeRoutes = require('./routes/time');
+
+const processRoutes = require('./routes/process');
+const userProcessRoutes = require('./routes/userProcess');
+
+const authData = require("./models/authData");
+const processData = require("./models/processData");
 passportConfig();
 app.use(express.json());
 
@@ -34,67 +38,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.listen(port, () => {
+  console.log(`🚀 http://localhost:${port} 에서 서버 실행중`);
+});
 
-
-(async () => {
-  try {
-    // ✅ 데이터베이스 동기화
-    //await sequelize.sync({ alter: true });
-    await sequelize.sync({ force: false });
-    console.log("✅ 테이블 동기화 완료 (새 컬럼 자동 추가)");
-
-    // ✅ 기본 권한 데이터 추가
-    await addDefaultAuths();
-
-    // ✅ 🚀 서버 실행 (한 번만 실행)
-    app.listen(PORT, () => {
-      console.log(`🚀 Server is running on http://localhost:${PORT}`);
-    });
-
-  } catch (error) {
-    console.error("❌ 서버 시작 중 오류 발생:", error);
-  }
-})();
-
-// ✅ 기본 권한 데이터 추가 함수
-async function addDefaultAuths() {
-  try {
-    const defaultAuths = [
-      { auth_code: "A1", auth_name: "마스터" },
-      { auth_code: "A2", auth_name: "서브 마스터" },
-      { auth_code: "A3", auth_name: "매니저" },
-      { auth_code: "A4", auth_name: "직원" },
-    ];
-
-    for (const authOne of defaultAuths) {
-      await auth.findOrCreate({
-        where: { auth_code: authOne.auth_code },
-        defaults: authOne,
-      });
-    }
-
-    const defaultWorkTypes = [
-      { work_type_code: "WT1", work_type_name: "대표" },
-      { work_type_code: "WT2", work_type_name: "소장" },
-      { work_type_code: "WT3", work_type_name: "운영직원" },
-      { work_type_code: "WT4", work_type_name: "다림직원" },
-      { work_type_code: "WT5", work_type_name: "배송직원" },
-      { work_type_code: "WT6", work_type_name: "알바" },
-
-    ];
-
-    for (const workTypes of defaultWorkTypes) {
-      await workType.findOrCreate({
-        where: { work_type_code: workTypes.work_type_code },
-        defaults: workTypes,
-      });
-    }
-
-    console.log("✅ 기본 권한 데이터 추가 완료");
-  } catch (error) {
-    console.error("❌ 기본 권한 데이터 추가 중 오류 발생:", error);
-  }
-}
+sequelize
+  .sync({ force: false })
+  .then(async () => {
+    await authData(); // 데이터베이스 초기화 실행
+    await processData();
+    console.log("✅ 데이터베이스 연결 성공");
+  })
+  .catch((err) => {
+    console.error("데이터베이스 연결 실패:", err);
+  });
 
 app.use(
   session({
@@ -112,13 +69,23 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(express.static(path.join(__dirname, "./build")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "./build/index.html"));
+});
+
+
 // API 라우트 설정
 app.use('/user', userRoutes);
 app.use('/auth', authRoutes);
-app.use('/workType', workTypeRoutes);
+app.use('/time', timeRoutes);
+app.use('/process', processRoutes);
+app.use('/userProcess', userProcessRoutes);
 
-
-
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "./build/index.html"));
+});
 
 
 

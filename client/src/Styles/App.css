@@ -23,6 +23,7 @@ body {
 
 .App2 {
     margin: 0 auto;
-    width: 100wh;
+    width: 100%;
     height: 100vh;
+    position: relative;
 }

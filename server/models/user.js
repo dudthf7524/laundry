@@ -43,9 +43,13 @@ module.exports = (sequelize) => {
       foreignKey: 'auth_code',
       targetKey: 'auth_code',
     });
-    user.hasOne(models.fixed_time, {
-      foreignKey: 'auth_code',
-      sourceKey: 'auth_code',
+    user.hasOne(models.time, {
+      foreignKey: 'user_code',
+      sourceKey: 'user_code',
+    });
+    user.hasMany(models.userProcess, {
+      foreignKey: 'user_code',
+      sourceKey: 'user_code',
     });
   };
 
