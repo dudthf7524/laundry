@@ -45,10 +45,7 @@ const Register = () => {
                 </div>
             </div>
             <div className="work_time">
-                <div className="work_time_option">
-                    <p>성수기적용</p>
-                    <p>08:00 ~ 22:00</p>
-                </div>
+             
                 <div className="work_time_option">
                     <p>휴게시간</p>
                     <p>12:00 ~ 13:00</p>

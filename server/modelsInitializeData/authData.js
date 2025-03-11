@@ -1,4 +1,4 @@
-const db = require("./index"); // Sequelize 모델이 정의된 index.js 파일
+const db = require("../models/index"); // Sequelize 모델이 정의된 index.js 파일
 
 const authss = [
     { auth_code: "A1", auth_name: "마스터" },

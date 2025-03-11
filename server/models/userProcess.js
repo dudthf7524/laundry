@@ -11,7 +11,6 @@ module.exports = (sequelize) => {
         user_code: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            unique: true,
         },
         user_process_code: {
             type: DataTypes.STRING,
@@ -32,6 +31,10 @@ module.exports = (sequelize) => {
         userProcess.belongsTo(models.user, {
             foreignKey: 'user_code',
             targetKey: 'user_code',
+        });
+        userProcess.belongsTo(models.process, {
+            foreignKey: "user_process_code",
+            targetKey: "process_code",
         });
 
 

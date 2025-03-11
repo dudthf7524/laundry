@@ -30,6 +30,7 @@ db.user = require("./user")(sequelize, Sequelize);
 db.process = require("./process")(sequelize, Sequelize);
 db.time = require("./time")(sequelize, Sequelize);
 db.userProcess = require("./userProcess")(sequelize, Sequelize);
+db.task = require("./task")(sequelize, Sequelize);
 
 // 관계 설정
 Object.keys(db).forEach((modelName) => {

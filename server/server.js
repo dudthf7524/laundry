@@ -20,9 +20,10 @@ const timeRoutes = require('./routes/time');
 
 const processRoutes = require('./routes/process');
 const userProcessRoutes = require('./routes/userProcess');
+const taskRoutes = require('./routes/task');
 
-const authData = require("./models/authData");
-const processData = require("./models/processData");
+const authData = require("./modelsInitializeData/authData");
+const processData = require("./modelsInitializeData/processData");
 passportConfig();
 app.use(express.json());
 
@@ -82,6 +83,8 @@ app.use('/auth', authRoutes);
 app.use('/time', timeRoutes);
 app.use('/process', processRoutes);
 app.use('/userProcess', userProcessRoutes);
+app.use('/task', taskRoutes);
+
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "./build/index.html"));

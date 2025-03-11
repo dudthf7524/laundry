@@ -5,6 +5,8 @@ import authSaga from "./auth";
 import timeSaga from "./time";
 import processSaga from "./process";
 import userProcessSaga from "./userProcess";
+import taskSaga from "./task";
+
 
 import { API_URL } from "../constants";
 
@@ -18,5 +20,6 @@ export default function* rootSaga() {
     fork(timeSaga),
     fork(processSaga),
     fork(userProcessSaga),
+    fork(taskSaga),
   ]);
 }

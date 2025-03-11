@@ -4,6 +4,7 @@ import auth from "./auth";
 import time from "./time";
 import process from "./process";
 import userProcess from "./userProcess";
+import task from "./task";
 
 
 const rootReducer = combineReducers({
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   time,
   process,
   userProcess,
+  task,
 });
 
 export default rootReducer;

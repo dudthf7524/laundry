@@ -31,7 +31,9 @@ function userLoginAPI(data) {
 function* userLogin(action) {
     try {
         const result = yield call(userLoginAPI, action.data);
-
+        if(result.data){
+            window.location.href = "/task"
+        }
         yield put({
             type: USER_LOGIN_SUCCESS,
             data: result.data,

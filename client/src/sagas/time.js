@@ -20,7 +20,7 @@ function timeRegisterListAPI(data) {
 
 function* timeRegister(action) {
     try {
-        const result = yield call(timeRegisterListAPI , action.data);
+        const result = yield call(timeRegisterListAPI, action.data);
         yield put({
             type: TIME_REGISTER_SUCCESS,
             data: result.data,

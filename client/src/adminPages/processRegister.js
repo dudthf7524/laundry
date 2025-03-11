@@ -53,11 +53,9 @@ const ProcessRegister = () => {
 
 
     return (
-        <div className="">
+        <div className="process_register">
             <div>업무공정 등록</div>
-
             <select name="user_process_code" value={formData.user_process_code} onChange={inputChange}>
-           
                 {
                     processLists?.map((processList, index) => {
                         return (
@@ -66,7 +64,6 @@ const ProcessRegister = () => {
                     })
                 }
             </select>
-
             <div>
                 <form onSubmit={processRegister}>
                     <p>수량</p>

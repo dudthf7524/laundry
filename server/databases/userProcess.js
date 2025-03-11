@@ -1,4 +1,5 @@
 const { userProcess } = require("../models");
+const { process } = require("../models");
 
 const userProcessRegister = async (data) => {
     console.log(data)
@@ -16,8 +17,32 @@ const userProcessRegister = async (data) => {
 
 };
 
+const userProcessOneList = async (user_code) => {
+    try {
+        const result = await userProcess.findAll({
+            attributes: ["user_process_count"],
+            include: [
+                {
+                    model: process,
+                    attributes: ["process_code", "process_name", "hour_average"],
+                    required: true,
+                },
+            ],
+            where: { user_code: user_code },
+        });
+        console.log("result")
+        console.log(result)
+        console.log("result")
+        return result;
+    } catch (error) {
+        console.error(error)
+    }
+
+};
+
 
 module.exports = {
     userProcessRegister,
+    userProcessOneList,
 
 };

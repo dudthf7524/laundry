@@ -1,4 +1,4 @@
-const db = require("./index"); // Sequelize 모델이 정의된 index.js 파일
+const db = require("../models/index"); // Sequelize 모델이 정의된 index.js 파일
 
 const processes = [
     { process_code: "P1", process_name: "다림질", hour_average: 120 },

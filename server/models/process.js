@@ -22,7 +22,14 @@ module.exports = (sequelize) => {
 
   // 관계 설정
   process.associate = (models) => {
-   
+    process.hasMany(models.userProcess, {
+      foreignKey: "user_process_code",
+      sourceKey: "process_code",
+    });
+    process.hasMany(models.task, {
+      foreignKey: 'process_code',
+      sourceKey: 'process_code',
+    });
 
   };
 
