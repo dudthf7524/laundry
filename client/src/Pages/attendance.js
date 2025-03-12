@@ -2,32 +2,123 @@ import React, { useState, useEffect } from 'react';
 import { ReactComponent as Icon1 } from '../Assets/Images/volume-up.svg';
 import '../css/attendance.css';
 import BottomBar from "../Components/BottomBar";
+import { useDispatch, useSelector } from 'react-redux';
+import { TIME_DETAIL_REQUEST } from '../reducers/time';
 
 
-const Register = () => {
+const Attendance = () => {
+    //✅정의
+    const dispatch = useDispatch();
     const [currentTime, setCurrentTime] = useState(new Date());
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentTime(new Date());
-        }, 1000); // 1초마다 갱신
-        return () => clearInterval(interval); // 컴포넌트 언마운트 시 interval 정리
-    }, []);
-
     // 날짜 포맷팅
     const days = ['일', '월', '화', '수', '목', '금', '토'];
     const year = currentTime.getFullYear();
     const month = String(currentTime.getMonth() + 1).padStart(2, '0');
     const date = String(currentTime.getDate()).padStart(2, '0');
     const day = days[currentTime.getDay()];
-
     // 시간 포맷팅
     const hours = currentTime.getHours();
     const minutes = String(currentTime.getMinutes()).padStart(2, '0');
     const seconds = String(currentTime.getSeconds()).padStart(2, '0');
     const period = hours >= 12 ? 'PM' : 'AM';
     const formattedHours = hours % 12 || 12;
+    //✅정의
 
+    //✅함수
+    const today = () => {
+        const interval = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000); // 1초마다 갱신
+        return () => clearInterval(interval); // 컴포넌트 언마운트 시 interval 정리
+    }
+
+    const attendance = () => {
+        const work_date = year + "-" + month + "-" + date;
+        const work_attendance_time = hours + ":" + minutes;
+        var work_state = "";
+
+        if (timeDetail?.start_time < work_attendance_time) {
+            work_state = "지각";
+        } else {
+            work_state = "근무중";
+        }
+
+        // dispatch({
+        //     type: TIME_DETAIL_REQUEST,
+        //     data:data
+        // });
+    }
+
+    const leaveWork = () => {
+        alert('leaveWork')
+        // dispatch({
+        //     type: TIME_DETAIL_REQUEST,
+        //     data:data
+        // });
+    }
+    //✅함수
+
+    //✅데이터
+    const { timeDetail } = useSelector((state) => state.time);
+    const timeDetailLoding = () => {
+        dispatch({
+            type: TIME_DETAIL_REQUEST,
+        });
+    };
+    //✅데이터
+
+    useEffect(() => {
+        // today();
+        timeDetailLoding();
+    }, []);
+
+
+    const isAttendanceDisabled = () => {
+        const workStartTime = timeDetail?.start_time; // 예: "07:30"
+        const workEndTime = timeDetail?.end_time; // 예: "18:00"
+
+        if (!workStartTime || !workEndTime) {
+            return false; // 출근, 퇴근 시간이 없으면 출근 가능
+        }
+
+        const [startHours, startMinutes] = workStartTime.split(':');
+        const [endHours, endMinutes] = workEndTime.split(':');
+
+        const workStartDate = new Date(`${year}-${month}-${date}T${startHours}:${startMinutes}:00`); // 출근 시간
+        const workEndDate = new Date(`${year}-${month}-${date}T${endHours}:${endMinutes}:00`); // 퇴근 시간
+        const earlyTimeLimit = new Date(workStartDate.getTime() - 30 * 60 * 1000); // 출근 30분 전
+        const currentTimeForComparison = new Date(`${year}-${month}-${date}T${hours}:${minutes}:00`); // 현재 시간
+
+        if (currentTimeForComparison > workEndDate) {
+            return true; // 퇴근 시간이 지난 경우 비활성화
+        }
+
+        if (currentTimeForComparison < earlyTimeLimit) {
+            return true; // 출근 30분 전이면 비활성화
+        }
+
+        return false; // 나머지 경우는 활성화
+    };
+
+    const isLeaveWorkDisabled = () => {
+        const workEndTime = timeDetail?.end_time; // 예: "18:00"
+
+        if (!workEndTime) {
+            return false; // 퇴근 시간이 없으면 퇴근 가능
+        }
+
+        const [endHours, endMinutes] = workEndTime.split(':');
+        const workEndDate = new Date(`${year}-${month}-${date}T${endHours}:${endMinutes}:00`); // 퇴근 시간
+        const currentTimeForComparison = new Date(`${year}-${month}-${date}T${hours}:${minutes}:00`); // 현재 시간
+
+        if (currentTimeForComparison >= workEndDate) {
+            return true; // 퇴근 시간이 지나면 비활성화
+        }
+
+        return false; // 퇴근 가능
+    };
+    
+    console.log(isLeaveWorkDisabled())
     return (
         <div className='attendance'>
             <div></div>
@@ -45,35 +136,38 @@ const Register = () => {
                 </div>
             </div>
             <div className="work_time">
-             
-                <div className="work_time_option">
-                    <p>휴게시간</p>
-                    <p>12:00 ~ 13:00</p>
-                </div>
-                <div className="work_time_option">
-                    <span className='working'>근무중</span>
-                </div>
                 <div className="work_time_option">
                     <p>출근시간</p>
-                    <p>07:15</p>
+                    <p>{timeDetail?.start_time}</p>
                 </div>
                 <div className="work_time_option">
                     <p>퇴근시간</p>
-                    <p>18:00</p>
+                    <p>{timeDetail?.end_time}</p>
+                </div>
+                <div className="work_time_option">
+                    <p>휴게시간</p>
+                    <p>{timeDetail?.rest_start_time} ~ {timeDetail?.rest_end_time}</p>
+                </div>
+                <div className="work_time_option">
+                    <p className='working'>근무중</p>
+                    <p>{timeDetail?.start_time}</p>
                 </div>
                 <div className='button'>
-                    <button>
+                    <button disabled={isAttendanceDisabled()} onClick={() => {
+                        attendance();
+                    }}>
                         출근
                     </button>
-                    <button>
+                    <button disabled={isLeaveWorkDisabled()} onClick={() => {
+                        leaveWork();
+                    }}>
                         퇴근
                     </button>
                 </div>
-
             </div>
             <BottomBar />
         </div>
     );
 }
 
-export default Register;
+export default Attendance;

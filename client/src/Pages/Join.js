@@ -9,7 +9,8 @@ const Join = () => {
         user_name: '',
         user_nickname: '',
         user_password: '',
-        user_confirmPassword: ''
+        user_confirmPassword: '',
+        // user_employment_date: ''
     });
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
@@ -83,7 +84,7 @@ const Join = () => {
     };
 
     return (
-        
+
         <div className="join">
             <h1>laundry</h1>
             <h2>회원가입</h2>
@@ -132,6 +133,13 @@ const Join = () => {
                     value={formData.user_confirmPassword}
                     onChange={handleInputChange}
                 />
+                {/* <input
+                    type="date"
+                    name="user_employment_date"
+                    placeholder="입사일"
+                    value={formData.user_employment_date}
+                    onChange={handleInputChange}
+                /> */}
                 <button type="submit">회원가입</button>
             </form>
             {error && <p className="error-message">{error}</p>}

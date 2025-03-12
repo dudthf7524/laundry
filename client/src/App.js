@@ -16,7 +16,7 @@ import UserList from './adminPages/userList';
 import TimeManagement from './adminPages/timeManagement';
 import Process from './adminPages/process';
 import ProcessRegister from './adminPages/processRegister';
-
+import WorkAddress from './adminPages/workAddress';
 function App() {
 
   const dispatch = useDispatch();
@@ -50,6 +50,9 @@ function App() {
             <div className='menu'>
               <a href='/admin/process'> 직원별 공정관리 </a>
             </div>
+            <div className='menu'>
+              <a href='/admin/work/address'> 근무지 등록 및 관리 </a>
+            </div>
           </div>
           <Routes>
             <Route path="/admin">
@@ -57,12 +60,9 @@ function App() {
               <Route path="user" element={<User />} />
               <Route path="time" element={<Time />} />
               <Route path="time/management" element={<TimeManagement />} />
-
-
-
               <Route path="process" element={<Process />} />
               <Route path="process/register" element={<ProcessRegister />} />
-
+              <Route path="work/address" element={<WorkAddress />} />
             </Route>
           </Routes>
         </div>
@@ -76,6 +76,7 @@ function App() {
             <Route path="/task" element={<Task />} />
             <Route path="/workLogs" element={<WorkLogs />} />
             <Route path="/profile" element={<Profile />} />
+
           </Routes>
         </div>
       )}

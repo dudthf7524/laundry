@@ -27,4 +27,16 @@ router.get("/new/one", authMiddlewareSession, async (req, res) => {
     }
 });
 
+router.post("/end/time", authMiddlewareSession, async (req, res) => {
+   
+    // const user_code = req.user.user_code;
+
+    // try {
+    //     const result = await task.taskNewOne(user_code)
+    //     return res.json(result);
+    // } catch (error) {
+    //     console.error(error)
+    // }
+});
+
 module.exports = router;

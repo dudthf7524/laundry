@@ -10,6 +10,7 @@ const taskRegister = async (data, user_code) => {
             process_code: data.process_code,
             task_date: data.task_date,
             user_code: user_code,
+            task_state: '업무중',
             raw: true
         });
         return result;

@@ -29,6 +29,9 @@ function taskRegisterAPI(data) {
 function* taskRegister(action) {
     try {
         const result = yield call(taskRegisterAPI, action.data);
+        if (result.data) {
+            window.location.href = "/task";
+        }
         yield put({
             type: TASK_REGISTER_SUCCESS,
             data: result.data,
@@ -50,13 +53,13 @@ function* watchTaskNewOne() {
 
 function taskNewOneAPI() {
 
-    return axios.get("/task/new/one", );
+    return axios.get("/task/new/one",);
 }
 
 function* taskNewOne() {
     try {
-        const result = yield call(taskNewOneAPI, );
-        if(result.data === "common"){
+        const result = yield call(taskNewOneAPI,);
+        if (result.data === "common") {
             window.location.href = "/";
             return;
         }
@@ -81,13 +84,13 @@ function* watchTaskEndTime() {
 
 function taskEndTimeAPI() {
 
-    return axios.post("/task/end/time", );
+    return axios.post("/task/end/time",);
 }
 
 function* taskkEndTime() {
     try {
-        const result = yield call(taskEndTimeAPI, );
-        if(result.data === "common"){
+        const result = yield call(taskEndTimeAPI,);
+        if (result.data === "common") {
             window.location.href = "/";
             return;
         }
@@ -108,5 +111,5 @@ function* taskkEndTime() {
 
 
 export default function* taskSaga() {
-    yield all([fork(watchTaskRegister), fork(watchTaskNewOne),  fork(watchTaskEndTime)]);
+    yield all([fork(watchTaskRegister), fork(watchTaskNewOne), fork(watchTaskEndTime)]);
 }

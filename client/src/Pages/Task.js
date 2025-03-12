@@ -275,7 +275,7 @@ const TaskPage = () => {
             <BottomBar />
             {isModalOpen && (
                 <div className="modal">
-                    <div className="modal-content">
+                    <div className="modal_content">
                         <p>업무를 시작하시겠습니까?</p>
                         <button onClick={handleStartConfirm}>업무시작</button>
                         <button onClick={handleStartClose}>닫기</button>

@@ -7,6 +7,10 @@ import {
     TIME_REGISTER_SUCCESS,
     TIME_REGISTER_FAILURE,
 
+    TIME_DETAIL_REQUEST,
+    TIME_DETAIL_SUCCESS,
+    TIME_DETAIL_FAILURE,
+
 } from "../reducers/time";
 
 function* watchTimeRegister() {
@@ -35,8 +39,39 @@ function* timeRegister(action) {
     }
 }
 
+function* watchTimeDetail() {
+    yield takeLatest(TIME_DETAIL_REQUEST, timeDetail);
+}
+
+function timeDetailListAPI() {
+
+    return axios.get("/time/detail");
+}
+
+function* timeDetail() {
+    try {
+        const result = yield call(timeDetailListAPI,);
+        if (result.data === 'common') {
+            window.location.href = "/";
+            return;
+        }
+        yield put({
+            type: TIME_DETAIL_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: TIME_DETAIL_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
+
 
 
 export default function* timeSaga() {
-    yield all([fork(watchTimeRegister), ]);
+    yield all([fork(watchTimeRegister), fork(watchTimeDetail)]);
 }
