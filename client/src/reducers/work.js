@@ -28,9 +28,9 @@ export const WORK_NEW_ONE_SUCCESS = "WORK_NEW_ONE_SUCCESS";
 export const WORK_NEW_ONE_FAILURE = "WORK_NEW_ONE_FAILURE";
 
 
-export const WORK_END_TIME_REQUEST = "WORK_NEW_ONE_REQUEST";
-export const WORK_END_TIME_SUCCESS = "WORK_NEW_ONE_SUCCESS";
-export const WORK_END_TIME_FAILURE = "WORK_NEW_ONE_FAILURE";
+export const WORK_END_TIME_REQUEST = "WORK_END_TIME_REQUEST";
+export const WORK_END_TIME_SUCCESS = "WORK_END_TIME_SUCCESS";
+export const WORK_END_TIME_FAILURE = "WORK_END_TIME_FAILURE";
 
 const reducer = (state = initialState, action) => {
     return produce(state, (draft) => {

@@ -21,6 +21,9 @@ const timeRoutes = require('./routes/time');
 const processRoutes = require('./routes/process');
 const userProcessRoutes = require('./routes/userProcess');
 const taskRoutes = require('./routes/task');
+const workRoutes = require('./routes/work');
+
+
 
 const authData = require("./modelsInitializeData/authData");
 const processData = require("./modelsInitializeData/processData");
@@ -84,7 +87,7 @@ app.use('/time', timeRoutes);
 app.use('/process', processRoutes);
 app.use('/userProcess', userProcessRoutes);
 app.use('/task', taskRoutes);
-
+app.use('/work', workRoutes);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "./build/index.html"));

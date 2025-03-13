@@ -4,6 +4,7 @@ import '../css/attendance.css';
 import BottomBar from "../Components/BottomBar";
 import { useDispatch, useSelector } from 'react-redux';
 import { TIME_DETAIL_REQUEST } from '../reducers/time';
+import { WORK_END_TIME_REQUEST, WORK_NEW_ONE_REQUEST, WORK_REGISTER_REQUEST } from '../reducers/work';
 
 
 const Attendance = () => {
@@ -43,18 +44,33 @@ const Attendance = () => {
             work_state = "근무중";
         }
 
-        // dispatch({
-        //     type: TIME_DETAIL_REQUEST,
-        //     data:data
-        // });
+        const data = {
+            work_date : work_date,
+            work_attendance_time : work_attendance_time,
+            work_state : work_state,
+        }
+
+        dispatch({
+            type: WORK_REGISTER_REQUEST,
+            data:data
+        });
     }
 
     const leaveWork = () => {
-        alert('leaveWork')
-        // dispatch({
-        //     type: TIME_DETAIL_REQUEST,
-        //     data:data
-        // });
+        const work_end_time = hours + ":" + minutes;
+
+        const data = {
+            work_id : workNewOne.work_id,
+            work_end_time : work_end_time
+        }
+
+        dispatch({
+            type: WORK_END_TIME_REQUEST,
+            data:data
+        });
+
+    
+      
     }
     //✅함수
 
@@ -65,60 +81,70 @@ const Attendance = () => {
             type: TIME_DETAIL_REQUEST,
         });
     };
+
+    const { workNewOne } = useSelector((state) => state.work);
+    const workNewOneLoding = () => {
+        dispatch({
+            type: WORK_NEW_ONE_REQUEST,
+        });
+    };
     //✅데이터
+
+    console.log(workNewOne)
 
     useEffect(() => {
         // today();
         timeDetailLoding();
+        workNewOneLoding();
     }, []);
 
 
-    const isAttendanceDisabled = () => {
-        const workStartTime = timeDetail?.start_time; // 예: "07:30"
-        const workEndTime = timeDetail?.end_time; // 예: "18:00"
+    // const isAttendanceDisabled = () => {
+    //     const workStartTime = timeDetail?.start_time; // 예: "07:30"
+    //     const workEndTime = timeDetail?.end_time; // 예: "18:00"
 
-        if (!workStartTime || !workEndTime) {
-            return false; // 출근, 퇴근 시간이 없으면 출근 가능
-        }
+    //     if (!workStartTime || !workEndTime) {
+    //         return false; // 출근, 퇴근 시간이 없으면 출근 가능
+    //     }
 
-        const [startHours, startMinutes] = workStartTime.split(':');
-        const [endHours, endMinutes] = workEndTime.split(':');
+    //     const [startHours, startMinutes] = workStartTime.split(':');
+    //     const [endHours, endMinutes] = workEndTime.split(':');
 
-        const workStartDate = new Date(`${year}-${month}-${date}T${startHours}:${startMinutes}:00`); // 출근 시간
-        const workEndDate = new Date(`${year}-${month}-${date}T${endHours}:${endMinutes}:00`); // 퇴근 시간
-        const earlyTimeLimit = new Date(workStartDate.getTime() - 30 * 60 * 1000); // 출근 30분 전
-        const currentTimeForComparison = new Date(`${year}-${month}-${date}T${hours}:${minutes}:00`); // 현재 시간
+    //     const workStartDate = new Date(`${year}-${month}-${date}T${startHours}:${startMinutes}:00`); // 출근 시간
+    //     const workEndDate = new Date(`${year}-${month}-${date}T${endHours}:${endMinutes}:00`); // 퇴근 시간
+    //     const earlyTimeLimit = new Date(workStartDate.getTime() - 30 * 60 * 1000); // 출근 30분 전
+    //     const currentTimeForComparison = new Date(`${year}-${month}-${date}T${hours}:${minutes}:00`); // 현재 시간
 
-        if (currentTimeForComparison > workEndDate) {
-            return true; // 퇴근 시간이 지난 경우 비활성화
-        }
+    //     if (currentTimeForComparison > workEndDate) {
+    //         return true; // 퇴근 시간이 지난 경우 비활성화
+    //     }
 
-        if (currentTimeForComparison < earlyTimeLimit) {
-            return true; // 출근 30분 전이면 비활성화
-        }
+    //     if (currentTimeForComparison < earlyTimeLimit) {
+    //         return true; // 출근 30분 전이면 비활성화
+    //     }
 
-        return false; // 나머지 경우는 활성화
-    };
+    //     return false; // 나머지 경우는 활성화
+    // };
 
-    const isLeaveWorkDisabled = () => {
-        const workEndTime = timeDetail?.end_time; // 예: "18:00"
+    // const isLeaveWorkDisabled = () => {
+    //     const workEndTime = timeDetail?.end_time; // 예: "18:00"
 
-        if (!workEndTime) {
-            return false; // 퇴근 시간이 없으면 퇴근 가능
-        }
+    //     if (!workEndTime) {
+    //         return false; // 퇴근 시간이 없으면 퇴근 가능
+    //     }
 
-        const [endHours, endMinutes] = workEndTime.split(':');
-        const workEndDate = new Date(`${year}-${month}-${date}T${endHours}:${endMinutes}:00`); // 퇴근 시간
-        const currentTimeForComparison = new Date(`${year}-${month}-${date}T${hours}:${minutes}:00`); // 현재 시간
+    //     const [endHours, endMinutes] = workEndTime.split(':');
+    //     const workEndDate = new Date(`${year}-${month}-${date}T${endHours}:${endMinutes}:00`); // 퇴근 시간
+    //     const currentTimeForComparison = new Date(`${year}-${month}-${date}T${hours}:${minutes}:00`); // 현재 시간
 
-        if (currentTimeForComparison >= workEndDate) {
-            return true; // 퇴근 시간이 지나면 비활성화
-        }
+    //     if (currentTimeForComparison >= workEndDate) {
+    //         return true; // 퇴근 시간이 지나면 비활성화
+    //     }
 
-        return false; // 퇴근 가능
-    };
+    //     return false; // 퇴근 가능
+    // };
     
-    console.log(isLeaveWorkDisabled())
+    // console.log(isLeaveWorkDisabled())
     return (
         <div className='attendance'>
             <div></div>
@@ -149,16 +175,16 @@ const Attendance = () => {
                     <p>{timeDetail?.rest_start_time} ~ {timeDetail?.rest_end_time}</p>
                 </div>
                 <div className="work_time_option">
-                    <p className='working'>근무중</p>
-                    <p>{timeDetail?.start_time}</p>
+                    <p className='working'>{workNewOne?.work_state}</p>
+                    <p>{workNewOne?.work_start_time}</p>
                 </div>
                 <div className='button'>
-                    <button disabled={isAttendanceDisabled()} onClick={() => {
+                    <button disabled={workNewOne} onClick={() => {
                         attendance();
                     }}>
                         출근
                     </button>
-                    <button disabled={isLeaveWorkDisabled()} onClick={() => {
+                    <button disabled={!workNewOne} onClick={() => {
                         leaveWork();
                     }}>
                         퇴근
