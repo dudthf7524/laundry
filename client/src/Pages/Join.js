@@ -10,7 +10,8 @@ const Join = () => {
         user_nickname: '',
         user_password: '',
         user_confirmPassword: '',
-        // user_employment_date: ''
+        user_hire_date: '',
+        user_position: '',
     });
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
@@ -49,13 +50,12 @@ const Join = () => {
         }
     };
 
-    console.log(formData)
-
     const handleJoin = async (e) => {
         e.preventDefault();
         setError(null);
         setSuccess(null);
 
+        console.log(formData)
         if (!isUsernameChecked) {
             setError('아이디 중복 확인을 해주세요.');
             return;
@@ -119,6 +119,13 @@ const Join = () => {
                     value={formData.user_nickname}
                     onChange={handleInputChange}
                 />
+                 <input
+                    type="text"
+                    name="user_position"
+                    placeholder="직급"
+                    value={formData.user_position}
+                    onChange={handleInputChange}
+                />
                 <input
                     type="password"
                     name="user_password"
@@ -133,13 +140,15 @@ const Join = () => {
                     value={formData.user_confirmPassword}
                     onChange={handleInputChange}
                 />
-                {/* <input
+                <br></br>
+                <h2>입사일</h2>
+                <input
                     type="date"
-                    name="user_employment_date"
+                    name="user_hire_date"
                     placeholder="입사일"
-                    value={formData.user_employment_date}
+                    value={formData.user_hire_date}
                     onChange={handleInputChange}
-                /> */}
+                />
                 <button type="submit">회원가입</button>
             </form>
             {error && <p className="error-message">{error}</p>}

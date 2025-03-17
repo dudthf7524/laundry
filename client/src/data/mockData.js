@@ -1,19 +1,11 @@
 // Mock data for the employee management system
 
+import { useSelector } from "react-redux";
+
 // Employee data
+
+
 export const employees = [
-  { id: 1, name: '김경준', nickname: '대표', years: 4, role: '대표', permission: 'master' },
-  { id: 2, name: '박창훈', nickname: '찰리', years: 2, role: '소장', permission: 'submaster' },
-  { id: 3, name: '양승열', nickname: '케이', years: 1, role: '운영직원', permission: 'manager' },
-  { id: 4, name: '양승찬', nickname: '에이', years: 1, role: '알바', permission: 'employee' },
-  { id: 5, name: '장은희', nickname: '체리', years: 1, role: '다림직원', permission: 'employee' },
-  { id: 6, name: '정민현', nickname: 'Q', years: 3, role: '배송직원', permission: 'employee' },
-  { id: 1, name: '김경준', nickname: '대표', years: 4, role: '대표', permission: 'master' },
-  { id: 2, name: '박창훈', nickname: '찰리', years: 2, role: '소장', permission: 'submaster' },
-  { id: 3, name: '양승열', nickname: '케이', years: 1, role: '운영직원', permission: 'manager' },
-  { id: 4, name: '양승찬', nickname: '에이', years: 1, role: '알바', permission: 'employee' },
-  { id: 5, name: '장은희', nickname: '체리', years: 1, role: '다림직원', permission: 'employee' },
-  { id: 6, name: '정민현', nickname: 'Q', years: 3, role: '배송직원', permission: 'employee' },
   { id: 1, name: '김경준', nickname: '대표', years: 4, role: '대표', permission: 'master' },
   { id: 2, name: '박창훈', nickname: '찰리', years: 2, role: '소장', permission: 'submaster' },
   { id: 3, name: '양승열', nickname: '케이', years: 1, role: '운영직원', permission: 'manager' },

@@ -12,10 +12,12 @@ const Header = () => {
   };
 
   const navLinks = [
-    { name: '근태관리', path: '/attendance', requiredPermission: null },
-    { name: '업무통계', path: '/tasks', requiredPermission: null },
-    { name: '직원관리', path: '/employees', requiredPermission: ['master', 'submaster'] },
-    { name: '설정', path: '/settings', requiredPermission: ['master'] },
+    { name: '근태관리', path: '/admin/attendance', requiredPermission: null },
+    { name: '업무통계', path: '/admin/tasks', requiredPermission: null },
+    { name: '직원관리', path: '/admin/employees', requiredPermission: null },
+    { name: '설정', path: '/admin/settings', requiredPermission: ['master'] },
+    { name: '권한관리', path: '/admin/auth', requiredPermission: null },
+
   ];
 
   // Filter nav links based on user permissions

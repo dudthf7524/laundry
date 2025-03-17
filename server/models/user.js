@@ -31,6 +31,16 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: "A4",
     },
+    user_hire_date: {
+      type: DataTypes.STRING, // 날짜를 'YYYY-MM-DD' 형식의 문자열로 저장
+      allowNull: false,
+      defaultValue: "2000-01-01",
+    },
+    user_position: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: '사원', // 기본값을 '사원'으로 설정
+    },
   }, {
     underscored: true,
     tableName: 'user',

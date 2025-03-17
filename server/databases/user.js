@@ -21,6 +21,8 @@ const userJoin = async (data) => {
             user_name: data.user_name,
             user_password: data.user_password,
             user_nickname: data.user_nickname,
+            user_hire_date: data.user_hire_date,
+            user_position: data.user_position,
             auth_code: "A4",
             raw: true
         });

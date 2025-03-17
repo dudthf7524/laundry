@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { employees, permissionLevels } from '../data/mockData';
+import { USER_LIST_REQUEST } from '../reducers/user';
+import { useDispatch, useSelector } from 'react-redux';
 
 const EmployeesPage = () => {
   const { currentUser, canEditData } = useAuth();
@@ -12,9 +14,29 @@ const EmployeesPage = () => {
     setSearchTerm(e.target.value);
   };
 
+  useEffect(() => {
+    userList();
+  }, []);
+
+  const dispatch = useDispatch();
+  const userList = async () => {
+    dispatch({
+      type: USER_LIST_REQUEST,
+    });
+  };
+
+  const { userLists } = useSelector((state) => state.user) || { userLists: [] };
+
   // Filter employees based on search term
-  const filteredEmployees = employees.filter(employee => {
+  var aaa;
+  if (userLists) {
+    aaa = userLists;
+  }
+
+
+  const filteredEmployees = employees?.filter(employee => {
     const lowerCaseSearch = searchTerm.toLowerCase();
+
     return (
       employee.name.toLowerCase().includes(lowerCaseSearch) ||
       employee.nickname.toLowerCase().includes(lowerCaseSearch) ||
@@ -42,6 +64,9 @@ const EmployeesPage = () => {
         return 'bg-gray-100 text-gray-800';
     }
   };
+
+
+  
 
   return (
     <div>
@@ -73,23 +98,22 @@ const EmployeesPage = () => {
               />
             </div>
           </div>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-              + 새 직원 추가
-            </button>
-        
+          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            + 새 직원 추가
+          </button>
+
         </div>
       </div>
 
       {/* Employees List */}
       <div className="bg-white rounded-lg shadow mb-6 overflow-hidden">
         <ul className="divide-y divide-gray-200">
-          {filteredEmployees.length > 0 ? (
+          {filteredEmployees ? (
             filteredEmployees.map((employee) => (
               <li
                 key={employee.id}
-                className={`p-4 hover:bg-gray-50 cursor-pointer ${
-                  selectedEmployee?.id === employee.id ? 'bg-blue-50' : ''
-                }`}
+                className={`p-4 hover:bg-gray-50 cursor-pointer ${selectedEmployee?.id === employee.id ? 'bg-blue-50' : ''
+                  }`}
                 onClick={() => handleEmployeeSelect(employee)}
               >
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between">
@@ -113,16 +137,14 @@ const EmployeesPage = () => {
                     </div>
                   </div>
                   <div className="mt-2 md:mt-0 flex items-center">
-                    {canEditData(employee) && (
-                      <>
-                        <button className="text-blue-600 hover:text-blue-800 mr-3">
-                          수정
-                        </button>
-                        <button className="text-red-600 hover:text-red-800">
-                          삭제
-                        </button>
-                      </>
-                    )}
+                    <>
+                      <button className="text-blue-600 hover:text-blue-800 mr-3">
+                        수정
+                      </button>
+                      <button className="text-red-600 hover:text-red-800">
+                        삭제
+                      </button>
+                    </>
                   </div>
                 </div>
               </li>

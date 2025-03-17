@@ -24,10 +24,13 @@ import AttendancePage from './pages copy/AttendancePage';
 import TaskStatsPage from './pages copy/TaskStatsPage';
 import EmployeesPage from './pages copy/EmployeesPage';
 import SettingsPage from './pages copy/SettingsPage';
+import Auth from './pages copy/auth';
 import ProtectedRoute from './components copy/ProtectedRoute';
 import Header from './components copy/Header';
 import { AuthProvider } from './contexts/AuthContext';
 import LoginPage from './pages copy/LoginPage';
+
+
 // import { AuthProvider } from './adminContext/adminContext';
 
 function App() {
@@ -91,8 +94,7 @@ function App() {
   //             <a href='/admin/work/address'> 근무지 등록 및 관리 </a>
   //           </div>
   //         </div> */}
-  //         <Header></Header>
-  //         <AuthProvider>
+
   //         <Routes>
   //           <Route path="/admin">
   //             <Route path="user/list" element={<UserList />} />
@@ -113,7 +115,6 @@ function App() {
 
   //           </Route>
   //         </Routes>
-  //         </AuthProvider>
   //       </div>
   //     ) : (
 
@@ -132,21 +133,35 @@ function App() {
   //   </>
   // );
   return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
+    <>
+      {adminPage ? (
+          <Routes>
+            <Route path="/admin" element={<MainLayout />}>
+              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="attendance" element={<AttendancePage />} />
+              <Route path="tasks" element={<TaskStatsPage />} />
+              <Route path="employees" element={<EmployeesPage />} />
+              <Route path="settings" element={<SettingsPage />} />
+              <Route path="auth" element={<Auth />} />
+              <Route path="user" element={<User />} />
+            </Route>
+          </Routes>
+      ) : (
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/join" element={<Join />} />
+            <Route path="/attendance" element={<Attendance />} />
+            <Route path="/task" element={<Task />} />
+            <Route path="/workLogs" element={<WorkLogs />} />
+            <Route path="/profile" element={<Profile />} />
 
-        <Route path="/" element={<MainLayout />}>
-          <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="attendance" element={<AttendancePage />} />
-          <Route path="tasks" element={<TaskStatsPage />} />
-          <Route path="employees" element={<EmployeesPage />} />
-          <Route path="settings" element={<SettingsPage />} />
-        </Route>
-       
-        
-      </Routes>
-    </AuthProvider>
+          </Routes>
+        </div>
+      )}
+
+
+    </>
   );
 }
 
