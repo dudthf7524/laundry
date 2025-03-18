@@ -60,15 +60,15 @@ const userLogin = async (user_id, user_password) => {
 const userList = async () => {
     try {
         const result = await user.findAll({
-            attributes: ['user_code', 'user_name', 'user_nickname'],
+            attributes: ['user_code', 'user_name', 'user_nickname', 'user_hire_date', 'user_position'],
             include: [
                 {
                     model: auth,
-                    attributes: ['auth_name'], // work_pattern 테이블에서 필요한 컬럼 선택
+                    attributes: ['auth_code', 'auth_name'], // work_pattern 테이블에서 필요한 컬럼 선택
                     required: true,
                 },
             ],
-
+           
         })
         console.log(result)
         return result;

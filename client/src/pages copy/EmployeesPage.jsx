@@ -36,7 +36,8 @@ const EmployeesPage = () => {
 
   const filteredEmployees = employees?.filter(employee => {
     const lowerCaseSearch = searchTerm.toLowerCase();
-
+    
+    console.log(employee.name)
     return (
       employee.name.toLowerCase().includes(lowerCaseSearch) ||
       employee.nickname.toLowerCase().includes(lowerCaseSearch) ||
@@ -66,7 +67,7 @@ const EmployeesPage = () => {
   };
 
 
-  
+
 
   return (
     <div>

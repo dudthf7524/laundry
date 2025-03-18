@@ -29,6 +29,7 @@ import ProtectedRoute from './components copy/ProtectedRoute';
 import Header from './components copy/Header';
 import { AuthProvider } from './contexts/AuthContext';
 import LoginPage from './pages copy/LoginPage';
+import Vacation from './pages copy/vacation';
 
 
 // import { AuthProvider } from './adminContext/adminContext';
@@ -144,6 +145,7 @@ function App() {
               <Route path="settings" element={<SettingsPage />} />
               <Route path="auth" element={<Auth />} />
               <Route path="user" element={<User />} />
+              <Route path="vacation" element={<Vacation />} />
             </Route>
           </Routes>
       ) : (
