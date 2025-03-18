@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import BottomBar from '../Components/BottomBar';
 
 const Profile = () => {
     return (
@@ -8,6 +9,7 @@ const Profile = () => {
                 <p>지각 횟수</p>
                 <p>결근 횟수</p>
             </div>
+            <BottomBar />
         </>
     );
 };

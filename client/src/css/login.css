@@ -1,0 +1,138 @@
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 80%;
+  background-color: #f5f5f5;
+  justify-content: center;
+}
+
+.login h1 {
+  font-family: '양진체';
+  font-size: 36px;
+  margin-bottom: 5px;
+  background: linear-gradient(90deg, #ff7eb3, #ff758c, #ff6b73);
+  /* 그라데이션 색상 */
+  -webkit-background-clip: text;
+  /* 배경을 텍스트로 클립 */
+  -webkit-text-fill-color: transparent;
+  /* 글자를 투명하게 만듦 */
+  text-align: center;
+  /* 가운데 정렬 */
+}
+
+.login h2 {
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  color: #383838;
+}
+
+.login form div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.login form div input {
+  width: 60%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: 'Pretendard';
+}
+
+.login form div button {
+  width: 40%;
+  padding: 10px;
+  margin-top: 10px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  border-radius: 5px;
+  background-color: #00b7ff;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.login form div button.disabled {
+  background-color: #d3d3d3;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.login form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.login form input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: 'Pretendard';
+  box-sizing: border-box;
+}
+
+.login form button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  border: none;
+  border-radius: 5px;
+  background-color: #00b7ff;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-size: 12px;
+}
+
+.login form button:hover {
+  background-color: #0065b3;
+}
+
+/* 로그인하기 텍스트 스타일 */
+.login-link {
+  cursor: pointer;
+  color: #00b7ff;
+  /* 파란색 텍스트 */
+  margin-top: 20px;
+  /* 위쪽 여백 */
+  font-size: 14px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.login-link:hover {
+  color: #0056b3;
+  /* 마우스 오버 시 어두운 파란색 */
+  text-decoration: none;
+}
+
+.error-message {
+  position: relative;
+  bottom: 20px;
+  color: #ff6b73;
+  font-size: 12px;
+  margin-top: 10px;
+}

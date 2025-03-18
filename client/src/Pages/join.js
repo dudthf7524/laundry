@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../Api'; // 작성한 axios 인스턴스 사용
-import '../Styles/Auth.css';
-
+import '../css/join.css';
 const Join = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         user_id: '',
-        name: '',
-        nickname: '',
-        password: '',
-        confirmPassword: ''
+        user_name: '',
+        user_nickname: '',
+        user_password: '',
+        user_confirmPassword: '',
+        user_hire_date: '',
+        user_position: '',
     });
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
@@ -35,7 +36,7 @@ const Join = () => {
         setError(null);
 
         try {
-            const response = await axios.post('/user/check-username', { user_id: formData.user_id });
+            const response = await axios.post('/user/check', { user_id: formData.user_id });
             if (response.data.success || response.data.message === 'Username is available') {
                 alert('사용 가능한 아이디입니다.');
                 setIsUsernameChecked(true);
@@ -54,19 +55,20 @@ const Join = () => {
         setError(null);
         setSuccess(null);
 
+        console.log(formData)
         if (!isUsernameChecked) {
             setError('아이디 중복 확인을 해주세요.');
             return;
         }
 
-        if (formData.password !== formData.confirmPassword) {
+        if (formData.user_password !== formData.user_confirmPassword) {
             setError('비밀번호가 일치하지 않습니다.');
             return;
         }
 
         try {
             const response = await axios.post('/user/join', formData);
-            if (response.data.success) {
+            if (response.data) {
                 setSuccess('회원가입에 성공했습니다. 로그인 페이지로 이동합니다.');
                 setTimeout(() => navigate('/'), 2000); // 2초 후 로그인 페이지로 이동
             } else {
@@ -82,66 +84,81 @@ const Join = () => {
     };
 
     return (
-        <>
-            <div className="join">
-                <h1>laundry</h1>
-                <h2>회원가입</h2>
-                <form onSubmit={handleJoin}>
-                    <div>
-                        <input
-                            type="text"
-                            name="user_id"
-                            placeholder="아이디"
-                            value={formData.username}
-                            onChange={handleInputChange}
-                        />
-                        <button
-                            className={`${isUsernameValid ? 'active' : 'disabled'}`}
-                            onClick={handleCheckDuplicate}
-                            disabled={!isUsernameValid} // 비활성화 상태
-                        >
-                            중복확인
-                        </button>
-                    </div>
+
+        <div className="join">
+            <h1>laundry</h1>
+            <h2>회원가입</h2>
+            <form onSubmit={handleJoin}>
+                <div>
                     <input
                         type="text"
-                        name="name"
-                        placeholder="이름"
-                        value={formData.name}
+                        name="user_id"
+                        placeholder="아이디"
+                        value={formData.user_id}
                         onChange={handleInputChange}
                     />
-                    <input
-                        type="text"
-                        name="nickname"
-                        placeholder="닉네임"
-                        value={formData.nickname}
-                        onChange={handleInputChange}
-                    />
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="비밀번호"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                    />
-                    <input
-                        type="password"
-                        name="confirmPassword"
-                        placeholder="비밀번호 확인"
-                        value={formData.confirmPassword}
-                        onChange={handleInputChange}
-                    />
-                    <button type="submit">회원가입</button>
-                </form>
-                {error && <p className="error-message">{error}</p>}
-                {success && <p className="success-message">{success}</p>}
-                <p className="login-link" onClick={handleLoginClick}>로그인하기</p>
-            </div>
+                    <button
+                        className={`${isUsernameValid ? 'active' : 'disabled'}`}
+                        onClick={handleCheckDuplicate}
+                        disabled={!isUsernameValid} // 비활성화 상태
+                    >
+                        중복확인
+                    </button>
+                </div>
+                <input
+                    type="text"
+                    name="user_name"
+                    placeholder="이름"
+                    value={formData.user_name}
+                    onChange={handleInputChange}
+                />
+                <input
+                    type="text"
+                    name="user_nickname"
+                    placeholder="닉네임"
+                    value={formData.user_nickname}
+                    onChange={handleInputChange}
+                />
+                 <input
+                    type="text"
+                    name="user_position"
+                    placeholder="직급"
+                    value={formData.user_position}
+                    onChange={handleInputChange}
+                />
+                <input
+                    type="password"
+                    name="user_password"
+                    placeholder="비밀번호"
+                    value={formData.user_password}
+                    onChange={handleInputChange}
+                />
+                <input
+                    type="password"
+                    name="user_confirmPassword"
+                    placeholder="비밀번호 확인"
+                    value={formData.user_confirmPassword}
+                    onChange={handleInputChange}
+                />
+                <br></br>
+                <h2>입사일</h2>
+                <input
+                    type="date"
+                    name="user_hire_date"
+                    placeholder="입사일"
+                    value={formData.user_hire_date}
+                    onChange={handleInputChange}
+                />
+                <button type="submit">회원가입</button>
+            </form>
+            {error && <p className="error-message">{error}</p>}
+            {success && <p className="success-message">{success}</p>}
+            <p className="login-link" onClick={handleLoginClick}>로그인하기</p>
             <div className="ocean">
                 <div className="wave"></div>
                 <div className="wave"></div>
             </div>
-        </>
+        </div>
     );
 };
 
