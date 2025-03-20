@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-
+import Auth from '../pages copy/auth';
 const SettingsPage = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
@@ -13,22 +13,22 @@ const SettingsPage = () => {
   const hasAccess = currentUser && currentUser.permission === 'master';
 
   // If user doesn't have access, show access denied message
-  if (!hasAccess) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-md">
-          <h2 className="font-bold text-xl mb-2">접근 권한 없음</h2>
-          <p className="mb-4">설정 페이지는 관리자(마스터) 권한을 가진 사용자만 접근할 수 있습니다.</p>
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-          >
-            대시보드로 돌아가기
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // if (!hasAccess) {
+  //   return (
+  //     <div className="min-h-screen flex flex-col items-center justify-center">
+  //       <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-md">
+  //         <h2 className="font-bold text-xl mb-2">접근 권한 없음</h2>
+  //         <p className="mb-4">설정 페이지는 관리자(마스터) 권한을 가진 사용자만 접근할 수 있습니다.</p>
+  //         <button
+  //           onClick={() => navigate('/dashboard')}
+  //           className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+  //         >
+  //           대시보드로 돌아가기
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div>
@@ -43,41 +43,37 @@ const SettingsPage = () => {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <nav className="flex border-b border-gray-200">
           <button
-            className={`px-6 py-4 text-sm font-medium ${
-              activeTab === 'general'
+            className={`px-6 py-4 text-sm font-medium ${activeTab === 'general'
                 ? 'border-b-2 border-blue-500 text-blue-600'
                 : 'text-gray-600 hover:text-gray-800 hover:border-gray-300'
-            }`}
+              }`}
             onClick={() => setActiveTab('general')}
           >
             일반 설정
           </button>
           <button
-            className={`px-6 py-4 text-sm font-medium ${
-              activeTab === 'attendance'
+            className={`px-6 py-4 text-sm font-medium ${activeTab === 'attendance'
                 ? 'border-b-2 border-blue-500 text-blue-600'
                 : 'text-gray-600 hover:text-gray-800 hover:border-gray-300'
-            }`}
+              }`}
             onClick={() => setActiveTab('attendance')}
           >
             근태관리 설정
           </button>
           <button
-            className={`px-6 py-4 text-sm font-medium ${
-              activeTab === 'task'
+            className={`px-6 py-4 text-sm font-medium ${activeTab === 'task'
                 ? 'border-b-2 border-blue-500 text-blue-600'
                 : 'text-gray-600 hover:text-gray-800 hover:border-gray-300'
-            }`}
+              }`}
             onClick={() => setActiveTab('task')}
           >
             업무통계 설정
           </button>
           <button
-            className={`px-6 py-4 text-sm font-medium ${
-              activeTab === 'permissions'
+            className={`px-6 py-4 text-sm font-medium ${activeTab === 'permissions'
                 ? 'border-b-2 border-blue-500 text-blue-600'
                 : 'text-gray-600 hover:text-gray-800 hover:border-gray-300'
-            }`}
+              }`}
             onClick={() => setActiveTab('permissions')}
           >
             권한 설정
@@ -272,6 +268,8 @@ const SettingsPage = () => {
           {/* Permissions Settings Tab */}
           {activeTab === 'permissions' && (
             <div>
+
+           
               <h2 className="text-lg font-medium text-gray-900 mb-4">권한 설정</h2>
 
               <div className="space-y-6">
@@ -324,6 +322,7 @@ const SettingsPage = () => {
                     </div>
                   </div>
                 </div>
+                <Auth />
               </div>
             </div>
           )}

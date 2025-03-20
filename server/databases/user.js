@@ -70,7 +70,7 @@ const userList = async () => {
             ],
            
         })
-        console.log(result)
+   
         return result;
 
 
@@ -80,8 +80,7 @@ const userList = async () => {
 };
 
 const userUpdateAuth = async (data) => {
-    console.log("데이터베이스")
-    console.log(data)
+  
     try {
         const result = await user.update(
             {

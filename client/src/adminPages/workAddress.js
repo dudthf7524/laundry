@@ -16,21 +16,21 @@ const WorkAddress = () => {
     const [autocomplete, setAutocomplete] = useState(null);
     const [address, setAddress] = useState(""); // 검색된 주소 저장
     console.log(autocomplete)
-    // useEffect(() => {
-    //     if ("geolocation" in navigator) {
-    //         navigator.geolocation.getCurrentPosition(
-    //             (position) => {
-    //                 setLocation({
-    //                     lat: position.coords.latitude,
-    //                     lng: position.coords.longitude,
-    //                 });
-    //             },
-    //             (error) => {
-    //                 console.error("위치 정보를 가져오지 못했습니다:", error);
-    //             }
-    //         );
-    //     }
-    // }, []);
+    useEffect(() => {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setLocation({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    });
+                },
+                (error) => {
+                    console.error("위치 정보를 가져오지 못했습니다:", error);
+                }
+            );
+        }
+    }, []);
 
     const handlePlaceSelect = () => {
         if (autocomplete) {
@@ -59,7 +59,7 @@ const WorkAddress = () => {
 
     return (
         <div className="work_address">
-            {/* <div>
+            <div>
 
             
             <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
@@ -79,8 +79,8 @@ const WorkAddress = () => {
                     <Circle center={location} radius={radius} options={{ fillColor: "#6495ED55", strokeColor: "#6495ED", strokeWeight: 1 }} />
                 </GoogleMap>
 
-                {/* 반경 조절 & 설정 버튼 */}
-            {/* <div style={{ position: "absolute", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: 1000, textAlign: "center" }}>
+             
+            <div style={{ position: "absolute", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: 1000, textAlign: "center" }}>
                     <p>📍 현재 주소: {address || "주소 없음"}</p>
                     <input type="range" min="100" max="500" step="100" value={radius} onChange={(e) => setRadius(Number(e.target.value))} />
                     <p>근무 반경: {radius}m</p>
@@ -88,7 +88,7 @@ const WorkAddress = () => {
                 </div>
             </LoadScript>
             
-            </div> */}
+            </div>
             <div>
                 <p>📍 현재 주소: {address || "주소 없음"}</p>
                 <input type="range" min="100" max="500" step="100" value={radius} onChange={(e) => setRadius(Number(e.target.value))} />

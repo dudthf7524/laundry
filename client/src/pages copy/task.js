@@ -3,20 +3,20 @@ import { employees, permissionLevels } from '../data/mockData';
 import { USER_AUTH_UPDATE_REQUEST, USER_LIST_REQUEST } from '../reducers/user';
 import { AUTH_LIST_REQUEST } from "../reducers/auth";
 import { useDispatch, useSelector } from 'react-redux';
+import { TIME_LIST_REQUEST, TIME_REGISTER_REQUEST, TIME_UPDATE_REQUEST } from '../reducers/time';
+import { PROCESS_LIST_REQUEST } from '../reducers/process';
+import { USER_PROCESS_DELETE_REQUEST, USER_PROCESS_LIST_REQUEST, USER_PROCESS_REGISTER_REQUEST } from '../reducers/userProcess';
 
-const Auth = () => {
+const Time = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
 
-
-    // Handle search input change
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
     useEffect(() => {
         userList();
-        authList();
     }, []);
 
     const dispatch = useDispatch();
@@ -25,15 +25,6 @@ const Auth = () => {
             type: USER_LIST_REQUEST,
         });
     };
-
-    const authList = async () => {
-        dispatch({
-            type: AUTH_LIST_REQUEST,
-        });
-    };
-
-
-
     const { userLists } = useSelector((state) => state.user) || { userLists: [] };
 
     const filteredUserLists = userLists?.filter(employee => {
@@ -46,10 +37,6 @@ const Auth = () => {
         );
     });
 
-    // Handle selecting an employee to view/edit details
-
-
-    // Get color for permission badge
     const getPermissionColor = (permission) => {
         switch (permission) {
             case 'A1':
@@ -64,10 +51,8 @@ const Auth = () => {
                 return 'bg-gray-100 text-gray-800';
         }
     };
-    const [selectedAuth, setSelectedAuth] = useState({
-        auth_code: "",
 
-    });
+
     const handleCheckboxChange = (userList) => {
         setSelected(prev => ({
             ...prev,
@@ -81,21 +66,7 @@ const Auth = () => {
 
             // 필요에 따라 더 많은 정보를 추가할 수 있습니다
         }));
-
-        setSelectedAuth(prev => ({
-            ...prev,
-            auth_code: "",
-        }));
     };
-
-  
-    const handleCheckboxChangeAuth = (category, value) => {
-        setSelectedAuth((prev) => ({
-            ...prev,
-            [category]: value,
-        }));
-    };
-  
     const [selected, setSelected] = useState({
         user_code: "",
         user_name: "",
@@ -105,22 +76,6 @@ const Auth = () => {
         auth_code: "",
         auth_name: "",
     });
-    const authUpdate = () => {
-       
-        const data = {
-            auth_code: selectedAuth.auth_code,
-            user_code: selected.user_code
-        };
-
-        dispatch({
-            type: USER_AUTH_UPDATE_REQUEST,
-            data: data,
-
-        });
-    }
-
-
-
     const getYearsOfService = (hireDate) => {
         const hire = new Date(hireDate); // 입사일을 Date 객체로 변환
         const today = new Date(); // 현재 날짜
@@ -136,13 +91,92 @@ const Auth = () => {
         return years;
     };
 
-    const { authLists } = useSelector((state) => state.auth);
+    const inputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
+    const { processLists } = useSelector((state) => state.process);
+    const { userProcessLists } = useSelector((state) => state.userProcess);
+
+ 
+    const [formData, setFormData] = useState({
+        user_code: '',
+        user_process_code: '',
+        user_process_count: '',
+    });
+
+    useEffect(() => {
+        processList();
+        userProcessList()
+    }, []);
+
+
+    const processList = (e) => {
+        dispatch({
+            type: PROCESS_LIST_REQUEST,
+        });
+    }
+
+    const userProcessList = (e) => {
+        dispatch({
+            type: USER_PROCESS_LIST_REQUEST,
+        });
+    }
+
+    const processRegister = (e) => {
+        e.preventDefault();
+        if (formData.process_code === '') {
+            alert('업무공정을 선택해주세요')
+            return;
+        }
+        formData.user_code = selected.user_code;
+        dispatch({
+            type: USER_PROCESS_REGISTER_REQUEST,
+            data: formData,
+        });
+    }
+
+    const [userProcess, setUserProcess] = useState({})
+    const [userProcessIs, setUserProcessIs] = useState(false)
+
+    useEffect(() => {
+        if (selected.user_code) {
+            const userProcess = userProcessLists.filter(process => process.user_code === selected.user_code);
+            if (userProcess.length > 0) {
+                setUserProcess(userProcess)
+                setUserProcessIs(true)
+            } else {
+                setUserProcess(null)
+                setUserProcessIs(false)
+            }
+
+            console.log(userProcess)
+
+        }
+    }, [selected.user_code, userProcessLists]);
+    const handleDelete = (task) => {
+        if (window.confirm(`'${task.process.process_name}' 업무를 삭제하시겠습니까?`)) {
+
+            const data = {
+                user_process_id: task.user_process_id
+            };
+            console.log(data)
+            dispatch({
+                type: USER_PROCESS_DELETE_REQUEST,
+                data: data,
+            });
+        }
+    };
+
     return (
         <div>
             <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-900">권한 관리</h1>
+                <h1 className="text-2xl font-bold text-gray-900">업무 관리</h1>
                 <p className="text-gray-600 mt-1">
-                    권한을 수정할 직원을 선택해주세요
+                    업무를 설정할 직원을 선택해주세요
                 </p>
             </div>
 
@@ -179,7 +213,6 @@ const Auth = () => {
                                 key={index}
                                 className={`p-4 hover:bg-gray-50 ${selected.user_code === userList.user_code ? 'bg-blue-50' : ''
                                     }`}
-                               
                             >
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                                     <div className="flex-1">
@@ -201,14 +234,13 @@ const Auth = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-2 md:mt-0 flex items-center" >
+                                    <div className="mt-2 md:mt-0 flex items-center">
                                         <>
                                             <input type='checkbox' className='h-5 w-5 cursor-pointer'
                                                 checked={selected.user_code === userList.user_code}
                                                 onChange={() =>
                                                     handleCheckboxChange(userList)
-                                                }
-                                                ></input>
+                                                }></input>
                                         </>
                                     </div>
                                 </div>
@@ -224,71 +256,89 @@ const Auth = () => {
 
             {/* Selected Employee Details */}
             {selected.user_code && (
-                <div className="bg-white p-6 rounded-lg shadow">
+                <div className="bg-white p-6 rounded-lg shadow mb-6">
                     <h2 className="text-xl font-bold text-gray-900 mb-4">
-                        {selected.user_name} ({selected.user_nickname}) 상세 정보
+                        {selected.user_name} ({selected.user_nickname})
                     </h2>
+                    <div>
+                        <h3 className="text-lg font-medium mb-3 text-green-600">업무공정 등록</h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h3 className="text-lg font-medium text-gray-900 mb-3">기본 정보</h3>
-                            <dl className="space-y-2">
-                                <div className="flex flex-col sm:flex-row">
-                                    <dt className="text-sm font-medium text-gray-500 sm:w-40">이름</dt>
-                                    <dd className="mt-1 sm:mt-0 text-sm text-gray-900">{selected.user_name}</dd>
-                                </div>
-                                <div className="flex flex-col sm:flex-row">
-                                    <dt className="text-sm font-medium text-gray-500 sm:w-40">닉네임</dt>
-                                    <dd className="mt-1 sm:mt-0 text-sm text-gray-900">{selected.user_nickname}</dd>
-                                </div>
-                                <div className="flex flex-col sm:flex-row">
-                                    <dt className="text-sm font-medium text-gray-500 sm:w-40">직무형태</dt>
-                                    <dd className="mt-1 sm:mt-0 text-sm text-gray-900">{selected.user_position}</dd>
-                                </div>
-                                <div className="flex flex-col sm:flex-row">
-                                    <dt className="text-sm font-medium text-gray-500 sm:w-40">근속 년수</dt>
-                                    <dd className="mt-1 sm:mt-0 text-sm text-gray-900">{getYearsOfService(selected.user_hire_date)}년</dd>
-                                </div>
-                                <div className="flex flex-col sm:flex-row">
-                                    <dt className="text-sm font-medium text-gray-500 sm:w-40">권한</dt>
-                                    <dd className="mt-1 sm:mt-0 text-sm text-gray-900">
-                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPermissionColor(selected.auth_code)}`}>
-                                            {selected.auth_name}
-                                        </span>
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
+                        <div className="font-medium mb-3">업무 유형</div>
 
-                        <div>
-                            <h3 className="text-lg font-medium text-gray-900 mb-3">수정할 권한을 선택해주세요</h3>
-                            {
-                                authLists.map((authList, index) => {
-                                    return (
-                                        <div className="text-sm text-gray-700" key={index}>
+                        <select
+                            name="user_process_code"
+                            value={formData.user_process_code}
+                            onChange={inputChange}
+                            className="block w-full p-2 border border-gray-300 rounded-md mb-3"
+                        >
+                            <option value="">업무를 선택하세요</option>
+                            {processLists?.map((processList, index) => (
+                                <option key={index} value={processList.process_code}>
+                                    {processList.process_name}
+                                </option>
+                            ))}
+                        </select>
 
-                                            <input type='checkbox'
-                                                checked={selectedAuth.auth_code === authList.auth_code}
-                                                onChange={() =>
-                                                    handleCheckboxChangeAuth("auth_code", authList.auth_code)
-                                                }></input>
-                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPermissionColor(authList.auth_code)}`}>{authList.auth_name}</span>
-                                            <div className="text-sm text-gray-700">
-                                                &nbsp;
-                                            </div>
-                                        </div>
-                                    )
-                                })
-                            }
-                            <button onClick={() => authUpdate()} className="text-blue-600 hover:text-blue-800 mr-3">
-                                권한변경
-                            </button>
-                        </div>
+                        <div className="font-medium mb-3">업무 수량</div>
+                        <input
+                            id="user_process_count"
+                            type="number"
+                            name="user_process_count"
+                            value={formData.user_process_count}
+                            onChange={inputChange}
+                            min="1"
+                            step="1"
+                            className="block w-full p-2 border border-gray-300 rounded-md mb-3"
+                            placeholder="수량 입력"
+                        />
+                        <button
+                            onClick={processRegister}
+                            className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                            업무 등록
+                        </button>
                     </div>
+
+                </div>
+
+            )}
+
+            {selected.user_code && (
+                <div className="bg-white p-6 rounded-lg shadow mb-6">
+                    <h3 className="text-lg font-medium mb-3 text-blue-600">등록된 업무</h3>
+                    {userProcessIs ? (
+                        <div className="space-y-2">
+                            {/* 테이블 헤더 */}
+                            <div className="grid grid-cols-3 gap-4 p-3 font-semibold bg-gray-200 rounded-md text-gray-900">
+                                <p>업무명</p>
+                                <p>수량</p>
+                                <p className="text-center">삭제</p>
+                            </div>
+
+                            {/* 데이터 리스트 */}
+                            {userProcess.map((process, index) => (
+                                <div key={index} className="grid grid-cols-3 gap-4 p-4 border rounded-lg shadow-sm bg-gray-50 items-center">
+                                    <p className="text-gray-900">{process.process.process_name}</p>
+                                    <p className="text-gray-700">{process.user_process_count}</p>
+                                    <button
+                                        className="text-red-500 font-bold text-xl hover:text-red-700 transition duration-200 text-center"
+                                        onClick={() => handleDelete(process)}
+                                    >
+                                        ✖
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-center text-gray-500">등록된 업무가 없습니다.</p>
+                    )}
                 </div>
             )}
+
+
+
+
         </div>
     );
 };
 
-export default Auth;
+export default Time;

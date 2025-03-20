@@ -12,7 +12,6 @@ import Profile from './Pages/profile';
 import User from './adminPages/user';
 import { useDispatch } from 'react-redux';
 import { USER_AUTH_REQUEST } from "./reducers/user";
-import Time from './adminPages/time';
 import UserList from './adminPages/userList';
 import TimeManagement from './adminPages/timeManagement';
 import Process from './adminPages/process';
@@ -30,6 +29,9 @@ import Header from './components copy/Header';
 import { AuthProvider } from './contexts/AuthContext';
 import LoginPage from './pages copy/LoginPage';
 import Vacation from './pages copy/vacation';
+import Time from './pages copy/time';
+import Taskcopy from './pages copy/task';
+import WorkAddressCopy from './pages copy/workAddress';
 
 
 // import { AuthProvider } from './adminContext/adminContext';
@@ -136,18 +138,27 @@ function App() {
   return (
     <>
       {adminPage ? (
-          <Routes>
-            <Route path="/admin" element={<MainLayout />}>
-              <Route path="dashboard" element={<DashboardPage />} />
-              <Route path="attendance" element={<AttendancePage />} />
-              <Route path="tasks" element={<TaskStatsPage />} />
-              <Route path="employees" element={<EmployeesPage />} />
-              <Route path="settings" element={<SettingsPage />} />
-              <Route path="auth" element={<Auth />} />
-              <Route path="user" element={<User />} />
-              <Route path="vacation" element={<Vacation />} />
-            </Route>
-          </Routes>
+        <Routes>
+          <Route path="/admin" element={<MainLayout />}>
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="attendance" element={<AttendancePage />} />
+            <Route path="tasks" element={<TaskStatsPage />} />
+            <Route path="employees" element={<EmployeesPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="auth" element={<Auth />} />
+            <Route path="vacation" element={<Vacation />} />
+            <Route path="time" element={<Time />} />
+            <Route path="task" element={<Taskcopy />} />
+            <Route path="work/address/copy" element={<WorkAddressCopy />} />
+
+          
+            <Route path="time/management" element={<TimeManagement />} />
+            <Route path="process" element={<Process />} />
+            <Route path="process/register" element={<ProcessRegister />} />
+            <Route path="work/address" element={<WorkAddress />} />
+
+          </Route>
+        </Routes>
       ) : (
         <div className="App">
           <Routes>

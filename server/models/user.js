@@ -69,6 +69,14 @@ module.exports = (sequelize) => {
       foreignKey: 'user_code',
       sourceKey: 'user_code',
     });
+    user.hasMany(models.attendanceStart, {
+      foreignKey: 'user_code',
+      sourceKey: 'user_code',
+    });
+    user.hasMany(models.attendanceEnd, {
+      foreignKey: 'user_code',
+      sourceKey: 'user_code',
+    });
   };
 
   return user;

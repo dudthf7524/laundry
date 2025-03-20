@@ -58,14 +58,22 @@ const SelectDatePage2 = () => {
       const isToday = (d === todayDate) && (viewMonth === todayMonth) && (viewYear === todayYear);
       const isVacation = (d === vacationDate.getDate()) && (viewMonth === vacationDate.getMonth()) && (viewYear === vacationDate.getFullYear());
 
+      // 날짜 클릭 시 선택된 날짜 업데이트
+      const handleDateClick = () => {
+        setSelectedDate(`${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`);
+      };
+
       return (
         <div
           key={i}
           className="flex items-center justify-center p-4 text-center cursor-pointer flex-col"
-          onClick={() => setSelectedDate(new Date(viewYear, viewMonth, d))}
+          onClick={handleDateClick}
         >
-          <div className="day-number">{d}</div>
-          <div className="">O</div>
+          {/* 요일별 색상 적용 */}
+          <div className={`day-number ${dayOfWeek === 0 ? "text-red-500" : dayOfWeek === 6 ? "text-blue-500" : "text-gray-900"}`}>
+            {d}
+          </div>
+          <div className="text-sm">{isVacation ? "휴가" : ""}</div>
         </div>
       );
     });

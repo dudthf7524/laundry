@@ -20,11 +20,7 @@ router.post("/join", async (req, res) => {
 router.post('/login', async (req, res, next) => {
 
     passport.authenticate('user', (error, user, info) => {
-        console.log("user")
-        console.log(user)
-        console.log(error)
-        console.log(info)
-        console.log("user")
+     
         if (error) return res.status(500).json({ message: '서버 오류가 발생했습니다.', error });
         if (user === "-1") return res.status(401).json(user);
         if (user === "0") return res.status(401).json(user);

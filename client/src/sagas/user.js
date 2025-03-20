@@ -121,7 +121,8 @@ function* userAuthUpdate(action) {
             data: result.data,
         });
         if (result.data) {
-            window.location.href = "/admin/user";
+            alert('권한이 변경되었습니다.')
+            window.location.href = "/admin/auth";
         }
     } catch (err) {
         console.error(err);
