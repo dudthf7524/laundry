@@ -6,6 +6,9 @@ import process from "./process";
 import userProcess from "./userProcess";
 import task from "./task";
 import work from "./work";
+import attendanceStart from "./attendanceStart";
+import attendanceEnd from "./attendanceEnd";
+import vacation from "./vacation";
 
 const rootReducer = combineReducers({
   user,
@@ -15,6 +18,9 @@ const rootReducer = combineReducers({
   userProcess,
   task,
   work,
+  attendanceStart,
+  attendanceEnd,
+  vacation
 });
 
 export default rootReducer;

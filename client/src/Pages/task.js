@@ -307,7 +307,7 @@ const TaskPage = () => {
                                 <p>잘하네요</p>
                             )
                         }
-                        <button onClick={handleEndConfirm}>업무종료</button>
+                        <button disabled = {true} onClick={handleEndConfirm}>업무종료</button>
                         <button onClick={handleEndClose}>닫기</button>
                     </div>
                 </div>

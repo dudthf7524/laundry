@@ -1,4 +1,4 @@
-.attendance {
+/* .attendance {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -122,13 +122,13 @@
     border: #383838 1px solid;
     width: 80%;
     gap: 20px;
-}
+} */
 
 
 
 /* General Styles */
-
-/* .App {
+/* 
+.App {
     width: 100%;
     height: 100vh;
     position: relative;
@@ -139,185 +139,257 @@
     background-color: #f5f5f5;
     padding: 10px;
   }
-  
+   */
+.attendance {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 30px;
+  width: 80%;
+  margin: 0 auto;
+  height: 100%;
+}
+
+
+.attendance .notice {
+  background-color: #e9e9e9;
+  color: #383838;
+  display: flex;
+  align-items: center;
+  height: 80px;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
+.attendance .notice .icon {
+  fill: #383838;
+  padding-left: 20px;
+}
+
+.attendance .notice p {
+  font-size: 18px;
+  font-weight: 400;
+  padding-left: 10px;
+  width: 100%;
+}
+
+
+.attendance .date_month_time {
+  border: 1px solid #383838;
+  border-radius: 5px;
+  width: 100%;
+  height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.attendance .date_month {
+  font-size: 14px;
+  font-weight: bold;
+  color: grey;
+}
+
+.attendance .time {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+
+.attendance .work_time {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.attendance .button_section {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.work_time_option {
+  width: 30%;
+  height: 80%;
+  border: 1px solid;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.work_time .work_time_left {}
+
+.work_time_mid .title {
+  font-size: large;
+  font-weight: bold;
+  background-color: yellow;
+}
+
+.work_time_mid .content {
+  font-size: large;
+
+}
+
+.work_time .work_time_left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #383838;
+  gap: 15px;
+
+}
+
+.attendance .button_section {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+
+.work_time .work_time_left .title_a {
+  font-weight: bold;
+  font-size: x-large;
+}
+
+
+.work_time .work_time_mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #383838;
+  gap: 10px;
+
+}
+
+.work_time .work_time_right {
+  background-color: green;
+  width: 30%;
+  height: 80%;
+}
+
+.work_time_option p {}
+
+.work_time_option .working {
+  border-radius: 20px;
+  background-color: #009cd9;
+  color: #ffffff;
+}
+
+.button_section .button {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.button_section .buttons button {
+  font-size: 20px;
+  font-weight: 700;
+  padding: 15px;
+  margin: 10px;
+  width: 50%;
+  height: 80px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: #383838 1px solid;
+}
+
+.attendance .buttons {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.attendance .bottom-bar {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0px -1px 5px rgba(0, 0, 0, 0.1);
+}
+
+button:disabled {
+  background-color: #ccc;
+  /* 비활성화된 버튼의 배경색 */
+  color: #999;
+  /* 비활성화된 버튼의 글자 색 */
+  cursor: not-allowed;
+  /* 마우스 커서를 '금지' 상태로 변경 */
+  opacity: 0.6;
+  /* 흐릿한 효과 */
+}
+
+
+@media (max-width: 600px) {
   .attendance {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    gap: 30px;
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    height: 100%;
+    gap: 20px;
   }
-  
 
   .attendance .notice {
-    background-color: #e9e9e9;
-    color: #383838;
-    display: flex;
-    align-items: center;
-    height: 80px;
-    border-radius: 5px;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0 10px;
+    height: 70px;
   }
-  
-  .attendance .notice .icon {
-    fill: #383838;
-    padding-left: 20px;
-  }
-  
-  .attendance .notice p {
-    font-size: 18px;
-    font-weight: 400;
-    padding-left: 10px;
-    width: 100%;
-  }
-  
 
   .attendance .date_month_time {
-    border: 1px solid #383838;
-    border-radius: 5px;
-    width: 100%;
-    height: 250px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    height: 200px;
   }
-  
-  .attendance .date_month {
-    font-size: 14px;
-    font-weight: bold;
-    color: grey;
-  }
-  
+
   .attendance .time {
-    font-size: 24px;
-    font-weight: 700;
-  }
-  
- 
-  .attendance .work_time {
-    width: 100%;
-    height: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .work_time_option {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    color: #383838;
-  }
-  
-  .work_time_option p {
-    font-size: 14px;
-    font-weight: 400;
-    padding: 0;
-    margin: 0;
-    width: 120px;
-    height: 30px;
-    display: flex;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .work_time_option .working {
-    border-radius: 20px;
-    background-color: #009cd9;
-    color: #ffffff;
-  }
-  
-  .work_time .button {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-  }
-  
-  .work_time .button button {
     font-size: 20px;
-    font-weight: 700;
-    padding: 15px;
-    margin: 10px;
-    width: 45%;
-    height: 80px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    border: #383838 1px solid;
   }
-  
 
-  .attendance .bottom-bar {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0px -1px 5px rgba(0, 0, 0, 0.1);
+  .attendance .work_time_option p {
+    font-size: 12px;
   }
-  
 
-  @media (max-width: 600px) {
-    .attendance {
-      gap: 20px;
-    }
-  
-    .attendance .notice {
-      height: 70px;
-    }
-  
-    .attendance .date_month_time {
-      height: 200px;
-    }
-  
-    .attendance .time {
-      font-size: 20px;
-    }
-  
-    .attendance .work_time_option p {
-      font-size: 12px;
-    }
-  
-    .work_time .button {
-      flex-direction: column;
-    }
-  
-    .work_time .button button {
-      width: 90%;
-      font-size: 18px;
-    }
+  .work_time .button {
+    flex-direction: column;
   }
-  
-  @media (max-width: 480px) {
-    .attendance .notice p {
-      font-size: 16px;
-    }
-  
-    .attendance .date_month_time {
-      height: 180px;
-    }
-  
-    .attendance .time {
-      font-size: 18px;
-    }
-  
-    .work_time .button button {
-      font-size: 16px;
-      height: 60px;
-    }
+
+  .work_time .button button {
+    width: 90%;
+    font-size: 18px;
   }
-   */
+}
+
+@media (max-width: 480px) {
+  .attendance .notice p {
+    font-size: 16px;
+  }
+
+  .attendance .date_month_time {
+    height: 180px;
+  }
+
+  .attendance .time {
+    font-size: 18px;
+  }
+
+  .work_time .button button {
+    font-size: 16px;
+    height: 60px;
+  }
+}
