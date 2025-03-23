@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { employees } from '../data/mockData';
+import { useDispatch, useSelector } from 'react-redux';
 
 const FilterControls = ({
   onDateRangeChange,
@@ -19,6 +20,8 @@ const FilterControls = ({
   showTaskTypeFilter = false,
 }) => {
   const [filterType, setFilterType] = useState('date'); // 'date', 'month', or 'year'
+
+  const [year, setYear] = useState('');
 
   // Extract unique role types from employees
   const roleTypes = [...new Set(employees.map(emp => emp.role))];
@@ -63,7 +66,10 @@ const FilterControls = ({
   };
 
   const handleYearChange = (e) => {
-    onYearChange(e.target.value);
+    const selectedYear = e.target.value;
+    console.log("선택된 연도:", selectedYear);  // 콘솔에 선택된 연도 출력
+    onYearChange(selectedYear);  // 선택된 연도를 부모 컴포넌트로 전달
+    setYear(selectedYear)
   };
 
   const handleEmployeeChange = (e) => {
@@ -83,35 +89,51 @@ const FilterControls = ({
     onResetFilters();
   };
 
+  useEffect(() => {
+    vacationYear();
+  }, []);
+
+  const dispatch = useDispatch();
+  
+
+  
+  const vacationYear = async () => {
+
+    const data = {
+      year : year
+    }
+    // dispatch({
+    //   type: VACATION_YEAR_REQUEST,
+    //   data: data,
+    // });
+  };
+
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">
       <div className="flex flex-wrap gap-4 mb-4">
         <button
-          className={`px-3 py-1 rounded text-sm ${
-            filterType === 'date'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          className={`px-3 py-1 rounded text-sm ${filterType === 'date'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
           onClick={() => handleFilterTypeChange('date')}
         >
           일별 조회
         </button>
         <button
-          className={`px-3 py-1 rounded text-sm ${
-            filterType === 'month'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          className={`px-3 py-1 rounded text-sm ${filterType === 'month'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
           onClick={() => handleFilterTypeChange('month')}
         >
           월별 조회
         </button>
         <button
-          className={`px-3 py-1 rounded text-sm ${
-            filterType === 'year'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          className={`px-3 py-1 rounded text-sm ${filterType === 'year'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
           onClick={() => handleFilterTypeChange('year')}
         >
           연도별 조회

@@ -18,6 +18,11 @@ module.exports = (sequelize) => {
             allowNull: false,
             defaultValue: "",
         },
+        vacation_state: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: "",
+        },
         user_code: {
             type: DataTypes.INTEGER,
             allowNull: false,

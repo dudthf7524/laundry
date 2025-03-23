@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useDataManager } from '../hooks/useDataManager';
-import { useAuth } from '../contexts/AuthContext';
+
 import FilterControls from '../components copy/FilterControls';
 import AttendanceTable from '../components copy/AttendanceTable';
 import StatisticsChart from '../components copy/StatisticsChart';
 
 const AttendancePage = () => {
-  const { currentUser } = useAuth();
+
   const {
     dateRangeFilter,
     monthFilter,
@@ -25,6 +25,7 @@ const AttendancePage = () => {
     resetFilters,
   } = useDataManager();
 
+ 
   const [showChart, setShowChart] = useState(false);
   const [timeFrame, setTimeFrame] = useState('daily');
 
@@ -68,6 +69,8 @@ const AttendancePage = () => {
         employeeFilter={employeeFilter}
         roleTypeFilter={roleTypeFilter}
       />
+
+    
 
       {showChart && (
         <div className="mb-6">
@@ -114,13 +117,13 @@ const AttendancePage = () => {
         </div>
       )}
 
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <AttendanceTable
           records={filteredAttendanceRecords}
           onSort={setSorting}
           sortConfig={sortConfig}
         />
-      </div>
+      </div> */}
 
       <div className="bg-white p-4 rounded-lg shadow mb-4">
         <h3 className="text-lg font-medium text-gray-900 mb-3">근태 요약</h3>

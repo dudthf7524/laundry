@@ -1,204 +1,172 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { employees, permissionLevels } from '../data/mockData';
+import { useDispatch, useSelector } from "react-redux";
+import { employees, permissionLevels } from "../data/mockData";
+import { VACATION_ALLOW_REQUEST, VACATION_LIST_REQUEST } from "../reducers/vacation";
+
 const SelectDatePage2 = () => {
   const [date, setDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 상태
-  const vacationDate = new Date(2025, 2, 19); // 휴가 날짜 (2025-03-19)
-  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const { user } = useSelector((state) => state.user);
-  const handleEmployeeSelect = (employee) => {
-    setSelectedEmployee(employee);
-  };
-  // 요일 번호를 요일 이름으로 변환
-  const getDayName = (dayIndex) => {
-    const days = ['일', '월', '화', '수', '목', '금', '토'];
-    return days[dayIndex];
-  };
-  const getPermissionColor = (permission) => {
-    switch (permission) {
-      case 'master':
-        return 'bg-red-100 text-red-800';
-      case 'submaster':
-        return 'bg-orange-100 text-orange-800';
-      case 'manager':
-        return 'bg-blue-100 text-blue-800';
-      case 'employee':
-        return 'bg-green-100 text-green-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+  const { vacationLists } = useSelector((state) => state.vacation);
+
+  useEffect(() => {
+    dispatch({ type: VACATION_LIST_REQUEST });
+  }, [dispatch]);
+
+  var vacationDays;
+  var vacationAllows;
+  if (vacationLists) {
+    vacationDays = vacationLists
+      .filter((v) => v.vacation_state === "신청")
+      .map((v) => v.vacation_date); // 전체 날짜 문자열 저장
+  }
+
+  if (vacationLists) {
+    vacationAllows = vacationLists
+      .filter((v) => v.vacation_state === "승인")
+      .map((v) => v.vacation_date); // 전체 날짜 문자열 저장
+  }
+
+
+  const changeMonth = (offset) => {
+    setDate((prev) => {
+        const newDate = new Date(prev);
+        newDate.setMonth(newDate.getMonth() + offset);
+        return newDate;
+    });
+};
+const goToday = () => {
+    setDate(new Date());
+};
+  // 신청된 휴가 날짜 목록 추출
+
+
+  // 선택한 날짜의 휴가 정보
+  const selectedVacation = vacationLists?.find(
+    (v) => v.vacation_state === "신청" && v.vacation_date === selectedDate
+  );
+
+  // 날짜 클릭 시
+  const handleDateClick = (year, month, day) => {
+    const formattedDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    setSelectedDate(formattedDate);
   };
 
-  // 날짜를 렌더링하는 함수
+  const vacationAllow = () => {
+    alert('휴가가 승인 되었습니다.')
+
+    console.log(selectedVacation.vacation_id)
+    const data = {
+      vacation_id: selectedVacation.vacation_id
+    }
+    dispatch({
+      type: VACATION_ALLOW_REQUEST,
+      data: data
+    });
+  }
+
+  // 캘린더 렌더링
   const renderCalendar = () => {
     const viewYear = date.getFullYear();
+
     const viewMonth = date.getMonth();
+
     const today = new Date();
-    const todayDate = today.getDate();
-    const todayMonth = today.getMonth();
-    const todayYear = today.getFullYear();
 
-    const thisLast = new Date(viewYear, viewMonth + 1, 0);
-    const TLDate = thisLast.getDate();
+
     const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+    const lastDate = new Date(viewYear, viewMonth + 1, 0).getDate();
 
-    const thisDates = [...Array(TLDate).keys()].map(i => i + 1);
-    const totalDays = [...Array(firstDay).fill(''), ...thisDates];
+
+    const totalDays = [...Array(firstDay).fill(""), ...Array(lastDate).keys()].map((i) => i + 1);
+
 
     return totalDays.map((d, i) => {
-      if (d === '') {
-        return <div key={i} className="date empty"></div>;
-      }
+      if (d === "") return <div key={i} className="date empty"></div>;
 
-      const dayOfWeek = new Date(viewYear, viewMonth, d).getDay();
-      const isToday = (d === todayDate) && (viewMonth === todayMonth) && (viewYear === todayYear);
-      const isVacation = (d === vacationDate.getDate()) && (viewMonth === vacationDate.getMonth()) && (viewYear === vacationDate.getFullYear());
+      const formattedDate = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+      const isVacation = vacationDays?.includes(formattedDate); // 문자열 비교
+      const vacation_allow = vacationAllows?.includes(formattedDate); // 문자열 비교
 
-      // 날짜 클릭 시 선택된 날짜 업데이트
-      const handleDateClick = () => {
-        setSelectedDate(`${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`);
-      };
+      const isToday = today.getDate() === d && today.getMonth() === viewMonth && today.getFullYear() === viewYear;
+      const isSelected = selectedDate === formattedDate;
+      const dayOfWeek = (i % 7);
+      const textColor = dayOfWeek === 0 ? "text-red-500" : dayOfWeek === 6 ? "text-blue-500" : "text-gray-900";
+      const bgColor = isSelected ? "bg-blue-300" : isToday ? "bg-yellow-300" : "";
 
       return (
         <div
           key={i}
-          className="flex items-center justify-center p-4 text-center cursor-pointer flex-col"
-          onClick={handleDateClick}
+          className={`flex items-center justify-center p-4 cursor-pointer flex-col text-lg  ${bgColor}`}
+          onClick={() => handleDateClick(viewYear, viewMonth, d)}
         >
-          {/* 요일별 색상 적용 */}
-          <div className={`day-number ${dayOfWeek === 0 ? "text-red-500" : dayOfWeek === 6 ? "text-blue-500" : "text-gray-900"}`}>
+          <div className={`h-8 text-lg ${textColor}`}>
             {d}
           </div>
-          <div className="text-sm">{isVacation ? "휴가" : ""}</div>
+          <div className="text-xl text-red-500 font-bold h-8">{isVacation ? "⭕" : ""} {vacation_allow ? "🔴" : ""}</div>
         </div>
       );
     });
   };
 
-  const filteredEmployees = employees?.filter(employee => {
-    const lowerCaseSearch = searchTerm.toLowerCase();
-
-    console.log(employee.name)
-    return (
-      employee.name.toLowerCase().includes(lowerCaseSearch) ||
-      employee.nickname.toLowerCase().includes(lowerCaseSearch) ||
-      employee.role.toLowerCase().includes(lowerCaseSearch)
-    );
-  });
-
-  // 이전, 다음, 오늘 버튼 동작
-  const changeMonth = (offset) => {
-    setDate((prev) => {
-      const newDate = new Date(prev);
-      newDate.setMonth(newDate.getMonth() + offset);
-      return newDate;
-    });
-  };
-
-  const goToday = () => {
-    setDate(new Date());
-  };
-
-  // 캘린더 렌더링
-  const calendarDays = renderCalendar();
-
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">직원 관리</h1>
-        <p className="text-gray-600 mt-1">
-          직원 정보를 조회하고 관리합니다
-        </p>
+        <p className="text-gray-600 mt-1">직원 정보를 조회하고 관리합니다</p>
       </div>
-      {/* 왼쪽 달력 영역 */}
+
+      {/* 캘린더 */}
       <div className="bg-white p-4 rounded-lg shadow mb-6">
         <div className="flex justify-between items-center py-4">
-          <div className="text-xl font-semibold">
-            {`${date.getFullYear()}년 ${date.getMonth() + 1}월`}
-          </div>
-          <div className="nav space-x-2">
-            <button className="nav-btn go-prev text-xl" onClick={() => changeMonth(-1)}>
+          <div className="flex justify-center items-center py-4 relative mb-2">
+            <button className="pr-10 nav-btn go-prev text-2xl font-bold" onClick={() => changeMonth(-1)}>
               &lt;
             </button>
-            <button className="nav-btn go-today text-xl" onClick={goToday}>
-              Today
-            </button>
-            <button className="nav-btn go-next text-xl" onClick={() => changeMonth(1)}>
+            <div className="text-2xl font-semibold cursor-pointer" onClick={goToday}>
+              {`${date.getFullYear()}년 ${date.getMonth() + 1}월`}
+            </div>
+            <button className="pl-10 nav-btn go-next text-2xl font-bold" onClick={() => changeMonth(1)}>
               &gt;
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-7 gap-2 text-center">
-          <div className="font-semibold">일</div>
-          <div className="font-semibold">월</div>
-          <div className="font-semibold">화</div>
-          <div className="font-semibold">수</div>
-          <div className="font-semibold">목</div>
-          <div className="font-semibold">금</div>
-          <div className="font-semibold">토</div>
+        <div className="grid grid-cols-7 gap-2 text-center text-lg font-semibold">
+          <div className="text-red-500">일</div>
+          <div>월</div>
+          <div>화</div>
+          <div>수</div>
+          <div>목</div>
+          <div>금</div>
+          <div className="text-blue-500">토</div>
         </div>
-        <div className="dates grid grid-cols-7 gap-2">
-          {calendarDays}
+        <div className="grid grid-cols-7 gap-2">
+          {renderCalendar()}
         </div>
-
+        <div className="">
+          🔴 : 휴가 ⭕ : 휴가 신청
+        </div>
       </div>
 
-      {/* 오른쪽 선택된 날짜 영역 */}
-      <div className="bg-white rounded-lg shadow mb-6 overflow-hidden">
-        <ul className="divide-y divide-gray-200">
-          {filteredEmployees ? (
-            filteredEmployees.map((employee) => (
-              <li
-                key={employee.id}
-                className={`p-4 hover:bg-gray-50 cursor-pointer ${selectedEmployee?.id === employee.id ? 'bg-blue-50' : ''
-                  }`}
-                onClick={() => handleEmployeeSelect(employee)}
-              >
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center">
-                      <div className="bg-gray-200 rounded-full h-10 w-10 flex items-center justify-center text-gray-700 font-bold">
-                        {employee.name.charAt(0)}
-                      </div>
-                      <div className="ml-3">
-                        <div className="flex items-center">
-                          <span className="text-lg font-medium text-gray-900">{employee.name}</span>
-                          <span className="ml-2 text-sm text-gray-500">({employee.nickname})</span>
-                          <span className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPermissionColor(employee.permission)}`}>
-                            {permissionLevels[employee.permission]?.name || '일반'}
-                          </span>
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {employee.role} • {employee.years}년차
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-2 md:mt-0 flex items-center">
-                    <>
-                      <button className="text-blue-600 hover:text-blue-800 mr-3">
-                        수정
-                      </button>
-                      <button className="text-red-600 hover:text-red-800">
-                        삭제
-                      </button>
-                    </>
-                  </div>
-                </div>
-              </li>
-            ))
-          ) : (
-            <li className="p-4 text-center text-gray-500">
-              검색 결과가 없습니다
-            </li>
-          )}
-        </ul>
-      </div>
+      {/* 선택된 날짜 정보 */}
+      {selectedVacation && (
+        <div className="bg-white p-4 rounded-lg shadow mb-6">
+          <h2 className="text-xl font-semibold">휴가 신청 정보</h2>
+          <p className="mt-2">날짜: {selectedVacation.vacation_date}</p>
+          <p className="mt-1">사유: {selectedVacation.vacation_content}</p>
+          <div className="mt-4 flex space-x-2">
+            <button onClick={vacationAllow} className="px-4 py-2 bg-green-500 text-white rounded">승인</button>
+            <button className="px-4 py-2 bg-red-500 text-white rounded">거절</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

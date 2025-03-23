@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { employees } from '../data/mockData';
 
 const AttendanceTable = ({ records, onSort, sortConfig }) => {
+  console.log(records)
   const { currentUser, canEditData, isFieldHidden } = useAuth();
   const [expandedRowId, setExpandedRowId] = useState(null);
 
