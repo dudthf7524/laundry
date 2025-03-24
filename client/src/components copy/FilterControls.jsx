@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { employees } from '../data/mockData';
 import { useDispatch, useSelector } from 'react-redux';
+import { ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
 
 const FilterControls = ({
   onDateRangeChange,
@@ -68,7 +69,7 @@ const FilterControls = ({
   const handleYearChange = (e) => {
     const selectedYear = e.target.value;
     console.log("선택된 연도:", selectedYear);  // 콘솔에 선택된 연도 출력
-    onYearChange(selectedYear);  // 선택된 연도를 부모 컴포넌트로 전달
+    onYearChange(e);  // 선택된 연도를 부모 컴포넌트로 전달
     setYear(selectedYear)
   };
 
@@ -91,21 +92,20 @@ const FilterControls = ({
 
   useEffect(() => {
     vacationYear();
-  }, []);
+  }, [year]);
 
   const dispatch = useDispatch();
   
 
-  
   const vacationYear = async () => {
 
     const data = {
       year : year
     }
-    // dispatch({
-    //   type: VACATION_YEAR_REQUEST,
-    //   data: data,
-    // });
+    dispatch({
+      type: ATTENDANCESTART_YEAR_REQUEST,
+      data: data,
+    });
   };
 
   return (

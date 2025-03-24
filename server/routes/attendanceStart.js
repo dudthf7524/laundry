@@ -26,4 +26,19 @@ router.get("/new/one", authMiddlewareSession, async (req, res) => {
     }
 });
 
+
+router.post("/year", async (req, res) => {
+    console.log(req.body)
+    try {
+        const result = await attendanceStart.attendanceStartYear(req.body)
+        console.log("result")
+        console.log(result)
+        console.log("result")
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
+
+
 module.exports = router;

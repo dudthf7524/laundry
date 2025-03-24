@@ -117,13 +117,14 @@ const AttendancePage = () => {
         </div>
       )}
 
-      {/* <div className="mb-6">
+      <div className="mb-6">
         <AttendanceTable
           records={filteredAttendanceRecords}
           onSort={setSorting}
           sortConfig={sortConfig}
         />
-      </div> */}
+      </div>
+
 
       <div className="bg-white p-4 rounded-lg shadow mb-4">
         <h3 className="text-lg font-medium text-gray-900 mb-3">근태 요약</h3>

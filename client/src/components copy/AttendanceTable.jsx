@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { formatDate } from '../utils/dateUtils';
 import { useAuth } from '../contexts/AuthContext';
 import { employees } from '../data/mockData';
+import { useSelector } from 'react-redux';
 
 const AttendanceTable = ({ records, onSort, sortConfig }) => {
-  console.log(records)
   const { currentUser, canEditData, isFieldHidden } = useAuth();
   const [expandedRowId, setExpandedRowId] = useState(null);
 
@@ -44,10 +44,15 @@ const AttendanceTable = ({ records, onSort, sortConfig }) => {
   };
 
   const getSortableHeaderClass = (field) => {
-    return `px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50 ${
-      sortConfig.field === field ? 'bg-gray-50' : ''
-    }`;
+    return `px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50 ${sortConfig.field === field ? 'bg-gray-50' : ''
+      }`;
   };
+
+
+
+  const { attendanceStartYear } = useSelector((state) => state.attendanceStart);
+
+  console.log(attendanceStartYear)
 
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -55,29 +60,29 @@ const AttendanceTable = ({ records, onSort, sortConfig }) => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className={getSortableHeaderClass('date')} onClick={() => handleSort('date')}>
-                날짜 {getSortIcon('date')}
-              </th>
               <th className={getSortableHeaderClass('name')} onClick={() => handleSort('employeeId')}>
                 이름 {getSortIcon('employeeId')}
               </th>
               <th className={getSortableHeaderClass('roleType')} onClick={() => handleSort('roleType')}>
                 직무형태 {getSortIcon('roleType')}
               </th>
-              <th className={getSortableHeaderClass('scheduledStart')} onClick={() => handleSort('scheduledStart')}>
-                지정출근시간 {getSortIcon('scheduledStart')}
-              </th>
-              <th className={getSortableHeaderClass('scheduledEnd')} onClick={() => handleSort('scheduledEnd')}>
-                지정퇴근시간 {getSortIcon('scheduledEnd')}
+              <th className={getSortableHeaderClass('date')} onClick={() => handleSort('date')}>
+                출근날짜 {getSortIcon('date')}
               </th>
               <th className={getSortableHeaderClass('actualStart')} onClick={() => handleSort('actualStart')}>
-                실제출근시간 {getSortIcon('actualStart')}
+                출근시간 {getSortIcon('actualStart')}
               </th>
-              <th className={getSortableHeaderClass('actualEnd')} onClick={() => handleSort('actualEnd')}>
-                실제퇴근시간 {getSortIcon('actualEnd')}
+              <th className={getSortableHeaderClass('actualStart')} onClick={() => handleSort('actualStart')}>
+                출근상태 {getSortIcon('actualStart')}
               </th>
-              <th className={getSortableHeaderClass('status')} onClick={() => handleSort('status')}>
-                근무상태 {getSortIcon('status')}
+              <th className={getSortableHeaderClass('date')} onClick={() => handleSort('date')}>
+                퇴근날짜 {getSortIcon('date')}
+              </th>
+              <th className={getSortableHeaderClass('scheduledStart')} onClick={() => handleSort('scheduledStart')}>
+                퇴근시간 {getSortIcon('scheduledStart')}
+              </th>
+              <th className={getSortableHeaderClass('scheduledEnd')} onClick={() => handleSort('scheduledEnd')}>
+                퇴근상태 {getSortIcon('scheduledEnd')}
               </th>
               {!isFieldHidden('totalWorkHours') && (
                 <th className={getSortableHeaderClass('totalWorkHours')} onClick={() => handleSort('totalWorkHours')}>
@@ -90,30 +95,32 @@ const AttendanceTable = ({ records, onSort, sortConfig }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {records.length > 0 ? (
-              records.map((record) => (
-                <tr key={record.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 whitespace-nowrap">{formatDate(record.date, 'yyyy-MM-dd')}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{getEmployeeName(record.employeeId)}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{record.roleType}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{record.scheduledStart}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{record.scheduledEnd}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{record.actualStart}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{record.actualEnd}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(record.status)}`}>
-                      {record.status}
+            {attendanceStartYear?.length > 0 ? (
+              attendanceStartYear?.map((asy, index) => (
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 whitespace-nowrap">{asy.user.user_name}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{asy.user.user_position}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_start_date}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_start_time}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_start_state}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end.attendance_end_date}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end.attendance_end_time}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end.attendance_end_state}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{asy.sum_hour}시간 {asy.sum_minute}분</td>
+                  {/* <td className="px-4 py-3 whitespace-nowrap">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(asy.status)}`}>
+                      {asy.status}
                     </span>
                   </td>
                   {!isFieldHidden('totalWorkHours') && (
-                    <td className="px-4 py-3 whitespace-nowrap">{record.totalWorkHours}</td>
-                  )}
+                    <td className="px-4 py-3 whitespace-nowrap">{asy.totalWorkHours}</td>
+                  )} */}
                   <td className="px-4 py-3 whitespace-nowrap">
                     <button
-                      onClick={() => toggleRowExpand(record.id)}
+                      onClick={() => toggleRowExpand(asy.id)}
                       className="text-blue-600 hover:text-blue-900"
                     >
-                      {expandedRowId === record.id ? '접기' : '펼치기'}
+                      {expandedRowId === asy.id ? '접기' : '펼치기'}
                     </button>
                   </td>
                 </tr>

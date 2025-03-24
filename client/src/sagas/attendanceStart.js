@@ -11,9 +11,9 @@ import {
     ATTENDANCESTART_NEW_ONE_SUCCESS,
     ATTENDANCESTART_NEW_ONE_FAILURE,
 
-    WORK_END_TIME_REQUEST,
-    WORK_END_TIME_SUCCESS,
-    WORK_END_TIME_FAILURE,
+    ATTENDANCESTART_YEAR_REQUEST,
+    ATTENDANCESTART_YEAR_SUCCESS,
+    ATTENDANCESTART_YEAR_FAILURE,
 
 } from "../reducers/attendanceStart";
 
@@ -84,34 +84,28 @@ function* attendanceStartNewOne() {
 }
 
 
-function* watchWorkEndTime() {
-    yield takeLatest(WORK_END_TIME_REQUEST, workkEndTime);
+function* watchAttendanceStartYear() {
+    yield takeLatest(ATTENDANCESTART_YEAR_REQUEST, attendanceStartYear);
 }
 
-function workEndTimeAPI(data) {
+function attendanceStartYearAPI(data) {
 
-    return axios.post("/work/end/time", data);
+    return axios.post("/attendanceStart/year", data);
 }
 
-function* workkEndTime(action) {
+function* attendanceStartYear(action) {
     try {
-        const result = yield call(workEndTimeAPI, action.data);
-        if (result.data === "common") {
-            window.location.href = "/";
-            return;
-        } else if (result.data) {
-            window.location.href = "/attendance"
-        }
-
+        const result = yield call(attendanceStartYearAPI, action.data);
+       
         yield put({
-            type: WORK_END_TIME_SUCCESS,
+            type: ATTENDANCESTART_YEAR_SUCCESS,
             data: result.data,
         });
         if (result.data) { }
     } catch (err) {
         console.error(err);
         yield put({
-            type: WORK_END_TIME_FAILURE,
+            type: ATTENDANCESTART_YEAR_FAILURE,
             error: err.response.data,
         });
     }
@@ -120,5 +114,5 @@ function* workkEndTime(action) {
 
 
 export default function* attendanceStartSaga() {
-    yield all([fork(watchAttendanceStartRegister), fork(watchAttendanceStartNewOne), fork(watchWorkEndTime)]);
+    yield all([fork(watchAttendanceStartRegister), fork(watchAttendanceStartNewOne), fork(watchAttendanceStartYear)]);
 }

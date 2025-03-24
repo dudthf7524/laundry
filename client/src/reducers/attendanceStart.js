@@ -14,8 +14,8 @@ export const initialState = {
     work_end_time_done: false,
     work_end_time_error: null,
 
-    attendanceStartNewOne: null
-
+    attendanceStartNewOne: null,
+    attendanceStartYear:null
 };
 
 
@@ -28,9 +28,10 @@ export const ATTENDANCESTART_NEW_ONE_SUCCESS = "ATTENDANCESTART_NEW_ONE_SUCCESS"
 export const ATTENDANCESTART_NEW_ONE_FAILURE = "ATTENDANCESTART_NEW_ONE_FAILURE";
 
 
-export const WORK_END_TIME_REQUEST = "WORK_END_TIME_REQUEST";
-export const WORK_END_TIME_SUCCESS = "WORK_END_TIME_SUCCESS";
-export const WORK_END_TIME_FAILURE = "WORK_END_TIME_FAILURE";
+export const ATTENDANCESTART_YEAR_REQUEST = "ATTENDANCESTART_YEAR_REQUEST";
+export const ATTENDANCESTART_YEAR_SUCCESS = "ATTENDANCESTART_YEAR_SUCCESS";
+export const ATTENDANCESTART_YEAR_FAILURE = "ATTENDANCESTART_YEAR_FAILURE";
+
 
 const reducer = (state = initialState, action) => {
     return produce(state, (draft) => {
@@ -62,18 +63,19 @@ const reducer = (state = initialState, action) => {
                 draft.attendanceStart_new_one_Loading = false;
                 draft.attendanceStart_new_one_error = action.error;
                 break;
-            case WORK_END_TIME_REQUEST:
-                draft.work_end_time_Loading = true;
-                draft.work_end_time_error = null;
-                draft.work_end_time_done = false;
+            case ATTENDANCESTART_YEAR_REQUEST:
+                draft.attendanceStart_year_Loading = true;
+                draft.attendanceStart_year_error = null;
+                draft.attendanceStart_year_done = false;
                 break;
-            case WORK_END_TIME_SUCCESS:
-                draft.work_end_time_Loading = false;
-                draft.work_end_time_done = true;
+            case ATTENDANCESTART_YEAR_SUCCESS:
+                draft.attendanceStart_year_Loading = false;
+                draft.attendanceStartYear = action.data
+                draft.attendanceStart_year_done = true;
                 break;
-            case WORK_END_TIME_FAILURE:
-                draft.work_end_time_Loading = false;
-                draft.work_end_time_error = action.error;
+            case ATTENDANCESTART_YEAR_FAILURE:
+                draft.attendanceStart_year_Loading = false;
+                draft.attendanceStart_year_error = action.error;
                 break;
             default:
                 return state;
