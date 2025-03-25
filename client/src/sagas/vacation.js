@@ -15,6 +15,10 @@ import {
     VACATION_ALLOW_SUCCESS,
     VACATION_ALLOW_FAILURE,
 
+    VACATION_USER_REQUEST,
+    VACATION_USER_SUCCESS,
+    VACATION_USER_FAILURE,
+
 } from "../reducers/vacation";
 
 
@@ -107,10 +111,39 @@ function* vacationAllow(action) {
 }
 
 
+function* watchVacationUser() {
+    yield takeLatest(VACATION_USER_REQUEST, vacationUser);
+}
+
+function vacationUserAPI() {
+
+    return axios.get("/vacation/user" , );
+}
+
+function* vacationUser() {
+    try {
+        const result = yield call(vacationUserAPI, );
+        if(result.data === 'common'){
+            window.location.href = "/"
+        }
+        yield put({
+            type: VACATION_USER_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) {}
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: VACATION_USER_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
 
 
 
 
 export default function* vacationSaga() {
-    yield all([fork(watchVacationRegister), fork(watchVacationList), fork(watchVacationAllow),]);
+    yield all([fork(watchVacationRegister), fork(watchVacationList), fork(watchVacationAllow), fork(watchVacationUser),]);
 }

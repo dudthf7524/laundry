@@ -61,9 +61,18 @@ const vacationAllow = async (data) => {
     }
 };
 
+const vacationUser = async (user_code) => {
+    try {
+        const result = await vacation.findAll({ where: { user_code : user_code } })
+        console.log(result)
+    } catch (error) {
+        console.error(error);
+    }
+};
 
 module.exports = {
     vacationRegister,
     vacationList,
     vacationAllow,
+    vacationUser
 };

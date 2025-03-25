@@ -37,4 +37,16 @@ router.post("/allow", async (req, res) => {
         console.error(error)
     }
 });
+
+router.get("/user", authMiddlewareSession,  async (req, res) => {
+    console.log('aaaaaaaaaaaaa')
+    const user_code = req.user.user_code
+    console.log(user_code)
+    try {
+        const result = await vacation.vacationUser(user_code)
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
 module.exports = router;

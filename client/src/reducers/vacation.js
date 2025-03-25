@@ -13,10 +13,14 @@ export const initialState = {
     vacation_allow_Loading: false,
     vacation_allow_done: false,
     vacation_allow_error: null,
-    
-    vacationLists: null,
 
-   
+    vacation_user_Loading: false,
+    vacation_user_done: false,
+    vacation_user_error: null,
+
+    vacationLists: null,
+    vacationUser: null,
+
 };
 export const VACATION_REGISTER_REQUEST = "VACATION_REGISTER_REQUEST";
 export const VACATION_REGISTER_SUCCESS = "VACATION_REGISTER_SUCCESS";
@@ -30,6 +34,9 @@ export const VACATION_ALLOW_REQUEST = "VACATION_ALLOW_REQUEST";
 export const VACATION_ALLOW_SUCCESS = "VACATION_ALLOW_SUCCESS";
 export const VACATION_ALLOW_FAILURE = "VACATION_ALLOW_FAILURE";
 
+export const VACATION_USER_REQUEST = "VACATION_USER_REQUEST";
+export const VACATION_USER_SUCCESS = "VACATION_USER_SUCCESS";
+export const VACATION_USER_FAILURE = "VACATION_USER_FAILURE";
 
 
 const reducer = (state = initialState, action) => {
@@ -75,6 +82,20 @@ const reducer = (state = initialState, action) => {
             case VACATION_ALLOW_FAILURE:
                 draft.vacation_allow_Loading = false;
                 draft.vacation_allow_error = action.error;
+                break;
+            case VACATION_USER_REQUEST:
+                draft.vacation_user_Loading = true;
+                draft.vacation_user_error = null;
+                draft.vacation_user_done = false;
+                break;
+            case VACATION_USER_SUCCESS:
+                draft.vacation_user_Loading = false;
+                draft.vacationUser = action.data;
+                draft.vacation_user_done = true;
+                break;
+            case VACATION_USER_FAILURE:
+                draft.vacation_user_Loading = false;
+                draft.vacation_user_error = action.error;
                 break;
             default:
                 return state;

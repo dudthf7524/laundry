@@ -379,7 +379,7 @@ const StatisticsChart = ({
           <YAxis />
           <Tooltip />
           <Legend />
-          {dataKeys.slice(0, 5).map((key, index) => (
+          {dataKeys.slice(0, 10).map((key, index) => (
             <Bar key={key} dataKey={key} fill={COLORS[index % COLORS.length]} />
           ))}
         </BarChart>
