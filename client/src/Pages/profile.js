@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import BottomBar from '../components/BottomBar';
+import BottomBar from '../Components/BottomBar';
 
 const Profile = () => {
     return (

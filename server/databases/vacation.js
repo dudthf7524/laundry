@@ -29,9 +29,9 @@ const vacationList = async () => {
                     required: true,
                 },
             ],
-           
+
         })
-   
+
         return result;
 
 
@@ -53,7 +53,7 @@ const vacationAllow = async (data) => {
             },
 
         )
-        
+
         return result;
 
     } catch (error) {
@@ -63,8 +63,8 @@ const vacationAllow = async (data) => {
 
 const vacationUser = async (user_code) => {
     try {
-        const result = await vacation.findAll({ where: { user_code : user_code } })
-        console.log(result)
+        const result = await vacation.findAll({ where: { user_code: user_code } })
+        return result;
     } catch (error) {
         console.error(error);
     }

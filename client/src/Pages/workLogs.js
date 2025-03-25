@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../Styles/Schedule.css';
 import BottomBar from '../Components/BottomBar';
-import { VACATION_REGISTER_REQUEST } from '../reducers/vacation';
-import { useDispatch } from 'react-redux';
+import { VACATION_REGISTER_REQUEST, VACATION_USER_REQUEST } from '../reducers/vacation';
+import { useDispatch, useSelector } from 'react-redux';
 import { select } from 'redux-saga/effects';
 
 const WorkLogs = () => {
@@ -16,6 +16,23 @@ const WorkLogs = () => {
         new Date(2025, 2, 21)
     ];
     const reasonInputRef = useRef(null);
+    const { vacationUser } = useSelector((state) => state.vacation);
+    console.log(vacationUser)
+
+
+    var vacationDays;
+    var vacationAllows;
+    if (vacationUser) {
+        vacationDays = vacationUser
+            .filter((v) => v.vacation_state === "신청")
+            .map((v) => v.vacation_date); // 전체 날짜 문자열 저장
+    }
+
+    if (vacationUser) {
+        vacationAllows = vacationUser
+            .filter((v) => v.vacation_state === "승인")
+            .map((v) => v.vacation_date); // 전체 날짜 문자열 저장
+    }
 
     const changeMonth = (offset) => {
         setDate((prev) => {
@@ -51,11 +68,11 @@ const WorkLogs = () => {
 
             const dayOfWeek = new Date(viewYear, viewMonth, d).getDay();
             const isToday = (d === todayDate) && (viewMonth === todayMonth) && (viewYear === todayYear);
-            const isVacation = vacationDates.some(vacationDate => 
-                vacationDate.getDate() === d &&
-                vacationDate.getMonth() === viewMonth &&
-                vacationDate.getFullYear() === viewYear
-            );            
+            const formattedDate = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+            const isVacation = vacationDays?.includes(formattedDate); // 문자열 비교
+            const vacation_allow = vacationAllows?.includes(formattedDate); // 문자열 비교
+
             const isSelected = selectedDate === `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
             const handleDateClick = () => {
                 const formattedDate = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
@@ -76,8 +93,7 @@ const WorkLogs = () => {
                     <div className={`day-number h-8 ${isSelected ? "text-white font-bold" : ""}  ${dayOfWeek === 0 ? "text-red-500" : dayOfWeek === 6 ? "text-blue-500" : "text-gray-900"}`}>
                         {d}
                     </div>
-                    <div className="text-sm h-8">{isVacation ? "휴가" : ""}</div>
-                </div>
+                    <div className="text-xl text-red-500 font-bold h-8">{isVacation ? "⭕" : ""} {vacation_allow ? "🔴" : ""}</div>                </div>
             );
         });
     };
@@ -148,6 +164,9 @@ const WorkLogs = () => {
                     </div>
                     <div className="dates grid grid-cols-7 gap-2">
                         {renderCalendar()}
+                    </div>
+                    <div className="">
+                        🔴 : 휴가 ⭕ : 휴가 신청
                     </div>
                 </div>
                 {selectedDate && (

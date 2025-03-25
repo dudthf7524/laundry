@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ReactComponent as Icon1 } from '../Assets/Images/star.svg';
 import '../css/task.css';
-import BottomBar from '../components/BottomBar';
+import BottomBar from '../Components/BottomBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { USER_PROCESS_ONE_LIST_REQUEST } from '../reducers/userProcess';
 import { TASK_REGISTER_REQUEST } from '../reducers/task';
