@@ -10,12 +10,20 @@ export const initialState = {
     attendanceStart_new_one_done: false,
     attendanceStart_new_one_error: null,
 
-    work_end_time_Loading: false,
-    work_end_time_done: false,
-    work_end_time_error: null,
+    attendanceStart_date_Loading: false,
+    attendanceStart_date_done: false,
+    attendanceStart_date_error: null,
+
+    attendanceStart_month_Loading: false,
+    attendanceStart_month_done: false,
+    attendanceStart_month_error: null,
+
+    attendanceStart_year_Loading: false,
+    attendanceStart_year_one_done: false,
+    attendanceStart_year_one_error: null,
 
     attendanceStartNewOne: null,
-    attendanceStartYear:null
+    attendanceStartYear: null
 };
 
 
@@ -27,11 +35,17 @@ export const ATTENDANCESTART_NEW_ONE_REQUEST = "ATTENDANCESTART_NEW_ONE_REQUEST"
 export const ATTENDANCESTART_NEW_ONE_SUCCESS = "ATTENDANCESTART_NEW_ONE_SUCCESS";
 export const ATTENDANCESTART_NEW_ONE_FAILURE = "ATTENDANCESTART_NEW_ONE_FAILURE";
 
+export const ATTENDANCESTART_DATE_REQUEST = "ATTENDANCESTART_DATE_REQUEST";
+export const ATTENDANCESTART_DATE_SUCCESS = "ATTENDANCESTART_DATE_SUCCESS";
+export const ATTENDANCESTART_DATE_FAILURE = "ATTENDANCESTART_DATE_FAILURE";
+
+export const ATTENDANCESTART_MONTH_REQUEST = "ATTENDANCESTART_MONTH_REQUEST";
+export const ATTENDANCESTART_MONTH_SUCCESS = "ATTENDANCESTART_MONTH_SUCCESS";
+export const ATTENDANCESTART_MONTH_FAILURE = "ATTENDANCESTART_MONTH_FAILURE";
 
 export const ATTENDANCESTART_YEAR_REQUEST = "ATTENDANCESTART_YEAR_REQUEST";
 export const ATTENDANCESTART_YEAR_SUCCESS = "ATTENDANCESTART_YEAR_SUCCESS";
 export const ATTENDANCESTART_YEAR_FAILURE = "ATTENDANCESTART_YEAR_FAILURE";
-
 
 const reducer = (state = initialState, action) => {
     return produce(state, (draft) => {
@@ -63,6 +77,34 @@ const reducer = (state = initialState, action) => {
                 draft.attendanceStart_new_one_Loading = false;
                 draft.attendanceStart_new_one_error = action.error;
                 break;
+            case ATTENDANCESTART_DATE_REQUEST:
+                draft.attendanceStart_date_Loading = true;
+                draft.attendanceStart_date_error = null;
+                draft.attendanceStart_date_done = false;
+                break;
+            case ATTENDANCESTART_DATE_SUCCESS:
+                draft.attendanceStart_date_Loading = false;
+                draft.attendanceStartYear = action.data
+                draft.attendanceStart_date_done = true;
+                break;
+            case ATTENDANCESTART_DATE_FAILURE:
+                draft.attendanceStart_date_Loading = false;
+                draft.attendanceStart_date_error = action.error;
+                break;
+            case ATTENDANCESTART_MONTH_REQUEST:
+                draft.attendanceStart_month_Loading = true;
+                draft.attendanceStart_month_error = null;
+                draft.attendanceStart_month_done = false;
+                break;
+            case ATTENDANCESTART_MONTH_SUCCESS:
+                draft.attendanceStart_month_Loading = false;
+                draft.attendanceStartYear = action.data
+                draft.attendanceStart_month_done = true;
+                break;
+            case ATTENDANCESTART_MONTH_FAILURE:
+                draft.attendanceStart_month_Loading = false;
+                draft.attendanceStart_month_error = action.error;
+                break;
             case ATTENDANCESTART_YEAR_REQUEST:
                 draft.attendanceStart_year_Loading = true;
                 draft.attendanceStart_year_error = null;
@@ -77,6 +119,7 @@ const reducer = (state = initialState, action) => {
                 draft.attendanceStart_year_Loading = false;
                 draft.attendanceStart_year_error = action.error;
                 break;
+
             default:
                 return state;
         }

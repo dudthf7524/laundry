@@ -9,7 +9,7 @@ import work from "./work";
 import attendanceStart from "./attendanceStart";
 import attendanceEnd from "./attendanceEnd";
 import vacation from "./vacation";
-
+import companyAddress from "./companyAddress";
 const rootReducer = combineReducers({
   user,
   auth,
@@ -20,7 +20,8 @@ const rootReducer = combineReducers({
   work,
   attendanceStart,
   attendanceEnd,
-  vacation
+  vacation,
+  companyAddress
 });
 
 export default rootReducer;

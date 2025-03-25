@@ -35,6 +35,8 @@ db.work = require("./work")(sequelize, Sequelize);
 db.attendanceStart = require("./attendanceStart")(sequelize, Sequelize);
 db.attendanceEnd = require("./attendanceEnd")(sequelize, Sequelize);
 db.vacation = require("./vacation")(sequelize, Sequelize);
+db.companyAddress = require("./companyAddress")(sequelize, Sequelize);
+
 // 관계 설정
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

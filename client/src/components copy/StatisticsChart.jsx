@@ -295,6 +295,7 @@ const StatisticsChart = ({
   // 연도별 차트일 경우 더미 데이터 사용
   const chartData = timeFrame === 'yearly' ? dummyYearlyDatass : type === 'attendance' ? transformAttendanceData() : transformTaskData();
 
+  console.log("차트 데이터 : ", chartData)
 
   // For pie charts - need special data format
   const preparePieChartData = () => {

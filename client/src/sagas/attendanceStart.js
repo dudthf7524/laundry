@@ -11,6 +11,14 @@ import {
     ATTENDANCESTART_NEW_ONE_SUCCESS,
     ATTENDANCESTART_NEW_ONE_FAILURE,
 
+    ATTENDANCESTART_DATE_REQUEST,
+    ATTENDANCESTART_DATE_SUCCESS,
+    ATTENDANCESTART_DATE_FAILURE,
+
+    ATTENDANCESTART_MONTH_REQUEST,
+    ATTENDANCESTART_MONTH_SUCCESS,
+    ATTENDANCESTART_MONTH_FAILURE,
+
     ATTENDANCESTART_YEAR_REQUEST,
     ATTENDANCESTART_YEAR_SUCCESS,
     ATTENDANCESTART_YEAR_FAILURE,
@@ -83,6 +91,59 @@ function* attendanceStartNewOne() {
     }
 }
 
+function* watchAttendanceStartDate() {
+    yield takeLatest(ATTENDANCESTART_DATE_REQUEST, attendanceStartDate);
+}
+
+function attendanceStartDateAPI(data) {
+
+    return axios.post("/attendanceStart/date", data);
+}
+
+function* attendanceStartDate(action) {
+    try {
+        const result = yield call(attendanceStartDateAPI, action.data);
+       
+        yield put({
+            type: ATTENDANCESTART_DATE_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: ATTENDANCESTART_DATE_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
+function* watchAttendanceStartMonth() {
+    yield takeLatest(ATTENDANCESTART_MONTH_REQUEST, attendanceStartMonth);
+}
+
+function attendanceStartMonthAPI(data) {
+
+    return axios.post("/attendanceStart/month", data);
+}
+
+function* attendanceStartMonth(action) {
+    try {
+        const result = yield call(attendanceStartMonthAPI, action.data);
+       
+        yield put({
+            type: ATTENDANCESTART_MONTH_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: ATTENDANCESTART_MONTH_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
 
 function* watchAttendanceStartYear() {
     yield takeLatest(ATTENDANCESTART_YEAR_REQUEST, attendanceStartYear);
@@ -113,6 +174,8 @@ function* attendanceStartYear(action) {
 
 
 
+
+
 export default function* attendanceStartSaga() {
-    yield all([fork(watchAttendanceStartRegister), fork(watchAttendanceStartNewOne), fork(watchAttendanceStartYear)]);
+    yield all([fork(watchAttendanceStartRegister), fork(watchAttendanceStartNewOne), fork(watchAttendanceStartYear), fork(watchAttendanceStartMonth), fork(watchAttendanceStartDate)]);
 }

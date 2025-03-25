@@ -31,6 +31,17 @@ router.post("/year", async (req, res) => {
     console.log(req.body)
     try {
         const result = await attendanceStart.attendanceStartYear(req.body)
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
+
+router.post("/month", async (req, res) => {
+    console.log(req.body)
+
+    try {
+        const result = await attendanceStart.attendanceStartMonth(req.body)
         console.log("result")
         console.log(result)
         console.log("result")
@@ -40,5 +51,18 @@ router.post("/year", async (req, res) => {
     }
 });
 
+router.post("/date", async (req, res) => {
+    console.log(req.body)
+
+    try {
+        const result = await attendanceStart.attendanceStartDate(req.body)
+        console.log("result")
+        console.log(result)
+        console.log("result")
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
 
 module.exports = router;
