@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { ReactComponent as Icon1 } from '../Assets/Images/volume-up.svg';
 import '../css/attendance.css';
-import BottomBar from "../Components/BottomBar";
+import BottomBar from "../components/BottomBar";
 import { useDispatch, useSelector } from 'react-redux';
 import { TIME_DETAIL_REQUEST } from '../reducers/time';
 import { WORK_END_TIME_REQUEST, WORK_NEW_ONE_REQUEST, WORK_REGISTER_REQUEST } from '../reducers/work';
 import { ATTENDANCESTART_NEW_ONE_REQUEST, ATTENDANCESTART_REGISTER_REQUEST } from '../reducers/attendanceStart';
 import { ATTENDANCEEND_TIME_REQUEST } from '../reducers/attendanceEnd';
+import MyLocation from './myLocation';
 
 
 const Attendance = () => {
     //✅정의
     const dispatch = useDispatch();
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [isWithinRadius, setIsWithinRadius] = useState(false); // 근무지 반경 내 여부
+
     // 날짜 포맷팅
     const days = ['일', '월', '화', '수', '목', '금', '토'];
     const year = currentTime.getFullYear();
@@ -36,6 +39,11 @@ const Attendance = () => {
     }
 
     const attendance = () => {
+        if (!isWithinRadius) {
+            alert('근무지 반경 외부입니다. 출근할 수 없습니다.');
+            return;
+        }
+
         const attendance_start_date = year + "-" + month + "-" + date;
         const attendance_start_time = hours + ":" + minutes;
         var attendance_start_state = "";
@@ -61,6 +69,10 @@ const Attendance = () => {
     const [attendanceStartssss, setAttendanceStart] = useState(true)
 
     const leaveWork = () => {
+        if (!isWithinRadius) {
+            alert('근무지 반경 외부입니다. 퇴근할 수 없습니다.');
+            return;
+        }
         const attendance_end_date = year + "-" + month + "-" + date;
         const attendance_end_time = hours + ":" + minutes;
 
@@ -172,6 +184,17 @@ const Attendance = () => {
     // };
 
     // console.log(isLeaveWorkDisabled())
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // 모달 열기
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    // 모달 닫기
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
     return (
         <div className='attendance'>
             <div></div>
@@ -188,6 +211,16 @@ const Attendance = () => {
                     {`${period} ${formattedHours}:${minutes}:${seconds}`}
                 </div>
             </div>
+            <div className="w-10 h-10 cursor-pointer" onClick={openModal}><img src={`${process.env.PUBLIC_URL}/icon/map.png`} alt="Map Icon" />
+            </div>
+            내 위치 찾기
+            {isModalOpen && (
+                <div className="modal-overlay fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-[9999]">
+                    {/* <div className="w-4/5 modal-content bg-white rounded-lg p-6 shadow-lg">
+                        <MyLocation setIsWithinRadius={setIsWithinRadius} closeModal={closeModal} />
+                    </div> */}
+                </div>
+            )}
             <div className="work_time">
 
                 <div className='work_time_option'>

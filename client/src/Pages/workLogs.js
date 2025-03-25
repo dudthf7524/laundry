@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../Styles/Schedule.css';
-import BottomBar from '../Components/BottomBar';
+import BottomBar from '../components/BottomBar';
 import { VACATION_REGISTER_REQUEST } from '../reducers/vacation';
 import { useDispatch } from 'react-redux';
 import { select } from 'redux-saga/effects';

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import Auth from '../pages copy/auth';
+import Auth from './auth';
 const SettingsPage = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();

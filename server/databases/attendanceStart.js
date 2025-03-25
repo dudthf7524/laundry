@@ -4,9 +4,6 @@ const { attendanceEnd } = require("../models");
 const { user } = require("../models");
 
 const attendanceStartRegister = async (data, user_code) => {
-    console.log(data)
-    console.log(user_code)
-
     try {
         const result = await attendanceStart.create({
             attendance_start_date: data.attendance_start_date,
@@ -22,7 +19,6 @@ const attendanceStartRegister = async (data, user_code) => {
 };
 
 const attendanceStartNewOne = async (user_code) => {
-
     try {
         const result = await attendanceStart.findOne({
             where: {
@@ -47,16 +43,12 @@ const attendanceStartNewOne = async (user_code) => {
 };
 
 const attendanceStartYear = async (data) => {
-    console.log(data.year)
-
-
-  
     try {
         const results = await attendanceStart.findAll({
             include: [
                 {
                     model: attendanceEnd,
-                    required: true,
+                    required: false,
                     attributes: ['attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
                 },
                 {
@@ -93,8 +85,101 @@ const attendanceStartYear = async (data) => {
 
 };
 
+const attendanceStartDate = async (data) => {
+    try {
+        const results = await attendanceStart.findAll({
+            include: [
+                {
+                    model: attendanceEnd,
+                    required: false,
+                    attributes: ['attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
+                },
+                {
+                    model: user,
+                    required: true,
+                    attributes: ['user_name', 'user_position'], // ✅ 필요한 필드만 가져오기
+                },
+            ],
+            where: {
+                attendance_start_date: {
+                    [Op.gte]: data.startDate, // 2024-03-24 이상
+                    [Op.lte]: data.endDate,   // 2025-06-24 이하
+                },
+            },            attributes: [
+                'attendance_start_date',
+                'attendance_start_time',
+                'attendance_start_state',
+                [
+                    Sequelize.literal(`
+                        LPAD(FLOOR(TIMESTAMPDIFF(SECOND, CONCAT(attendance_start_date, ' ', attendance_start_time), CONCAT(attendance_end_date, ' ', attendance_end_time)) / 3600), 2, '0')
+                    `),
+                    'sum_hour',
+                ],
+                [
+                    Sequelize.literal(`
+                        LPAD(FLOOR((TIMESTAMPDIFF(SECOND, CONCAT(attendance_start_date, ' ', attendance_start_time), CONCAT(attendance_end_date, ' ', attendance_end_time)) % 3600) / 60), 2, '0')
+                    `),
+                    'sum_minute',
+                ],
+            ],
+        });
+       
+        return results;
+    } catch (error) {
+        console.error('Error fetching attendance:', error);
+        throw error;
+    }
+};
+
+const attendanceStartMonth = async (data) => {
+    try {
+        const results = await attendanceStart.findAll({
+            include: [
+                {
+                    model: attendanceEnd,
+                    required: false,
+                    attributes: ['attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
+                },
+                {
+                    model: user,
+                    required: true,
+                    attributes: ['user_name', 'user_position'], // ✅ 필요한 필드만 가져오기
+                },
+            ],
+            where: Sequelize.literal(`SUBSTRING(attendance_start_date, 1, 7) = '${data.year}-${data.month}'`),
+            attributes: [
+                'attendance_start_date',
+                'attendance_start_time',
+                'attendance_start_state',
+                [
+                    Sequelize.literal(`
+                        LPAD(FLOOR(TIMESTAMPDIFF(SECOND, CONCAT(attendance_start_date, ' ', attendance_start_time), CONCAT(attendance_end_date, ' ', attendance_end_time)) / 3600), 2, '0')
+                    `),
+                    'sum_hour',
+                ],
+                [
+                    Sequelize.literal(`
+                        LPAD(FLOOR((TIMESTAMPDIFF(SECOND, CONCAT(attendance_start_date, ' ', attendance_start_time), CONCAT(attendance_end_date, ' ', attendance_end_time)) % 3600) / 60), 2, '0')
+                    `),
+                    'sum_minute',
+                ],
+            ],
+        });
+       
+        return results;
+    } catch (error) {
+        console.error('Error fetching attendance:', error);
+        throw error;
+    }
+};
+
+
+
+
 module.exports = {
     attendanceStartRegister,
     attendanceStartNewOne,
     attendanceStartYear,
+    attendanceStartMonth,
+    attendanceStartDate,
 };

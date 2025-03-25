@@ -13,8 +13,9 @@ const SelectDatePage2 = () => {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.user);
-  const { vacationLists } = useSelector((state) => state.vacation);
+  const { vacationLists = [] } = useSelector((state) => state.vacation);
 
+  console.log(vacationLists)
   useEffect(() => {
     dispatch({ type: VACATION_LIST_REQUEST });
   }, [dispatch]);
@@ -48,9 +49,11 @@ const goToday = () => {
 
 
   // 선택한 날짜의 휴가 정보
-  const selectedVacation = vacationLists?.find(
-    (v) => v.vacation_state === "신청" && v.vacation_date === selectedDate
-  );
+
+  
+  const selectedVacation = Array.isArray(vacationLists)
+  ? vacationLists.find((v) => v.vacation_state === "신청" && v.vacation_date === selectedDate)
+  : null;
 
   // 날짜 클릭 시
   const handleDateClick = (year, month, day) => {
@@ -118,8 +121,8 @@ const goToday = () => {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">직원 관리</h1>
-        <p className="text-gray-600 mt-1">직원 정보를 조회하고 관리합니다</p>
+        <h1 className="text-2xl font-bold text-gray-900">휴가 관리</h1>
+        <p className="text-gray-600 mt-1">휴가 정보를 조회하고 관리합니다</p>
       </div>
 
       {/* 캘린더 */}
@@ -159,8 +162,8 @@ const goToday = () => {
       {selectedVacation && (
         <div className="bg-white p-4 rounded-lg shadow mb-6">
           <h2 className="text-xl font-semibold">휴가 신청 정보</h2>
-          <p className="mt-2">날짜: {selectedVacation.vacation_date}</p>
-          <p className="mt-1">사유: {selectedVacation.vacation_content}</p>
+          <p className="mt-2">날짜: {selectedVacation?.vacation_date}</p>
+          <p className="mt-1">사유: {selectedVacation?.vacation_content}</p>
           <div className="mt-4 flex space-x-2">
             <button onClick={vacationAllow} className="px-4 py-2 bg-green-500 text-white rounded">승인</button>
             <button className="px-4 py-2 bg-red-500 text-white rounded">거절</button>
