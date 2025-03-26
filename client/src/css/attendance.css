@@ -144,10 +144,12 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: 30px;
-  width: 80%;
-  margin: 0 auto;
-  height: 100%;
+  gap: 3vh;
+  width: 100%;
+  min-height: 100vh;
+  padding: 2vw;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
 
@@ -156,11 +158,11 @@
   color: #383838;
   display: flex;
   align-items: center;
-  height: 80px;
+  height: 8vh;
+  width: 90%;
   border-radius: 5px;
-  width: 100%;
+  padding: 1vw;
   box-sizing: border-box;
-  padding: 0 10px;
 }
 
 .attendance .notice .icon {
@@ -177,14 +179,16 @@
 
 
 .attendance .date_month_time {
-  border: 1px solid #383838;
+  width: 90%;
+  border: 1px solid;
   border-radius: 5px;
-  width: 100%;
-  height: 250px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  height: auto;
+  padding: 2vw;
+  gap: 2vh;
 }
 
 .attendance .date_month {
@@ -199,15 +203,7 @@
 }
 
 
-.attendance .work_time {
-  width: 100%;
-  height: 300px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-}
+
 
 .attendance .button_section {
   width: 100%;
@@ -219,38 +215,7 @@
   gap: 30px;
 }
 
-.work_time_option {
-  width: 30%;
-  height: 80%;
-  border: 1px solid;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
-.work_time .work_time_left {}
-
-.work_time_mid .title {
-  font-size: large;
-  font-weight: bold;
-  background-color: yellow;
-}
-
-.work_time_mid .content {
-  font-size: large;
-
-}
-
-.work_time .work_time_left {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #383838;
-  gap: 15px;
-
-}
 
 .attendance .button_section {
   width: 100%;
@@ -260,37 +225,6 @@
   justify-content: center;
   align-items: center;
   gap: 30px;
-}
-
-
-.work_time .work_time_left .title_a {
-  font-weight: bold;
-  font-size: x-large;
-}
-
-
-.work_time .work_time_mid {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #383838;
-  gap: 10px;
-
-}
-
-.work_time .work_time_right {
-  background-color: green;
-  width: 30%;
-  height: 80%;
-}
-
-.work_time_option p {}
-
-.work_time_option .working {
-  border-radius: 20px;
-  background-color: #009cd9;
-  color: #ffffff;
 }
 
 .button_section .button {
@@ -343,8 +277,96 @@ button:disabled {
   /* 흐릿한 효과 */
 }
 
+/* 업무 시간 박스 가로 정렬 */
+.attendance .work_time_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  border: 1px solid;
+  border-radius: 5px;
+  padding: 20px;
+  gap: 15px;
+}
+
+/* 개별 업무 정보 박스 */
+.attendance .work_time_box {
+  flex: 1;
+  text-align: center;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.attendance .work_time_title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.attendance .work_time_content {
+  font-size: 14px;
+  color: #555;
+}
+
+/* 업무 시작/종료 버튼 */
+.attendance .work_time_buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+  width: 90%;
+}
+
+.taattendancek .work_time_buttons button {
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  border: 1px solid;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.attendance .work_time_buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: 90%;
+}
+
+.attendance .work_time_buttons button {
+  width: 100%;
+  height: 100px;
+  border-radius: 10px;
+  border: 1px solid;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+
 
 @media (max-width: 600px) {
+  .attendance .work_time_container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .attendance .work_time_box {
+    width: 100%;
+  }
+
+  .attendance .work_time_buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .attendance .work_time_buttons button {
+    width: 100%;
+  }
+
   .attendance {
     gap: 20px;
   }
@@ -364,15 +386,6 @@ button:disabled {
   .attendance .work_time_option p {
     font-size: 12px;
   }
-
-  .work_time .button {
-    flex-direction: column;
-  }
-
-  .work_time .button button {
-    width: 90%;
-    font-size: 18px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -386,10 +399,5 @@ button:disabled {
 
   .attendance .time {
     font-size: 18px;
-  }
-
-  .work_time .button button {
-    font-size: 16px;
-    height: 60px;
   }
 }

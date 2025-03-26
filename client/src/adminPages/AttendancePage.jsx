@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDataManager } from '../hooks/useDataManager';
 
 import FilterControls from '../components copy/FilterControls';
 import AttendanceTable from '../components copy/AttendanceTable';
 import StatisticsChart from '../components copy/StatisticsChart';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+
+
 import Chart from './chart';
+import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
 
 const AttendancePage = () => {
 
@@ -19,8 +23,8 @@ const AttendancePage = () => {
     filteredAttendanceRecords,
     attendanceStats,
     setDateRange,
-    setMonth,
-    setYear,
+    // setMonth,
+    // setYear,
     setEmployee,
     setRoleType,
     setSorting,
@@ -30,6 +34,55 @@ const AttendancePage = () => {
 
   const [showChart, setShowChart] = useState(false);
   const [timeFrame, setTimeFrame] = useState('daily');
+
+  const [filterType, setFilterType] = useState('date'); // 'date', 'month', or 'year'
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [month, setMonth] = useState(null);
+  const [year, setYear] = useState(null);
+
+  const vacationDate = async () => {
+    const data = {
+      startDate: startDate,
+      endDate: endDate,
+    }
+    dispatch({
+      type: ATTENDANCESTART_DATE_REQUEST,
+      data: data,
+    });
+  };
+
+  const vacationMonth = async () => {
+    const data = {
+      year: year,
+      month: month,
+    }
+    dispatch({
+      type: ATTENDANCESTART_MONTH_REQUEST,
+      data: data,
+    });
+  };
+
+  const vacationYear = async () => {
+    const data = {
+      year: year
+    }
+    dispatch({
+      type: ATTENDANCESTART_YEAR_REQUEST,
+      data: data,
+    });
+  };
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (filterType === "date" && startDate && endDate) {
+      vacationDate();
+    } else if (filterType === "month" && year && month) {
+      vacationMonth();
+    } else if (filterType === "year" && year) {
+      vacationYear();
+    }
+  }, [year, month, startDate, endDate]);
 
   const handleShowChart = () => {
     setShowChart(!showChart);
@@ -70,17 +123,11 @@ const AttendancePage = () => {
       </div>
 
       <FilterControls
-      // onDateRangeChange={setDateRange}
-      // onMonthChange={setMonth}
-      // onYearChange={setYear}
-      // onEmployeeChange={setEmployee}
-      // onRoleTypeChange={setRoleType}
-      // onResetFilters={resetFilters}
-      // dateRangeFilter={dateRangeFilter}
-      // monthFilter={monthFilter}
-      // yearFilter={yearFilter}
-      // employeeFilter={employeeFilter}
-      // roleTypeFilter={roleTypeFilter}
+      setFilterType = {setFilterType}
+      setStartDate = {setStartDate}
+      setEndDate = {setEndDate}
+      setMonth = {setMonth}
+      setYear = {setYear}
       />
 
 

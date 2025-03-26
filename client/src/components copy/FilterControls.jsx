@@ -19,12 +19,18 @@ const FilterControls = ({
   // roleTypeFilter,
   // taskTypeFilter,
   // showTaskTypeFilter = false,
+  setFilterType,
+  setStartDate, 
+  setEndDate,
+  setMonth,
+  setYear
+  // setFilterType, 
 }) => {
-  const [filterType, setFilterType] = useState('date'); // 'date', 'month', or 'year'
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [month, setMonth] = useState(null);
-  const [year, setYear] = useState(null);
+  const [filterType, setFilterTypess] = useState('date'); // 'date', 'month', or 'year'
+  // const [startDate, setStartDate] = useState(null);
+  // const [endDate, setEndDate] = useState(null);
+  // const [month, setMonth] = useState(null);
+  // const [year, setYear] = useState(null);
 
   const roleTypes = [...new Set(employees.map(emp => emp.role))];
   const currentYear = new Date().getFullYear();
@@ -65,54 +71,12 @@ const FilterControls = ({
   const handleFilterTypeChange = (type) => {
 
     setFilterType(type);
+    setFilterTypess(type)
     setStartDate(null)
     setEndDate(null)
     setMonth(null)
     setYear(null)
   };
-
-  const vacationDate = async () => {
-    const data = {
-      startDate: startDate,
-      endDate: endDate,
-    }
-    dispatch({
-      type: ATTENDANCESTART_DATE_REQUEST,
-      data: data,
-    });
-  };
-
-  const vacationMonth = async () => {
-    const data = {
-      year: year,
-      month: month,
-    }
-    dispatch({
-      type: ATTENDANCESTART_MONTH_REQUEST,
-      data: data,
-    });
-  };
-
-  const vacationYear = async () => {
-    const data = {
-      year: year
-    }
-    dispatch({
-      type: ATTENDANCESTART_YEAR_REQUEST,
-      data: data,
-    });
-  };
-
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (filterType === "date" && startDate && endDate) {
-      vacationDate();
-    } else if (filterType === "month" && year && month) {
-      vacationMonth();
-    } else if (filterType === "year" && year) {
-      vacationYear();
-    }
-  }, [year, month, startDate, endDate]);
 
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">

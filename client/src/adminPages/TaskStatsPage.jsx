@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDataManager } from '../hooks/useDataManager';
 import FilterControls from '../components copy/FilterControls';
 import TaskStatsTable from '../components copy/TaskStatsTable';
 import StatisticsChart from '../components copy/StatisticsChart';
 import { taskTypes } from '../data/mockData';
+import { useDispatch, useSelector } from 'react-redux';
+import { TASKSTART_DATE_REQUEST } from '../reducers/taskStart';
+import { PROCESS_LIST_REQUEST } from '../reducers/process';
 
 const TaskStatsPage = () => {
   const {
@@ -16,17 +19,82 @@ const TaskStatsPage = () => {
     filteredTaskRecords,
     taskStats,
     setDateRange,
-    setMonth,
-    setYear,
+    // setMonth,
+    // setYear,
     setEmployee,
     setTaskType,
     setSorting,
     resetFilters,
   } = useDataManager();
 
+  const { processLists } = useSelector((state) => state.process);
+  console.log(processLists)
+
+
   const [showChart, setShowChart] = useState(false);
   const [timeFrame, setTimeFrame] = useState('daily');
   const [selectedTaskType, setSelectedTaskType] = useState(null);
+
+  const [filterType, setFilterType] = useState('date'); // 'date', 'month', or 'year'
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [month, setMonth] = useState(null);
+  const [year, setYear] = useState(null);
+  
+  const handleProcessLists = async () => {
+    dispatch({
+      type: PROCESS_LIST_REQUEST,
+     
+    });
+  };
+
+  const vacationDate = async () => {
+    const data = {
+      startDate: startDate,
+      endDate: endDate,
+    }
+    dispatch({
+      type: TASKSTART_DATE_REQUEST,
+      data: data,
+    });
+  };
+
+  // const vacationMonth = async () => {
+  //   const data = {
+  //     year: year,
+  //     month: month,
+  //   }
+  //   dispatch({
+  //     type: ATTENDANCESTART_MONTH_REQUEST,
+  //     data: data,
+  //   });
+  // };
+
+  // const vacationYear = async () => {
+  //   const data = {
+  //     year: year
+  //   }
+  //   dispatch({
+  //     type: ATTENDANCESTART_YEAR_REQUEST,
+  //     data: data,
+  //   });
+  // };
+console.log("사작일", startDate)
+console.log("종료일", endDate)
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (filterType === "date" && startDate && endDate) {
+      vacationDate();
+    } else if (filterType === "month" && year && month) {
+      // vacationMonth();
+    } else if (filterType === "year" && year) {
+      // vacationYear();
+    } else{
+      handleProcessLists();
+    }
+  }, [year, month, startDate, endDate]);
+
 
   const handleShowChart = () => {
     setShowChart(!showChart);
@@ -41,10 +109,18 @@ const TaskStatsPage = () => {
     setTaskType(type === selectedTaskType ? null : type);
   };
 
-  // Filter records based on selected task type
-  const filteredByTaskType = selectedTaskType
-    ? filteredTaskRecords.filter(record => record.taskType === selectedTaskType)
-    : filteredTaskRecords;
+  const { taskStartFilterData } = useSelector((state) => state.taskStart);
+  
+  console.log(selectedTaskType)
+
+  console.log(taskStartFilterData)
+
+
+  const filteredByTaskType = selectedTaskType 
+  && taskStartFilterData? taskStartFilterData.filter(record => String(record.process?.process_code) === String(selectedTaskType))
+  : taskStartFilterData;
+  console.log(filteredByTaskType)
+
 
   return (
     <div>
@@ -66,19 +142,11 @@ const TaskStatsPage = () => {
       </div>
 
       <FilterControls
-        onDateRangeChange={setDateRange}
-        onMonthChange={setMonth}
-        onYearChange={setYear}
-        onEmployeeChange={setEmployee}
-        onTaskTypeChange={setTaskType}
-        onResetFilters={resetFilters}
-        dateRangeFilter={dateRangeFilter}
-        monthFilter={monthFilter}
-        yearFilter={yearFilter}
-        employeeFilter={employeeFilter}
-        taskTypeFilter={taskTypeFilter}
-        taskTypes={taskTypes}
-        showTaskTypeFilter={true}
+         setFilterType = {setFilterType}
+         setStartDate = {setStartDate}
+         setEndDate = {setEndDate}
+         setMonth = {setMonth}
+         setYear = {setYear}
       />
 
       {/* Task type selection buttons */}
@@ -86,17 +154,17 @@ const TaskStatsPage = () => {
         <div className="bg-white p-4 rounded-lg shadow">
           <h3 className="text-lg font-medium text-gray-900 mb-3">업무 유형 선택</h3>
           <div className="flex flex-wrap gap-2">
-            {taskTypes.map((type) => (
+            {processLists?.map((process ,index) => (
               <button
-                key={type}
-                onClick={() => handleTaskTypeSelect(type)}
+                key={index}
+                onClick={() => handleTaskTypeSelect(process.process_code)}
                 className={`px-3 py-1 rounded text-sm ${
-                  selectedTaskType === type
+                  selectedTaskType === process.process_code
                     ? 'bg-blue-600 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                {type}
+                {process.process_name}
               </button>
             ))}
             {selectedTaskType && (
@@ -148,7 +216,7 @@ const TaskStatsPage = () => {
             </div>
 
             <StatisticsChart
-              taskData={filteredByTaskType}
+              // taskData={filteredByTaskType}
               type="task"
               timeFrame={timeFrame}
             />
@@ -158,10 +226,11 @@ const TaskStatsPage = () => {
 
       <div className="mb-6">
         <TaskStatsTable
-          records={filteredByTaskType}
+          // records={filteredByTaskType}
           onSort={setSorting}
           sortConfig={sortConfig}
           taskType={selectedTaskType}
+          filteredByTaskType={filteredByTaskType}
         />
       </div>
 

@@ -1,31 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { ReactComponent as Icon1 } from '../Assets/Images/star.svg';
 import '../css/task.css';
-import BottomBar from '../Components/BottomBar';
+import BottomBar from '../components/BottomBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { USER_PROCESS_ONE_LIST_REQUEST } from '../reducers/userProcess';
 import { TASK_REGISTER_REQUEST } from '../reducers/task';
 import { TASK_NEW_ONE_REQUEST } from '../reducers/task';
+import { TASKSTART_NEW_ONE_REQUEST, TASKSTART_REGISTER_REQUEST } from '../reducers/taskStart';
+import { TASKEND_REGISTER_REQUEST } from '../reducers/taskEnd';
 
 
-const TaskPage = () => {
+const Task = () => {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.user);
 
     const { userProcessOneLists } = useSelector((state) => state.userProcess);
     const { taskNewOne } = useSelector((state) => state.task);
-    const taskOne = taskNewOne || null;  // 데이터가 배열이라면 첫 번째 항목을 가져옵니다.
+    const { taskStartNewOne } = useSelector((state) => state.taskStart);
+
+    const taskOne = null;  // 데이터가 배열이라면 첫 번째 항목을 가져옵니다.
 
 
 
     console.log(taskNewOne)
+
+    console.log(taskStartNewOne)
+
     const todayDate = new Date();
     const formattedDate = todayDate.toISOString().split("T")[0];
-
 
     useEffect(() => {
         userProcessOneList();
         taskNew()
+        taskStartNew();
     }, []);
 
     useEffect(() => {
@@ -46,6 +53,12 @@ const TaskPage = () => {
     const taskNew = () => {
         dispatch({
             type: TASK_NEW_ONE_REQUEST,
+        });
+    };
+
+    const taskStartNew = () => {
+        dispatch({
+            type: TASKSTART_NEW_ONE_REQUEST,
         });
     };
 
@@ -103,12 +116,12 @@ const TaskPage = () => {
             task_count: selectedProcess.user_process_count,
             task_start_time: startTime,
             process_code: selectedProcess.process.process_code,
-            task_date: formattedDate,
+            task_start_date: formattedDate,
         };
 
 
         dispatch({
-            type: TASK_REGISTER_REQUEST,
+            type: TASKSTART_REGISTER_REQUEST,
             data: data,
         });
         setIsModalOpen(false);
@@ -125,20 +138,29 @@ const TaskPage = () => {
         setIsEndModalOpen(false);
     }
 
-    const handleEndConfirm = () =>{
+    const handleEndConfirm = () => {
         console.log(endTime)
         console.log(totalWorkTime)
         console.log(totalCount)
-        console.log(taskOne.task_id)
-        
-        alert('aaa')
+
+        const data = {
+            task_count: totalCount,
+            task_end_time: endTime,
+            task_end_date: formattedDate,
+            task_start_id: taskStartNewOne.task_start_id
+        };
+        dispatch({
+            type: TASKEND_REGISTER_REQUEST,
+            data: data,
+        });
+        setIsModalOpen(false);
 
     }
 
-    
 
 
-    
+
+
 
 
     // 업무 종료 버튼 클릭 시
@@ -155,7 +177,7 @@ const TaskPage = () => {
         setEndTime(getFormattedTime(now));
 
         // 업무 시간 계산
-        const [startH, startM] = startTime.split(":").map(Number);
+        const [startH, startM] = taskStartNewOne.task_start_time.split(":").map(Number);
         const startDate = new Date();
         startDate.setHours(startH, startM, 0, 0);
 
@@ -164,7 +186,7 @@ const TaskPage = () => {
         const minutes = Math.floor((workDuration % (1000 * 60 * 60)) / (1000 * 60));
 
         setTotalWorkTime(`${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`);
-        setTotalCount(taskOne.task_count)
+        setTotalCount(taskStartNewOne.task_count)
         setIsEndModalOpen(true)
 
     };
@@ -185,94 +207,79 @@ const TaskPage = () => {
         }
     }, [totalCount, totalWorkTime]);
 
-    console.log(totalCount)
     return (
         <div className='task'>
             <div></div>
             <div className="notice">
-                <Icon1 className="icon" />
+                <div className="w-10 h-10 cursor-pointer"><img src={`${process.env.PUBLIC_URL}/icon/star.png`} alt="Map Icon" />
+                </div>
                 <p>안녕하세요 <span className='user_name'>{user?.user_name}</span>님! 오늘 하루도 화이팅!</p>
             </div>
+
             <div className="worker_select">
                 {/* 옵션 선택 드롭다운 */}
-                <select
-                    className='select_one'
-                    onChange={handleChange}
-                >
-
-                    {
-                        taskOne ? (
-                            <option value="current">
-                                {taskOne.process.process_name} - {taskOne.task_state}
-                            </option>
-                        ) : (
-                            <>
-                                <option>업무공정을 선택해주세요</option>
-                                {
-                                    userProcessOneLists?.map((userProcessOneList, index) => {
-                                        return (
-                                            <option key={index} value={index}>
-                                                {userProcessOneList.process.process_name}
-                                            </option>
-                                        )
-                                    })
-                                }
-                            </>
-                        )
-                    }
+                <select className='select_one' onChange={handleChange}>
+                    {!taskStartNewOne?.task_end ? (
+                        <option value="current">{taskStartNewOne?.process.process_name}</option>
+                    ) : (
+                        <>
+                            <option>업무공정을 선택해주세요</option>
+                            {userProcessOneLists?.map((userProcessOneList, index) => (
+                                <option key={index} value={index}>
+                                    {userProcessOneList.process.process_name}
+                                </option>
+                            ))}
+                        </>
+                    )}
                 </select>
 
-                {
-                    taskOne ? (
-                        <div className='select_two'>
-                            <div>
-                                총 {taskOne.task_count}벌
-                            </div>
-                            <div>
-                                평균 {taskOne.process.hour_average}벌 / 시간 당
-                            </div>
-                        </div>
-                    ) : (
-                        <></>
-                    )
-                }
-
-                {selectedProcess && (
+                {/* 선택된 업무 정보 */}
+                {(taskStartNewOne || selectedProcess) && (
                     <div className='select_two'>
-                        <div>
-                            총 {selectedProcess.user_process_count}벌
-                        </div>
-                        <div>
-                            평균 {selectedProcess.process.hour_average}벌 / 시간 당
-                        </div>
+                        <div>총 {taskStartNewOne?.task_count || selectedProcess?.user_process_count}벌</div>
+                        <div>평균 {taskStartNewOne?.process.hour_average || selectedProcess?.process.hour_average}벌 / 시간 당</div>
                     </div>
                 )}
-                {/* <div className="select_three">
-                    <button>QR촬영</button>
-                    <button>선택</button>
+            </div>
+
+            {/* 업무 시간 박스 */}
+            <div className="work_time_container">
+                <div className="work_time_box">
+                    <div className="work_time_title">&nbsp;</div>
+                    <div className="work_time_title">업무 시작 날짜</div>
+                    <div className="work_time_content">{taskStartNewOne?.task_start_date || "미정"}</div>
+                    <div className="work_time_title">&nbsp;</div>
+                    <div className="work_time_title">업무 시작 시간</div>
+                    <div className="work_time_content">{taskStartNewOne?.task_start_time || "미정"}</div>
+                    <div className="work_time_title">&nbsp;</div>
+                </div>
+                <div className="work_time_box">
+                    <div className="work_time_title">&nbsp;</div>
+                    <div className="work_time_title">업무 종료 날짜</div>
+                    <div className="work_time_content">{taskStartNewOne?.task_end?.task_end_date || "미정"}</div>
+                    <div className="work_time_title">&nbsp;</div>
+                    <div className="work_time_title">업무 종료 사간</div>
+                    <div className="work_time_content">{taskStartNewOne?.task_end?.task_end_time || "미정"}</div>
+                    <div className="work_time_title">&nbsp;</div>
+                </div>
+                {/* <div className="work_time_box">
+                    <div className="work_time_title">&nbsp;</div>
+                    <div className="work_time_title">총 업무시간</div>
+                    <div className="work_time_content">{totalWorkTime || "0시간"}</div>
+                    <div className="work_time_title">&nbsp;</div>
                 </div> */}
             </div>
-            <div className="work_time">
-                <div className="work_process_time">
-                    <div className="work_time_one">
-                        <div>업무시간</div>
-                        <div>시작시간 {startTime}&nbsp;</div>
-                        <div>종료시간 {endTime}&nbsp;</div>
 
-                    </div>
-                    <div className="work_time_two">
-                        <div>총 업무시간</div>
-                        <div>{totalWorkTime}</div>
-                    </div>
-                </div>
-                <div className="work_time_button">
-                    <button onClick={handleStart} disabled={taskOne}>업무시작</button>
-                    <button onClick={handleEnd} disabled={!startTime || isModalOpen || !taskOne}>
-                        업무종료</button>
-                </div>
+            {/* 업무 시작/종료 버튼 */}
+            <div className="work_time_buttons">
+                <button onClick={handleStart} disabled={!taskStartNewOne?.task_end && taskStartNewOne}>업무시작</button>
+                <button onClick={handleEnd}>업무종료</button>
             </div>
+
             <div>오늘 업무 총평: 참 잘했어요</div>
             <BottomBar />
+
+            {/* 업무 시작 모달 */}
             {isModalOpen && (
                 <div className="modal">
                     <div className="modal_content">
@@ -282,32 +289,29 @@ const TaskPage = () => {
                     </div>
                 </div>
             )}
+
+            {/* 업무 종료 모달 */}
             {isEndModalOpen && (
                 <div className="modal">
                     <div className="modal_content">
                         <p>업무를 종료하시겠습니까?</p>
                         <p>총 수량: <input type="number" value={totalCount} onChange={(e) => setTotalCount(e.target.value)} /> 벌</p>
                         <p>총 업무 시간: {totalWorkTime}</p>
-                        {totalCount}
-                        {totalCount && totalCount > 0 ? (
+
+                        {totalCount > 0 && (
                             <>
                                 <p>시간당 작업량: {hourlyRate} 벌</p>
                                 <p>분당 작업량: {minuteRate} 벌</p>
                             </>
-                        ) : (
-                            <></>
                         )}
 
-                        {   
-                            !totalCount ? (
-                                <p></p>
-                            ) : taskOne.process.hour_average > hourlyRate ? (
-                                <p>분발하세요</p>
-                            ) : (
-                                <p>잘하네요</p>
-                            )
-                        }
-                        <button disabled = {true} onClick={handleEndConfirm}>업무종료</button>
+                        {!totalCount ? null : taskStartNewOne.process.hour_average > hourlyRate ? (
+                            <p>분발하세요</p>
+                        ) : (
+                            <p>잘하네요</p>
+                        )}
+
+                        <button onClick={handleEndConfirm}>업무종료</button>
                         <button onClick={handleEndClose}>닫기</button>
                     </div>
                 </div>
@@ -316,4 +320,4 @@ const TaskPage = () => {
     );
 };
 
-export default TaskPage;
+export default Task;

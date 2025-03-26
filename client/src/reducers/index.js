@@ -10,6 +10,10 @@ import attendanceStart from "./attendanceStart";
 import attendanceEnd from "./attendanceEnd";
 import vacation from "./vacation";
 import companyAddress from "./companyAddress";
+import taskStart from "./taskStart";
+import taskEnd from "./taskEnd";
+
+
 const rootReducer = combineReducers({
   user,
   auth,
@@ -21,7 +25,9 @@ const rootReducer = combineReducers({
   attendanceStart,
   attendanceEnd,
   vacation,
-  companyAddress
+  companyAddress,
+  taskStart,
+  taskEnd,
 });
 
 export default rootReducer;

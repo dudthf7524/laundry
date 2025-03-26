@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ReactComponent as Icon1 } from '../Assets/Images/volume-up.svg';
 import '../css/attendance.css';
-import BottomBar from "../Components/BottomBar";
+import BottomBar from "../components/BottomBar";
 import { useDispatch, useSelector } from 'react-redux';
 import { TIME_DETAIL_REQUEST } from '../reducers/time';
 import { WORK_END_TIME_REQUEST, WORK_NEW_ONE_REQUEST, WORK_REGISTER_REQUEST } from '../reducers/work';
@@ -199,7 +199,8 @@ const Attendance = () => {
         <div className='attendance'>
             <div></div>
             <div className="notice">
-                <Icon1 className="icon" />
+                <div className="w-10 h-10 cursor-pointer"><img src={`${process.env.PUBLIC_URL}/icon/star.png`} alt="Map Icon" />
+                </div>
                 <p>공지입니다</p>
             </div>
             <div className="date_month_time">
@@ -221,88 +222,48 @@ const Attendance = () => {
                     </div> */}
                 </div>
             )}
-            <div className="work_time">
 
-                <div className='work_time_option'>
-                    <div className="work_time_left">
-                        <p className='title_a'>출근</p>
-                        <p className='title'>출근날짜</p>
-                        <p className='content'>{attendanceStartNewOne?.attendance_start_date}</p>
-                        <p className='title'>출근시간</p>
-                        <p className='content'>{attendanceStartNewOne?.attendance_start_time}</p>
-                    </div>
+            <div className="work_time_container">
+                <div className="work_time_box">
+                    <div className="work_time_title">&nbsp;</div>
+                    <div className="work_time_title">출근날짜</div>
+                    <div className="work_time_content">{attendanceStartNewOne?.attendance_start_date}</div>
+                    <div className="work_time_title">출근시간</div>
+                    <div className="work_time_content">{attendanceStartNewOne?.attendance_start_time}</div>
+                    <div className="work_time_title">&nbsp;</div>
                 </div>
-                <div className='work_time_option'>
-                    <div className="work_time_mid">
-                        <p className='title'>출근시간</p>
-                        <p className='content'>{timeDetail?.start_time}</p>
-                        <p className='title'>퇴근시간</p>
-                        <p className='content'>{timeDetail?.end_time}</p>
-                        <p className='title'>휴게시간</p>
-                        <p className='content'>{timeDetail?.rest_start_time} ~ {timeDetail?.rest_end_time}</p>
-                    </div>
+                <div className="work_time_box">
+                    <div className="work_time_title">출근시간</div>
+                    <div className="work_time_content">{timeDetail?.start_time}</div>
+                    <div className="work_time_title">퇴근시간</div>
+                    <div className="work_time_content">{timeDetail?.end_time}</div>
+                    <div className="work_time_title">휴게시간</div>
+                    <div className="work_time_content">{timeDetail?.rest_start_time} ~ {timeDetail?.rest_end_time}</div>
                 </div>
-                <div className='work_time_option'>
-                    <div className="work_time_left">
-                        <p className='title_a'>퇴근</p>
-                        <p className='title'>퇴근날짜</p>
-                        <p className='content'>{attendanceStartNewOne?.attendance_end?.attendance_end_date}</p>
-                        <p className='title'>퇴근시간</p>
-                        <p className='content'>{attendanceStartNewOne?.attendance_end?.attendance_end_time}</p>
-                    </div>
-                </div>
+                <div className="work_time_box">
+                    <div className="work_time_title">&nbsp;</div>
+                    <div className="work_time_title">퇴근날짜</div>
+                    <div className="work_time_content">{attendanceStartNewOne?.attendance_end?.attendance_end_date}</div>
+                    <div className="work_time_title">퇴근사간</div>
+                    <div className="work_time_content">{attendanceStartNewOne?.attendance_end?.attendance_end_time}</div>
+                    <div className="work_time_title">&nbsp;</div>
 
-                {/* <div className="work_time_option">
-                    <p>출근시간</p>
-                    <p>{timeDetail?.start_time}</p>
-                </div>
-                <div className="work_time_option">
-                    <p>퇴근시간</p>
-                    <p>{timeDetail?.end_time}</p>
-                </div>
-                <div className="work_time_option">
-                    <p>휴게시간</p>
-                    <p>{timeDetail?.rest_start_time} ~ {timeDetail?.rest_end_time}</p>
-                </div>
-                {
-                    attendanceStartNewOne ? (
-                        <>
-                            <div className="work_time_option">
-                                <p>상태</p>
-                                <p>출근</p>
-                                <p>퇴근</p>
-                            </div>
-                            <div className="work_time_option">
-                                <p className='working'>{attendanceStartNewOne?.attendance_start_state}</p>
-                                <p>{attendanceStartNewOne?.attendance_start_date}</p>
-                                <p>{attendanceStartNewOne?.attendance_start_time}</p>
-                            </div>
-                            <div className="work_time_option">
-                                <p className='working'>{attendanceStartNewOne?.attendance_end.attendance_end_state}</p>
-                                <p>{attendanceStartNewOne?.attendance_end.attendance_end_date}</p>
-                                <p>{attendanceStartNewOne?.attendance_end.attendance_end_time}</p>
-                            </div>
-                        </>
-                    ) : (
-                        <></>
-                    )
-                } */}
-
-            </div>
-            <div className='button_section'>
-                <div className='buttons'>
-                    <button disabled={!attendanceStartNewOne?.attendance_end && attendanceStartNewOne} onClick={() => {
-                        attendance();
-                    }}>
-                        출근
-                    </button>
-                    <button disabled={attendanceStartNewOne?.attendance_end || !attendanceStartNewOne} onClick={() => {
-                        leaveWork();
-                    }}>
-                        퇴근
-                    </button>
                 </div>
             </div>
+
+            <div className="work_time_buttons">
+                <button disabled={!attendanceStartNewOne?.attendance_end && attendanceStartNewOne} onClick={() => {
+                    attendance();
+                }}>
+                    출근
+                </button>
+                <button disabled={attendanceStartNewOne?.attendance_end || !attendanceStartNewOne} onClick={() => {
+                    leaveWork();
+                }}>
+                    퇴근
+                </button>
+            </div>
+
             <BottomBar />
         </div>
     );
