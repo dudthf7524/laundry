@@ -30,7 +30,10 @@ module.exports = (sequelize) => {
       foreignKey: 'process_code',
       sourceKey: 'process_code',
     });
-
+    process.hasMany(models.taskStart, {
+      foreignKey: 'process_code',
+      sourceKey: 'process_code',
+    });
   };
 
   return process;

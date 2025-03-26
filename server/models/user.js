@@ -81,6 +81,14 @@ module.exports = (sequelize) => {
       foreignKey: 'user_code',
       sourceKey: 'user_code',
     });
+    user.hasMany(models.taskStart, {
+      foreignKey: 'user_code',
+      sourceKey: 'user_code',
+    });
+    user.hasMany(models.taskEnd, {
+      foreignKey: 'user_code',
+      sourceKey: 'user_code',
+    });
   };
 
   return user;

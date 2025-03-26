@@ -26,7 +26,8 @@ const attendanceStartRoutes = require('./routes/attendanceStart');
 const attendanceEndRoutes = require('./routes/attendanceEnd');
 const vacationRoutes = require('./routes/vacation');
 const companyAddressRoutes = require('./routes/companyAddress');
-
+const taskStartRoutes = require('./routes/taskStart');
+const taskEndRoutes = require('./routes/taskEnd');
 
 const authData = require("./modelsInitializeData/authData");
 const processData = require("./modelsInitializeData/processData");
@@ -95,7 +96,8 @@ app.use('/attendanceStart', attendanceStartRoutes);
 app.use('/attendanceEnd', attendanceEndRoutes);
 app.use('/vacation', vacationRoutes);
 app.use('/companyAddress', companyAddressRoutes);
-
+app.use('/taskStart', taskStartRoutes);
+app.use('/taskEnd', taskEndRoutes);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "./build/index.html"));
