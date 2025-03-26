@@ -13,7 +13,14 @@ import {
     TASKSTART_DATE_REQUEST,
     TASKSTART_DATE_SUCCESS,
     TASKSTART_DATE_FAILURE,
-
+    
+    TASKSTART_MONTH_REQUEST,
+    TASKSTART_MONTH_SUCCESS,
+    TASKSTART_MONTH_FAILURE,
+    
+    TASKSTART_YEAR_REQUEST,
+    TASKSTART_YEAR_SUCCESS,
+    TASKSTART_YEAR_FAILURE,
 
 } from "../reducers/taskStart";
 
@@ -45,8 +52,6 @@ function* taskStartRegister(action) {
         });
     }
 }
-
-
 
 function* watchTaskStartNewOne() {
     yield takeLatest(TASKSTART_NEW_ONE_REQUEST, taskStartNewOne);
@@ -105,6 +110,60 @@ function* taskStartDate(action) {
     }
 }
 
+function* watchTaskStartMonth() {
+    yield takeLatest(TASKSTART_MONTH_REQUEST, taskStartMonth);
+}
+
+function taskStartMonthAPI(data) {
+
+    return axios.post("/taskStart/month", data);
+}
+
+function* taskStartMonth(action) {
+    try {
+        const result = yield call(taskStartMonthAPI, action.data);
+       
+        yield put({
+            type: TASKSTART_MONTH_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: TASKSTART_MONTH_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
+function* watchTaskStartYear() {
+    yield takeLatest(TASKSTART_YEAR_REQUEST, taskStartYear);
+}
+
+function taskStartYearAPI(data) {
+
+    return axios.post("/taskStart/year", data);
+}
+
+function* taskStartYear(action) {
+    try {
+        const result = yield call(taskStartYearAPI, action.data);
+       
+        yield put({
+            type: TASKSTART_YEAR_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: TASKSTART_YEAR_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
 export default function* taskStartSaga() {
-    yield all([fork(watchTaskStartRegister), fork(watchTaskStartNewOne), fork(watchTaskStartDate)]);
+    yield all([fork(watchTaskStartRegister), fork(watchTaskStartNewOne), fork(watchTaskStartDate), fork(watchTaskStartMonth), fork(watchTaskStartYear)]);
 }

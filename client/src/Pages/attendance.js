@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ReactComponent as Icon1 } from '../Assets/Images/volume-up.svg';
 import '../css/attendance.css';
 import BottomBar from "../components/BottomBar";
 import { useDispatch, useSelector } from 'react-redux';
 import { TIME_DETAIL_REQUEST } from '../reducers/time';
-import { WORK_END_TIME_REQUEST, WORK_NEW_ONE_REQUEST, WORK_REGISTER_REQUEST } from '../reducers/work';
 import { ATTENDANCESTART_NEW_ONE_REQUEST, ATTENDANCESTART_REGISTER_REQUEST } from '../reducers/attendanceStart';
 import { ATTENDANCEEND_TIME_REQUEST } from '../reducers/attendanceEnd';
 import MyLocation from './myLocation';
@@ -122,18 +120,12 @@ const Attendance = () => {
         });
     };
 
-    const { workNewOne } = useSelector((state) => state.work);
-    const workNewOneLoding = () => {
-        dispatch({
-            type: WORK_NEW_ONE_REQUEST,
-        });
-    };
+ 
     //✅데이터
 
     useEffect(() => {
         // today();
         timeDetailLoding();
-        workNewOneLoding();
         attendanceStartNewOneRequest();
     }, []);
 

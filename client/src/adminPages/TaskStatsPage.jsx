@@ -5,7 +5,7 @@ import TaskStatsTable from '../components copy/TaskStatsTable';
 import StatisticsChart from '../components copy/StatisticsChart';
 import { taskTypes } from '../data/mockData';
 import { useDispatch, useSelector } from 'react-redux';
-import { TASKSTART_DATE_REQUEST } from '../reducers/taskStart';
+import { TASKSTART_DATE_REQUEST, TASKSTART_MONTH_REQUEST, TASKSTART_YEAR_REQUEST } from '../reducers/taskStart';
 import { PROCESS_LIST_REQUEST } from '../reducers/process';
 
 const TaskStatsPage = () => {
@@ -48,7 +48,7 @@ const TaskStatsPage = () => {
     });
   };
 
-  const vacationDate = async () => {
+  const handleDate = async () => {
     const data = {
       startDate: startDate,
       endDate: endDate,
@@ -59,37 +59,38 @@ const TaskStatsPage = () => {
     });
   };
 
-  // const vacationMonth = async () => {
-  //   const data = {
-  //     year: year,
-  //     month: month,
-  //   }
-  //   dispatch({
-  //     type: ATTENDANCESTART_MONTH_REQUEST,
-  //     data: data,
-  //   });
-  // };
+  const handleMonth = async () => {
+    const data = {
+      year: year,
+      month: month,
+    }
+    dispatch({
+      type: TASKSTART_MONTH_REQUEST,
+      data: data,
+    });
+  };
 
-  // const vacationYear = async () => {
-  //   const data = {
-  //     year: year
-  //   }
-  //   dispatch({
-  //     type: ATTENDANCESTART_YEAR_REQUEST,
-  //     data: data,
-  //   });
-  // };
+  const handleYear = async () => {
+    const data = {
+      year: year
+    }
+    dispatch({
+      type: TASKSTART_YEAR_REQUEST,
+      data: data,
+    });
+  };
+
 console.log("사작일", startDate)
 console.log("종료일", endDate)
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (filterType === "date" && startDate && endDate) {
-      vacationDate();
+      handleDate();
     } else if (filterType === "month" && year && month) {
-      // vacationMonth();
+      handleMonth();
     } else if (filterType === "year" && year) {
-      // vacationYear();
+      handleYear();
     } else{
       handleProcessLists();
     }
@@ -235,7 +236,7 @@ console.log("종료일", endDate)
       </div>
 
       {/* Task type statistics summary */}
-      {taskStats.taskTypeStats && taskStats.taskTypeStats.length > 0 && (
+      {/* {taskStats.taskTypeStats && taskStats.taskTypeStats.length > 0 && (
         <div className="bg-white p-4 rounded-lg shadow mb-4">
           <h3 className="text-lg font-medium text-gray-900 mb-3">업무 유형별 통계</h3>
           <div className="overflow-x-auto">
@@ -273,7 +274,7 @@ console.log("종료일", endDate)
             </table>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

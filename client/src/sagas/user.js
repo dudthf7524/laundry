@@ -13,6 +13,10 @@ import {
     USER_LIST_SUCCESS,
     USER_LIST_FAILURE,
 
+    USER_UPDATE_REQUEST,
+    USER_UPDATE_SUCCESS,
+    USER_UPDATE_FAILURE,
+
     USER_AUTH_UPDATE_REQUEST,
     USER_AUTH_UPDATE_SUCCESS,
     USER_AUTH_UPDATE_FAILURE,
@@ -102,7 +106,37 @@ function* userList() {
     }
 }
 
-// ✅ 사용자 권한 설정 변경
+function* watchUserUpdate() {
+    yield takeLatest(USER_UPDATE_REQUEST, userUpdate);
+}
+
+function userUpdateAPI(data) {
+
+    return axios.post("/user/update", data);
+}
+
+function* userUpdate(action) {
+    try {
+        const result = yield call(userUpdateAPI, action.data);
+
+        yield put({
+            type: USER_UPDATE_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) {
+            alert('직원 정보 수정 완료')
+            window.location.href = "/admin/employees";
+        }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: USER_UPDATE_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
+
 function* watchUserAuthUpdate() {
     yield takeLatest(USER_AUTH_UPDATE_REQUEST, userAuthUpdate);
 }
@@ -115,7 +149,6 @@ function userAuthUpdateAPI(data) {
 function* userAuthUpdate(action) {
     try {
         const result = yield call(userAuthUpdateAPI, action.data);
-
         yield put({
             type: USER_AUTH_UPDATE_SUCCESS,
             data: result.data,
@@ -136,5 +169,5 @@ function* userAuthUpdate(action) {
 
 
 export default function* userSaga() {
-    yield all([fork(watchUserLogin), fork(watchUserAuth), fork(watchUserList), fork(watchUserAuthUpdate)]);
+    yield all([fork(watchUserLogin), fork(watchUserAuth), fork(watchUserList), fork(watchUserUpdate), fork(watchUserAuthUpdate), ]);
 }

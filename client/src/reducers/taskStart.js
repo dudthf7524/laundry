@@ -14,10 +14,18 @@ export const initialState = {
     taskStart_date_done: false,
     taskStart_date_error: null,
 
+    taskStart_month_Loading: false,
+    taskStart_month_done: false,
+    taskStart_month_error: null,
+
+    taskStart_year_Loading: false,
+    taskStart_year_done: false,
+    taskStart_year_error: null,
+
     taskStartNewOne: null,
 
     taskStartFilterData: null,
-   
+
 
 };
 
@@ -33,6 +41,14 @@ export const TASKSTART_NEW_ONE_FAILURE = "TASKSTART_NEW_ONE_FAILURE";
 export const TASKSTART_DATE_REQUEST = "TASKSTART_DATE_REQUEST";
 export const TASKSTART_DATE_SUCCESS = "TASKSTART_DATE_SUCCESS";
 export const TASKSTART_DATE_FAILURE = "TASKSTART_DATE_FAILURE";
+
+export const TASKSTART_MONTH_REQUEST = "TASKSTART_MONTH_REQUEST";
+export const TASKSTART_MONTH_SUCCESS = "TASKSTART_MONTH_SUCCESS";
+export const TASKSTART_MONTH_FAILURE = "TASKSTART_MONTH_FAILURE";
+
+export const TASKSTART_YEAR_REQUEST = "TASKSTART_YEAR_REQUEST";
+export const TASKSTART_YEAR_SUCCESS = "TASKSTART_YEAR_SUCCESS";
+export const TASKSTART_YEAR_FAILURE = "TASKSTART_YEAR_FAILURE";
 
 const reducer = (state = initialState, action) => {
     return produce(state, (draft) => {
@@ -77,6 +93,34 @@ const reducer = (state = initialState, action) => {
             case TASKSTART_DATE_FAILURE:
                 draft.taskStart_date_Loading = false;
                 draft.taskStart_date_error = action.error;
+                break;
+            case TASKSTART_MONTH_REQUEST:
+                draft.taskStart_month_Loading = true;
+                draft.taskStart_month_error = null;
+                draft.taskStart_month_done = false;
+                break;
+            case TASKSTART_MONTH_SUCCESS:
+                draft.taskStart_month_Loading = false;
+                draft.taskStartFilterData = action.data
+                draft.taskStart_month_done = true;
+                break;
+            case TASKSTART_MONTH_FAILURE:
+                draft.taskStart_month_Loading = false;
+                draft.taskStart_month_error = action.error;
+                break;
+            case TASKSTART_YEAR_REQUEST:
+                draft.taskStart_year_Loading = true;
+                draft.taskStart_year_error = null;
+                draft.taskStart_year_done = false;
+                break;
+            case TASKSTART_YEAR_SUCCESS:
+                draft.taskStart_year_Loading = false;
+                draft.taskStartFilterData = action.data
+                draft.taskStart_year_done = true;
+                break;
+            case TASKSTART_YEAR_FAILURE:
+                draft.taskStart_year_Loading = false;
+                draft.taskStart_year_error = action.error;
                 break;
             default:
                 return state;

@@ -79,6 +79,29 @@ const userList = async () => {
     }
 };
 
+const userUpdate = async (data) => {
+    try {
+        const result = await user.update(
+            {
+                user_name: data.user_name, 
+                user_nickname: data.user_nickname, 
+                user_position: data.user_position, 
+                user_hire_date: data.user_hire_date, 
+            },
+            {
+                where: {
+                    user_code: data.user_code,
+                },
+            },
+
+        )
+        return result;
+
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 const userUpdateAuth = async (data) => {
   
     try {
@@ -106,6 +129,7 @@ module.exports = {
     userJoin,
     userLogin,
     userList,
+    userUpdate,
     userUpdateAuth,
 
 };

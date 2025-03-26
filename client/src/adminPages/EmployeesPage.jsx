@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { employees, permissionLevels } from '../data/mockData';
-import { USER_LIST_REQUEST } from '../reducers/user';
+import { USER_LIST_REQUEST, USER_UPDATE_REQUEST } from '../reducers/user';
 import { useDispatch, useSelector } from 'react-redux';
 
 const EmployeesPage = () => {
@@ -9,10 +9,31 @@ const EmployeesPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
+  const [selected, setSelected] = useState({
+    user_code: "",
+    user_name: "",
+    user_nickname: "",
+    user_position: "",
+    user_hire_date: "",
+    auth_code: "",
+    auth_name: "",
+  });
+
+  const [selectUpdate, setSelectUpdate] = useState({
+    user_code: "",
+    user_name: "",
+    user_nickname: "",
+    user_position: "",
+    user_hire_date: "",
+    auth_code: "",
+    auth_name: "",
+  });
+
   // Handle search input change
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
+
 
   useEffect(() => {
     userList();
@@ -25,25 +46,65 @@ const EmployeesPage = () => {
     });
   };
 
+  const handleChange = (userList) => {
+    setSelected(prev => ({
+      ...prev,
+      user_code: userList.user_code,
+      user_name: userList.user_name,
+      user_nickname: userList.user_nickname,
+      user_position: userList.user_position,
+      user_hire_date: userList.user_hire_date,
+      auth_code: userList.auth.auth_code,
+      auth_name: userList.auth.auth_name,
+
+      // 필요에 따라 더 많은 정보를 추가할 수 있습니다
+    }));
+
+    setSelectUpdate(prev => ({
+      ...prev,
+      user_code: userList.user_code,
+      user_name: userList.user_name,
+      user_nickname: userList.user_nickname,
+      user_position: userList.user_position,
+      user_hire_date: userList.user_hire_date,
+      auth_code: userList.auth.auth_code,
+      auth_name: userList.auth.auth_name,
+
+      // 필요에 따라 더 많은 정보를 추가할 수 있습니다
+    }));
+  };
+
   const { userLists } = useSelector((state) => state.user) || { userLists: [] };
 
-  // Filter employees based on search term
-  var aaa;
-  if (userLists) {
-    aaa = userLists;
-  }
+  const { userUpdates } = useSelector((state) => state.user) || { userUpdates: [] };
 
+  console.log("수정된 데이터" + userUpdates);
 
-  const filteredEmployees = employees?.filter(employee => {
+  const filteredUserLists = userLists?.filter(employee => {
     const lowerCaseSearch = searchTerm.toLowerCase();
-    
-    console.log(employee.name)
+
     return (
-      employee.name.toLowerCase().includes(lowerCaseSearch) ||
-      employee.nickname.toLowerCase().includes(lowerCaseSearch) ||
-      employee.role.toLowerCase().includes(lowerCaseSearch)
+      employee.user_name.toLowerCase().includes(lowerCaseSearch) ||
+      employee.user_nickname.toLowerCase().includes(lowerCaseSearch) ||
+      employee.user_position.toLowerCase().includes(lowerCaseSearch)
     );
   });
+
+
+  const getYearsOfService = (hireDate) => {
+    const hire = new Date(hireDate); // 입사일을 Date 객체로 변환
+    const today = new Date(); // 현재 날짜
+    const years = today.getFullYear() - hire.getFullYear();
+
+    // 입사월, 입사일이 현재보다 이후라면 1년을 빼줌
+    if (
+      today.getMonth() < hire.getMonth() ||
+      (today.getMonth() === hire.getMonth() && today.getDate() < hire.getDate())
+    ) {
+      return years - 1;
+    }
+    return years;
+  };
 
   // Handle selecting an employee to view/edit details
   const handleEmployeeSelect = (employee) => {
@@ -53,22 +114,37 @@ const EmployeesPage = () => {
   // Get color for permission badge
   const getPermissionColor = (permission) => {
     switch (permission) {
-      case 'master':
+      case 'A1':
         return 'bg-red-100 text-red-800';
-      case 'submaster':
+      case 'A2':
         return 'bg-orange-100 text-orange-800';
-      case 'manager':
+      case 'A3':
         return 'bg-blue-100 text-blue-800';
-      case 'employee':
+      case 'A4':
         return 'bg-green-100 text-green-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
   };
+  const userUpdate = () => {
+    const updatedUser = { ...selected };
+
+    const data = {
+      user_code: selectUpdate.user_code,
+      user_name: selectUpdate.user_name,
+      user_nickname: selectUpdate.user_nickname,
+      user_position: selectUpdate.user_position,
+      user_hire_date: selectUpdate.user_hire_date,
+    };
 
 
+    dispatch({
+        type: USER_UPDATE_REQUEST,
+        data: data,
 
+    });
 
+  }
   return (
     <div>
       <div className="mb-6">
@@ -109,41 +185,41 @@ const EmployeesPage = () => {
       {/* Employees List */}
       <div className="bg-white rounded-lg shadow mb-6 overflow-hidden">
         <ul className="divide-y divide-gray-200">
-          {filteredEmployees ? (
-            filteredEmployees.map((employee) => (
+          {filteredUserLists ? (
+            filteredUserLists?.map((userList, index) => (
               <li
-                key={employee.id}
-                className={`p-4 hover:bg-gray-50 cursor-pointer ${selectedEmployee?.id === employee.id ? 'bg-blue-50' : ''
+                key={index}
+                className={`p-4 hover:bg-gray-50 ${selected.user_code === userList.user_code ? 'bg-blue-50' : ''
                   }`}
-                onClick={() => handleEmployeeSelect(employee)}
+
               >
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                   <div className="flex-1">
                     <div className="flex items-center">
                       <div className="bg-gray-200 rounded-full h-10 w-10 flex items-center justify-center text-gray-700 font-bold">
-                        {employee.name.charAt(0)}
+                        {userList.user_name.charAt(0)}
                       </div>
                       <div className="ml-3">
                         <div className="flex items-center">
-                          <span className="text-lg font-medium text-gray-900">{employee.name}</span>
-                          <span className="ml-2 text-sm text-gray-500">({employee.nickname})</span>
-                          <span className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPermissionColor(employee.permission)}`}>
-                            {permissionLevels[employee.permission]?.name || '일반'}
+                          <span className="text-lg font-medium text-gray-900">{userList.user_name}</span>
+                          <span className="ml-2 text-sm text-gray-500">({userList.user_nickname})</span>
+                          <span className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPermissionColor(userList.auth.auth_code)}`}>
+                            {userList.auth.auth_name}
                           </span>
                         </div>
                         <div className="text-sm text-gray-500">
-                          {employee.role} • {employee.years}년차
+                          {userList.user_position} • {getYearsOfService(userList.user_hire_date)}년차
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="mt-2 md:mt-0 flex items-center">
                     <>
-                      <button className="text-blue-600 hover:text-blue-800 mr-3">
+                      <button className="text-blue-600 hover:text-blue-800 mr-3"
+                        onClick={() =>
+                          handleChange(userList)
+                        }>
                         수정
-                      </button>
-                      <button className="text-red-600 hover:text-red-800">
-                        삭제
                       </button>
                     </>
                   </div>
@@ -159,10 +235,10 @@ const EmployeesPage = () => {
       </div>
 
       {/* Selected Employee Details */}
-      {selectedEmployee && (
+      {selected.user_code && (
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-bold text-gray-900 mb-4">
-            {selectedEmployee.name} ({selectedEmployee.nickname}) 상세 정보
+            {selected.user_name} ({selected.user_nickname}) 상세 정보
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -171,25 +247,56 @@ const EmployeesPage = () => {
               <dl className="space-y-2">
                 <div className="flex flex-col sm:flex-row">
                   <dt className="text-sm font-medium text-gray-500 sm:w-40">이름</dt>
-                  <dd className="mt-1 sm:mt-0 text-sm text-gray-900">{selectedEmployee.name}</dd>
+                  <dd className="mt-1 sm:mt-0 text-sm text-gray-900">
+                    <input
+                      type="text"
+                      value={selectUpdate.user_name}
+                      onChange={(e) => setSelectUpdate({ ...selectUpdate, user_name: e.target.value })}
+                      className="border border-gray-300 rounded-md p-1 w-full"
+                    />
+                  </dd>
                 </div>
+
                 <div className="flex flex-col sm:flex-row">
                   <dt className="text-sm font-medium text-gray-500 sm:w-40">닉네임</dt>
-                  <dd className="mt-1 sm:mt-0 text-sm text-gray-900">{selectedEmployee.nickname}</dd>
+                  <dd className="mt-1 sm:mt-0 text-sm text-gray-900">
+                    <input
+                      type="text"
+                      value={selectUpdate.user_nickname}
+                      onChange={(e) => setSelectUpdate({ ...selectUpdate, user_nickname: e.target.value })}
+                      className="border border-gray-300 rounded-md p-1 w-full"
+                    />
+                  </dd>
                 </div>
+
                 <div className="flex flex-col sm:flex-row">
                   <dt className="text-sm font-medium text-gray-500 sm:w-40">직무형태</dt>
-                  <dd className="mt-1 sm:mt-0 text-sm text-gray-900">{selectedEmployee.role}</dd>
+                  <dd className="mt-1 sm:mt-0 text-sm text-gray-900">
+                    <input
+                      type="text"
+                      value={selectUpdate.user_position}
+                      onChange={(e) => setSelectUpdate({ ...selectUpdate, user_position: e.target.value })}
+                      className="border border-gray-300 rounded-md p-1 w-full"
+                    />
+                  </dd>
                 </div>
+
                 <div className="flex flex-col sm:flex-row">
-                  <dt className="text-sm font-medium text-gray-500 sm:w-40">근속 년수</dt>
-                  <dd className="mt-1 sm:mt-0 text-sm text-gray-900">{selectedEmployee.years}년</dd>
+                  <dt className="text-sm font-medium text-gray-500 sm:w-40">입사일</dt>
+                  <dd className="mt-1 sm:mt-0 text-sm text-gray-900">
+                    <input
+                      type="date"
+                      value={selectUpdate.user_hire_date}
+                      onChange={(e) => setSelectUpdate({ ...selectUpdate, user_hire_date: e.target.value })}
+                      className="border border-gray-300 rounded-md p-1 w-full"
+                    />
+                  </dd>
                 </div>
                 <div className="flex flex-col sm:flex-row">
                   <dt className="text-sm font-medium text-gray-500 sm:w-40">권한</dt>
                   <dd className="mt-1 sm:mt-0 text-sm text-gray-900">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPermissionColor(selectedEmployee.permission)}`}>
-                      {permissionLevels[selectedEmployee.permission]?.name || '일반'}
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPermissionColor(selected.auth_code)}`}>
+                      {permissionLevels[selected.auth_code]?.name || '일반'}
                     </span>
                   </dd>
                 </div>
@@ -199,27 +306,27 @@ const EmployeesPage = () => {
             <div>
               <h3 className="text-lg font-medium text-gray-900 mb-3">권한 상세</h3>
               <div className="text-sm text-gray-700">
-                {permissionLevels[selectedEmployee.permission]?.description}
+                {permissionLevels[selected.auth_code]?.description}
               </div>
 
               <div className="mt-6">
                 <h4 className="text-md font-medium text-gray-900 mb-2">기능 접근 권한</h4>
                 <ul className="space-y-1 text-sm">
                   <li className="flex items-center">
-                    <span className={permissionLevels[selectedEmployee.permission]?.canEdit ? 'text-green-600' : 'text-red-600'}>
-                      {permissionLevels[selectedEmployee.permission]?.canEdit ? '✓' : '✗'}
+                    <span className={permissionLevels[selected.auth_code]?.canEdit ? 'text-green-600' : 'text-red-600'}>
+                      {permissionLevels[selected.auth_code]?.canEdit ? '✓' : '✗'}
                     </span>
                     <span className="ml-2">데이터 수정 권한</span>
                   </li>
                   <li className="flex items-center">
-                    <span className={permissionLevels[selectedEmployee.permission]?.canView === 'all' ? 'text-green-600' : 'text-red-600'}>
-                      {permissionLevels[selectedEmployee.permission]?.canView === 'all' ? '✓' : '✗'}
+                    <span className={permissionLevels[selected.auth_code]?.canView === 'all' ? 'text-green-600' : 'text-red-600'}>
+                      {permissionLevels[selected.auth_code]?.canView === 'all' ? '✓' : '✗'}
                     </span>
                     <span className="ml-2">모든 직원 데이터 조회</span>
                   </li>
                   <li className="flex items-center">
-                    <span className={permissionLevels[selectedEmployee.permission]?.canView !== 'self' ? 'text-green-600' : 'text-red-600'}>
-                      {permissionLevels[selectedEmployee.permission]?.canView !== 'self' ? '✓' : '✗'}
+                    <span className={permissionLevels[selected.permission]?.canView !== 'self' ? 'text-green-600' : 'text-red-600'}>
+                      {permissionLevels[selected.permission]?.canView !== 'self' ? '✓' : '✗'}
                     </span>
                     <span className="ml-2">일부 직원 데이터 조회</span>
                   </li>
@@ -227,6 +334,9 @@ const EmployeesPage = () => {
               </div>
             </div>
           </div>
+          <button onClick={() => userUpdate()} className="mt-5 pb-3 pt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">
+            직원 정보수정
+          </button>
         </div>
       )}
     </div>

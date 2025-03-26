@@ -40,4 +40,32 @@ router.post("/date", async (req, res) => {
 
 });
 
+router.post("/month", async (req, res) => {
+    console.log(req.body)
+    try {
+        const result = await taskStart.taskStartMonth(req.body)
+        console.log("result")
+        console.log(result)
+        console.log("result")
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+
+});
+
+router.post("/year", async (req, res) => {
+    console.log(req.body)
+    try {
+        const result = await taskStart.taskStartYear(req.body)
+        console.log("result")
+        console.log(result)
+        console.log("result")
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+
+});
+
 module.exports = router;

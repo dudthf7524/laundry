@@ -75,7 +75,7 @@ const taskStartDate = async (data) => {
                     [Op.gte]: data.startDate, // 2024-03-24 이상
                     [Op.lte]: data.endDate,   // 2025-06-24 이하
                 },
-            },            attributes: [
+            }, attributes: [
                 'task_start_date',
                 'task_start_time',
                 [
@@ -92,7 +92,100 @@ const taskStartDate = async (data) => {
                 ],
             ],
         });
-       
+
+        return results;
+    } catch (error) {
+        console.error('Error fetching attendance:', error);
+        throw error;
+    }
+};
+
+
+const taskStartMonth = async (data) => {
+    try {
+        const results = await taskStart.findAll({
+            include: [
+                {
+                    model: taskEnd,
+                    required: false,
+                    attributes: ['task_end_date', 'task_end_time', 'total_count'], // ✅ 명확하게 필드 지정
+                },
+                {
+                    model: user,
+                    required: true,
+                    attributes: ['user_name', 'user_position'], // ✅ 필요한 필드만 가져오기
+                },
+                {
+                    model: process,
+                    required: true,
+                    attributes: ['process_code', 'process_name'], // ✅ 필요한 필드만 가져오기
+                },
+            ],
+            where: Sequelize.literal(`SUBSTRING(task_start_date, 1, 7) = '${data.year}-${data.month}'`),
+            attributes: [
+                'task_start_date',
+                'task_start_time',
+                [
+                    Sequelize.literal(`
+                        LPAD(FLOOR(TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) / 3600), 2, '0')
+                    `),
+                    'sum_hour',
+                ],
+                [
+                    Sequelize.literal(`
+                        LPAD(FLOOR((TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) % 3600) / 60), 2, '0')
+                    `),
+                    'sum_minute',
+                ],
+            ],
+        });
+
+        return results;
+    } catch (error) {
+        console.error('Error fetching attendance:', error);
+        throw error;
+    }
+};
+
+const taskStartYear = async (data) => {
+    try {
+        const results = await taskStart.findAll({
+            include: [
+                {
+                    model: taskEnd,
+                    required: false,
+                    attributes: ['task_end_date', 'task_end_time', 'total_count'], // ✅ 명확하게 필드 지정
+                },
+                {
+                    model: user,
+                    required: true,
+                    attributes: ['user_name', 'user_position'], // ✅ 필요한 필드만 가져오기
+                },
+                {
+                    model: process,
+                    required: true,
+                    attributes: ['process_code', 'process_name'], // ✅ 필요한 필드만 가져오기
+                },
+            ],
+            where: Sequelize.literal(`SUBSTRING(task_start_date, 1, 4) = '${data.year}'`),
+            attributes: [
+                'task_start_date',
+                'task_start_time',
+                [
+                    Sequelize.literal(`
+                        LPAD(FLOOR(TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) / 3600), 2, '0')
+                    `),
+                    'sum_hour',
+                ],
+                [
+                    Sequelize.literal(`
+                        LPAD(FLOOR((TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) % 3600) / 60), 2, '0')
+                    `),
+                    'sum_minute',
+                ],
+            ],
+        });
+
         return results;
     } catch (error) {
         console.error('Error fetching attendance:', error);
@@ -102,9 +195,10 @@ const taskStartDate = async (data) => {
 
 
 
-
 module.exports = {
     taskStartRegister,
     taskStartNewOne,
     taskStartDate,
+    taskStartMonth,
+    taskStartYear,
 };

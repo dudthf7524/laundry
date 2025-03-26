@@ -50,6 +50,15 @@ router.get("/list", async (req, res) => {
     }
 });
 
+router.post("/update", async (req, res) => {
+    try {
+        const result = await user.userUpdate(req.body)
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
+
 router.post("/check", async (req, res) => {
     const { user_id } = req.body;
 

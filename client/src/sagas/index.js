@@ -6,7 +6,6 @@ import timeSaga from "./time";
 import processSaga from "./process";
 import userProcessSaga from "./userProcess";
 import taskSaga from "./task";
-import workSaga from "./work";
 import attendanceStartSaga from "./attendanceStart";
 import attendanceEndSaga from "./attendanceEnd";
 import companyAddressSaga from "./companyAddress";
@@ -27,7 +26,6 @@ export default function* rootSaga() {
     fork(processSaga),
     fork(userProcessSaga),
     fork(taskSaga),
-    fork(workSaga),
     fork(attendanceStartSaga),
     fork(attendanceEndSaga),
     fork(vacationSaga),
