@@ -37,10 +37,10 @@ const Attendance = () => {
     }
 
     const attendance = () => {
-        if (!isWithinRadius) {
-            alert('근무지 반경 외부입니다. 출근할 수 없습니다.');
-            return;
-        }
+        // if (!isWithinRadius) {
+        //     alert('근무지 반경 외부입니다. 출근할 수 없습니다.');
+        //     return;
+        // }
 
         const attendance_start_date = year + "-" + month + "-" + date;
         const attendance_start_time = hours + ":" + minutes;
@@ -67,10 +67,10 @@ const Attendance = () => {
     const [attendanceStartssss, setAttendanceStart] = useState(true)
 
     const leaveWork = () => {
-        if (!isWithinRadius) {
-            alert('근무지 반경 외부입니다. 퇴근할 수 없습니다.');
-            return;
-        }
+        // if (!isWithinRadius) {
+        //     alert('근무지 반경 외부입니다. 퇴근할 수 없습니다.');
+        //     return;
+        // }
         const attendance_end_date = year + "-" + month + "-" + date;
         const attendance_end_time = hours + ":" + minutes;
 
