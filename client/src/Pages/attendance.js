@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { ReactComponent as Icon1 } from '../Assets/Images/volume-up.svg';
 import '../css/attendance.css';
-import BottomBar from "../Components/BottomBar";
+import BottomBar from "../components/BottomBar";
 import { useDispatch, useSelector } from 'react-redux';
 import { TIME_DETAIL_REQUEST } from '../reducers/time';
-import { WORK_END_TIME_REQUEST, WORK_NEW_ONE_REQUEST, WORK_REGISTER_REQUEST } from '../reducers/work';
+import { ATTENDANCESTART_NEW_ONE_REQUEST, ATTENDANCESTART_REGISTER_REQUEST } from '../reducers/attendanceStart';
+import { ATTENDANCEEND_TIME_REQUEST } from '../reducers/attendanceEnd';
+import MyLocation from './myLocation';
 
 
 const Attendance = () => {
     //✅정의
     const dispatch = useDispatch();
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [isWithinRadius, setIsWithinRadius] = useState(false); // 근무지 반경 내 여부
+
     // 날짜 포맷팅
     const days = ['일', '월', '화', '수', '목', '금', '토'];
     const year = currentTime.getFullYear();
@@ -34,68 +37,96 @@ const Attendance = () => {
     }
 
     const attendance = () => {
-        const work_date = year + "-" + month + "-" + date;
-        const work_attendance_time = hours + ":" + minutes;
-        var work_state = "";
+        if (!isWithinRadius) {
+            alert('근무지 반경 외부입니다. 출근할 수 없습니다.');
+            return;
+        }
 
-        if (timeDetail?.start_time < work_attendance_time) {
-            work_state = "지각";
+        const attendance_start_date = year + "-" + month + "-" + date;
+        const attendance_start_time = hours + ":" + minutes;
+        var attendance_start_state = "";
+
+        if (timeDetail?.start_time < attendance_start_time) {
+            attendance_start_state = "지각";
         } else {
-            work_state = "근무중";
+            attendance_start_state = "정상";
         }
 
         const data = {
-            work_date : work_date,
-            work_attendance_time : work_attendance_time,
-            work_state : work_state,
+            attendance_start_date: attendance_start_date,
+            attendance_start_time: attendance_start_time,
+            attendance_start_state: attendance_start_state,
         }
-
+        console.log(data)
         dispatch({
-            type: WORK_REGISTER_REQUEST,
-            data:data
+            type: ATTENDANCESTART_REGISTER_REQUEST,
+            data: data
         });
     }
+
+    const [attendanceStartssss, setAttendanceStart] = useState(true)
 
     const leaveWork = () => {
-        const work_end_time = hours + ":" + minutes;
+        if (!isWithinRadius) {
+            alert('근무지 반경 외부입니다. 퇴근할 수 없습니다.');
+            return;
+        }
+        const attendance_end_date = year + "-" + month + "-" + date;
+        const attendance_end_time = hours + ":" + minutes;
+
+        var attendance_end_state = "퇴근";
+
+        // if (timeDetail?.end_time < attendance_end_time) {
+        //     attendance_end_state = "지각";
+        // } else {
+        //     attendance_end_state = "정상";
+        // }
 
         const data = {
-            work_id : workNewOne.work_id,
-            work_end_time : work_end_time
+            attendance_end_date: attendance_end_date,
+            attendance_end_time: attendance_end_time,
+            attendance_end_state: attendance_end_state,
+            user_code: attendanceStartNewOne.user_code,
+            attendance_start_id: attendanceStartNewOne.attendance_start_id,
         }
-
+        console.log(data)
         dispatch({
-            type: WORK_END_TIME_REQUEST,
-            data:data
+            type: ATTENDANCEEND_TIME_REQUEST,
+            data: data
         });
-
-    
-      
-    }
+    };
     //✅함수
 
     //✅데이터
     const { timeDetail } = useSelector((state) => state.time);
+
+    const attendanceStartNewOneRequest = () => {
+
+        dispatch({
+            type: ATTENDANCESTART_NEW_ONE_REQUEST,
+        });
+
+    };
+    const { attendanceStartNewOne } = useSelector((state) => state.attendanceStart);
+
+
+    if (attendanceStartNewOne) {
+        console.log(attendanceStartNewOne)
+    }
+
     const timeDetailLoding = () => {
         dispatch({
             type: TIME_DETAIL_REQUEST,
         });
     };
 
-    const { workNewOne } = useSelector((state) => state.work);
-    const workNewOneLoding = () => {
-        dispatch({
-            type: WORK_NEW_ONE_REQUEST,
-        });
-    };
+ 
     //✅데이터
-
-    console.log(workNewOne)
 
     useEffect(() => {
         // today();
         timeDetailLoding();
-        workNewOneLoding();
+        attendanceStartNewOneRequest();
     }, []);
 
 
@@ -143,13 +174,25 @@ const Attendance = () => {
 
     //     return false; // 퇴근 가능
     // };
-    
+
     // console.log(isLeaveWorkDisabled())
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // 모달 열기
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    // 모달 닫기
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
     return (
         <div className='attendance'>
             <div></div>
             <div className="notice">
-                <Icon1 className="icon" />
+                <div className="w-10 h-10 cursor-pointer"><img src={`${process.env.PUBLIC_URL}/icon/star.png`} alt="Map Icon" />
+                </div>
                 <p>공지입니다</p>
             </div>
             <div className="date_month_time">
@@ -161,36 +204,58 @@ const Attendance = () => {
                     {`${period} ${formattedHours}:${minutes}:${seconds}`}
                 </div>
             </div>
-            <div className="work_time">
-                <div className="work_time_option">
-                    <p>출근시간</p>
-                    <p>{timeDetail?.start_time}</p>
+            <div className="w-10 h-10 cursor-pointer" onClick={openModal}><img src={`${process.env.PUBLIC_URL}/icon/map.png`} alt="Map Icon" />
+            </div>
+            내 위치 찾기
+            {isModalOpen && (
+                <div className="modal-overlay fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-[9999]">
+                    <div className="w-4/5 modal-content bg-white rounded-lg p-6 shadow-lg">
+                        <MyLocation setIsWithinRadius={setIsWithinRadius} closeModal={closeModal} />
+                    </div>
                 </div>
-                <div className="work_time_option">
-                    <p>퇴근시간</p>
-                    <p>{timeDetail?.end_time}</p>
+            )}
+
+            <div className="work_time_container">
+                <div className="work_time_box">
+                    <div className="work_time_title">&nbsp;</div>
+                    <div className="work_time_title">출근날짜</div>
+                    <div className="work_time_content">{attendanceStartNewOne?.attendance_start_date}</div>
+                    <div className="work_time_title">출근시간</div>
+                    <div className="work_time_content">{attendanceStartNewOne?.attendance_start_time}</div>
+                    <div className="work_time_title">&nbsp;</div>
                 </div>
-                <div className="work_time_option">
-                    <p>휴게시간</p>
-                    <p>{timeDetail?.rest_start_time} ~ {timeDetail?.rest_end_time}</p>
+                <div className="work_time_box">
+                    <div className="work_time_title">출근시간</div>
+                    <div className="work_time_content">{timeDetail?.start_time}</div>
+                    <div className="work_time_title">퇴근시간</div>
+                    <div className="work_time_content">{timeDetail?.end_time}</div>
+                    <div className="work_time_title">휴게시간</div>
+                    <div className="work_time_content">{timeDetail?.rest_start_time} ~ {timeDetail?.rest_end_time}</div>
                 </div>
-                <div className="work_time_option">
-                    <p className='working'>{workNewOne?.work_state}</p>
-                    <p>{workNewOne?.work_start_time}</p>
-                </div>
-                <div className='button'>
-                    <button disabled={workNewOne} onClick={() => {
-                        attendance();
-                    }}>
-                        출근
-                    </button>
-                    <button disabled={!workNewOne} onClick={() => {
-                        leaveWork();
-                    }}>
-                        퇴근
-                    </button>
+                <div className="work_time_box">
+                    <div className="work_time_title">&nbsp;</div>
+                    <div className="work_time_title">퇴근날짜</div>
+                    <div className="work_time_content">{attendanceStartNewOne?.attendance_end?.attendance_end_date}</div>
+                    <div className="work_time_title">퇴근사간</div>
+                    <div className="work_time_content">{attendanceStartNewOne?.attendance_end?.attendance_end_time}</div>
+                    <div className="work_time_title">&nbsp;</div>
+
                 </div>
             </div>
+
+            <div className="work_time_buttons">
+                <button disabled={!attendanceStartNewOne?.attendance_end && attendanceStartNewOne} onClick={() => {
+                    attendance();
+                }}>
+                    출근
+                </button>
+                <button disabled={attendanceStartNewOne?.attendance_end || !attendanceStartNewOne} onClick={() => {
+                    leaveWork();
+                }}>
+                    퇴근
+                </button>
+            </div>
+
             <BottomBar />
         </div>
     );

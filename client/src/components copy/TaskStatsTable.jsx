@@ -1,18 +1,27 @@
 import { useState } from 'react';
 import { formatDate } from '../utils/dateUtils';
 import { employees } from '../data/mockData';
+import { useSelector } from 'react-redux';
 
-const TaskStatsTable = ({ records, onSort, sortConfig, taskType }) => {
+const TaskStatsTable = ({ records, onSort, sortConfig, taskType, filteredByTaskType }) => {
   const [expandedRowId, setExpandedRowId] = useState(null);
 
   const getEmployeeName = (employeeId) => {
     const employee = employees.find(e => e.id === employeeId);
     return employee ? `${employee.name} (${employee.nickname})` : 'Unknown';
   };
+  var { taskStartFilterData } = useSelector((state) => state.taskStart);
 
   const handleSort = (field) => {
     onSort(field);
   };
+
+  console.log(taskType)
+  console.log(filteredByTaskType)
+
+  if (taskType) {
+    taskStartFilterData = filteredByTaskType;
+  }
 
   const toggleRowExpand = (id) => {
     setExpandedRowId(expandedRowId === id ? null : id);
@@ -39,9 +48,8 @@ const TaskStatsTable = ({ records, onSort, sortConfig, taskType }) => {
   };
 
   const getSortableHeaderClass = (field) => {
-    return `px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50 ${
-      sortConfig.field === field ? 'bg-gray-50' : ''
-    }`;
+    return `px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50 ${sortConfig.field === field ? 'bg-gray-50' : ''
+      }`;
   };
 
   return (
@@ -60,30 +68,28 @@ const TaskStatsTable = ({ records, onSort, sortConfig, taskType }) => {
           <thead className="bg-gray-50">
             <tr>
               <th className={getSortableHeaderClass('date')} onClick={() => handleSort('date')}>
-                날짜 {getSortIcon('date')}
+                업무 시작 날짜 {getSortIcon('date')}
               </th>
               <th className={getSortableHeaderClass('name')} onClick={() => handleSort('employeeId')}>
-                이름 {getSortIcon('employeeId')}
+                이름(직급) {getSortIcon('employeeId')}
               </th>
-              {!taskType && (
-                <th className={getSortableHeaderClass('taskType')} onClick={() => handleSort('taskType')}>
-                  업무유형 {getSortIcon('taskType')}
-                </th>
-              )}
+              <th className={getSortableHeaderClass('taskType')} onClick={() => handleSort('taskType')}>
+                업무유형 {getSortIcon('taskType')}
+              </th>
               <th className={getSortableHeaderClass('startTime')} onClick={() => handleSort('startTime')}>
                 시작 시간 {getSortIcon('startTime')}
               </th>
               <th className={getSortableHeaderClass('endTime')} onClick={() => handleSort('endTime')}>
-                종료 시간 {getSortIcon('endTime')}
+                업무 종료 날짜 {getSortIcon('endTime')}
               </th>
               <th className={getSortableHeaderClass('totalDuration')} onClick={() => handleSort('totalDuration')}>
-                총 소요 시간 {getSortIcon('totalDuration')}
+                종료 시간 {getSortIcon('totalDuration')}
               </th>
               <th className={getSortableHeaderClass('count')} onClick={() => handleSort('count')}>
                 개수 {getSortIcon('count')}
               </th>
-              <th className={getSortableHeaderClass('averageTimePerItem')} onClick={() => handleSort('averageTimePerItem')}>
-                개수 당 평균시간 {getSortIcon('averageTimePerItem')}
+              <th className={getSortableHeaderClass('count')} onClick={() => handleSort('count')}>
+                총 소요 시간 {getSortIcon('count')}
               </th>
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 평균 대비
@@ -91,21 +97,19 @@ const TaskStatsTable = ({ records, onSort, sortConfig, taskType }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {records.length > 0 ? (
-              records.map((record) => (
-                <tr key={record.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 whitespace-nowrap">{formatDate(record.date, 'yyyy-MM-dd')}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{getEmployeeName(record.employeeId)}</td>
-                  {!taskType && (
-                    <td className="px-4 py-3 whitespace-nowrap">{record.taskType}</td>
-                  )}
-                  <td className="px-4 py-3 whitespace-nowrap">{record.startTime}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{record.endTime}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{record.totalDuration}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{record.count}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{record.averageTimePerItem}</td>
+            {taskStartFilterData?.length > 0 ? (
+              taskStartFilterData.map((data, index) => (
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 whitespace-nowrap">{data.task_start_date}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{data.user.user_name}({data.user.user_position})</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{data.process.process_name}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{data.task_start_time}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{data.task_end.task_end_date}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{data.task_end.task_end_time}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{data.task_end.total_count}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{data.sum_hour}:{data.sum_minute}</td>
                   <td className="px-4 py-3 whitespace-nowrap text-center">
-                    {getComparisonArrow(record.comparedToAverage)}
+                    {getComparisonArrow(data.comparedToAverage)}
                   </td>
                 </tr>
               ))
@@ -121,7 +125,7 @@ const TaskStatsTable = ({ records, onSort, sortConfig, taskType }) => {
       </div>
 
       {/* Summary Section */}
-      {records.length > 0 && (
+      {/* {records.length > 0 && (
         <div className="bg-gray-50 px-4 py-5 sm:p-6 border-t border-gray-200">
           <h4 className="text-base font-medium text-gray-900 mb-3">요약 통계</h4>
           <dl className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -159,7 +163,7 @@ const TaskStatsTable = ({ records, onSort, sortConfig, taskType }) => {
             </div>
           </dl>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

@@ -6,9 +6,18 @@ import {
     USER_PROCESS_REGISTER_SUCCESS,
     USER_PROCESS_REGISTER_FAILURE,
 
+    USER_PROCESS_LIST_REQUEST,
+    USER_PROCESS_LIST_SUCCESS,
+    USER_PROCESS_LIST_FAILURE,
+
     USER_PROCESS_ONE_LIST_REQUEST,
     USER_PROCESS_ONE_LIST_SUCCESS,
     USER_PROCESS_ONE_LIST_FAILURE,
+
+    USER_PROCESS_DELETE_REQUEST,
+    USER_PROCESS_DELETE_SUCCESS,
+    USER_PROCESS_DELETE_FAILURE,
+
 
 } from "../reducers/userProcess";
 
@@ -33,6 +42,36 @@ function* processRegister(action) {
         console.error(err);
         yield put({
             type: USER_PROCESS_REGISTER_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
+function* watchProcessList() {
+    yield takeLatest(USER_PROCESS_LIST_REQUEST, processList);
+}
+
+function processListAPI() {
+
+    return axios.get("/userProcess/list", );
+}
+
+function* processList() {
+    try {
+        const result = yield call(processListAPI);
+        if(result.data === 'common'){
+            window.location.href="/"
+            return;
+        }
+        yield put({
+            type: USER_PROCESS_LIST_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: USER_PROCESS_LIST_FAILURE,
             error: err.response.data,
         });
     }
@@ -68,8 +107,33 @@ function* processOneList() {
     }
 }
 
+function* watchProcessDelete() {
+    yield takeLatest(USER_PROCESS_DELETE_REQUEST, processDelete);
+}
+
+function processDeleteAPI(data) {
+
+    return axios.post("/userProcess/delete", data);
+}
+
+function* processDelete(action) {
+    try {
+        const result = yield call(processDeleteAPI, action.data);
+       
+        yield put({
+            type: USER_PROCESS_DELETE_SUCCESS,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: USER_PROCESS_DELETE_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
 
 
 export default function* userProcessSaga() {
-    yield all([fork(watchProcessRegister), fork(watchProcessOneList),]);
+    yield all([fork(watchProcessRegister), fork(watchProcessList), fork(watchProcessOneList), fork(watchProcessDelete)]);
 }

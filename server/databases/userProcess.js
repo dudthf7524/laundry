@@ -1,8 +1,9 @@
+const { raw } = require("express");
 const { userProcess } = require("../models");
 const { process } = require("../models");
 
 const userProcessRegister = async (data) => {
-    console.log(data)
+    
     try {
         const result = await userProcess.create({
             user_code: data.user_code,
@@ -17,6 +18,28 @@ const userProcessRegister = async (data) => {
 
 };
 
+const userProcessList = async () => {
+   
+    try {
+        const result = await userProcess.findAll({
+            attributes: ['user_process_id', 'user_process_count', 'user_code'],
+            include: [
+                {
+                    model: process,
+                    attributes: ['process_name'], // work_pattern 테이블에서 필요한 컬럼 선택
+                    required: true,
+                },
+            ],
+        });
+     
+        return result;
+
+    } catch (error) {
+        console.error(error)
+    }
+};
+
+
 const userProcessOneList = async (user_code) => {
     try {
         const result = await userProcess.findAll({
@@ -30,9 +53,6 @@ const userProcessOneList = async (user_code) => {
             ],
             where: { user_code: user_code },
         });
-        console.log("result")
-        console.log(result)
-        console.log("result")
         return result;
     } catch (error) {
         console.error(error)
@@ -40,9 +60,22 @@ const userProcessOneList = async (user_code) => {
 
 };
 
+const userProcessDelete = async (data) => {
+    try {
+        const result = await userProcess.destroy({
+            where: { user_process_id: data.user_process_id },
+        });
+        return result;
+    } catch (error) {
+        console.error(error)
+    }
+
+};
 
 module.exports = {
     userProcessRegister,
     userProcessOneList,
+    userProcessList,
+    userProcessDelete,
 
 };
