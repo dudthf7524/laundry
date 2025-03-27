@@ -41,20 +41,21 @@ app.use(cors({
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.listen(port, () => {
-  console.log(`🚀 http://localhost:${port} 에서 서버 실행중`);
-});
+
 
 sequelize
   .sync({ force: false })
   .then(async () => {
-    await authData(); // 데이터베이스 초기화 실행
+    await authData();
     await processData();
     console.log("✅ 데이터베이스 연결 성공");
+
+    app.listen(port, () => {
+      console.log(`🚀 http://localhost:${port} 에서 서버 실행중`);
+    });
   })
   .catch((err) => {
     console.error("데이터베이스 연결 실패:", err);
