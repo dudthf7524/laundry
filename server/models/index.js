@@ -32,6 +32,13 @@ db.time = require("./time")(sequelize, Sequelize);
 db.userProcess = require("./userProcess")(sequelize, Sequelize);
 db.task = require("./task")(sequelize, Sequelize);
 db.work = require("./work")(sequelize, Sequelize);
+db.attendanceStart = require("./attendanceStart")(sequelize, Sequelize);
+db.attendanceEnd = require("./attendanceEnd")(sequelize, Sequelize);
+db.vacation = require("./vacation")(sequelize, Sequelize);
+db.companyAddress = require("./companyAddress")(sequelize, Sequelize);
+db.taskStart = require("./taskStart")(sequelize, Sequelize);
+db.taskEnd = require("./taskEnd")(sequelize, Sequelize);
+
 // 관계 설정
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

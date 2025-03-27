@@ -13,6 +13,15 @@ router.post("/register", async (req, res) => {
     }
 });
 
+router.get("/list", async (req, res) => {
+    try {
+        const result = await userProcess.userProcessList();
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
+
 router.get("/one/list", authMiddlewareSession, async (req, res) => {
     const user_code = req.user.user_code;
     
@@ -23,5 +32,16 @@ router.get("/one/list", authMiddlewareSession, async (req, res) => {
         console.error(error)
     }
 });
+
+router.post("/delete", async (req, res) => {
+    console.log(req.body)
+    try {
+        const result = await userProcess.userProcessDelete(req.body);
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
+
 
 module.exports = router;

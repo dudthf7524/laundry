@@ -60,17 +60,17 @@ const userLogin = async (user_id, user_password) => {
 const userList = async () => {
     try {
         const result = await user.findAll({
-            attributes: ['user_code', 'user_name', 'user_nickname'],
+            attributes: ['user_code', 'user_name', 'user_nickname', 'user_hire_date', 'user_position'],
             include: [
                 {
                     model: auth,
-                    attributes: ['auth_name'], // work_pattern 테이블에서 필요한 컬럼 선택
+                    attributes: ['auth_code', 'auth_name'], // work_pattern 테이블에서 필요한 컬럼 선택
                     required: true,
                 },
             ],
-
+           
         })
-        console.log(result)
+   
         return result;
 
 
@@ -79,9 +79,31 @@ const userList = async () => {
     }
 };
 
+const userUpdate = async (data) => {
+    try {
+        const result = await user.update(
+            {
+                user_name: data.user_name, 
+                user_nickname: data.user_nickname, 
+                user_position: data.user_position, 
+                user_hire_date: data.user_hire_date, 
+            },
+            {
+                where: {
+                    user_code: data.user_code,
+                },
+            },
+
+        )
+        return result;
+
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 const userUpdateAuth = async (data) => {
-    console.log("데이터베이스")
-    console.log(data)
+  
     try {
         const result = await user.update(
             {
@@ -107,6 +129,7 @@ module.exports = {
     userJoin,
     userLogin,
     userList,
+    userUpdate,
     userUpdateAuth,
 
 };

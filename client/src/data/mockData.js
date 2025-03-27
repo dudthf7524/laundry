@@ -533,26 +533,26 @@ export const taskRecords = [
 
 // Permission levels
 export const permissionLevels = {
-  master: {
+  A1: {
     name: '마스터',
     description: '본인 및 근무자들 (직원들) 모두의 모든 데이터를 확인할 수 있고 수정도 할 수 있음 (전체 관리자)',
     canView: 'all',
     canEdit: true,
   },
-  submaster: {
+  A2: {
     name: '서브마스터',
     description: '본인 및 근무자들(직원들) 모두의 모든 데이터를 확인 할 수 있음 (수정은 안됨)',
     canView: 'all',
     canEdit: false,
   },
-  manager: {
+  A3: {
     name: '매니저',
     description: '본인 및 직급이 \'알바\'인 사람들의 모든 데이터를 확인 할 수 있음(수정안 안됨) (볼수없는 항목은 총근무시간합, 연장근무시간)',
     canView: 'partemployee',
     canEdit: false,
     hiddenFields: ['totalWorkHours', 'requestedOvertime'],
   },
-  employee: {
+  A4: {
     name: '직원',
     description: '본인의 데이터를 확인할 수 있음 (수정은 안됨) (볼수없는 항목은 총근무시간합, 연장근무시간)',
     canView: 'self',

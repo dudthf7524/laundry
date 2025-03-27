@@ -26,7 +26,6 @@ const StatisticsChart = ({
   selectedEmployees = []
 }) => {
   const [chartType, setChartType] = useState('bar'); // 'bar', 'line', or 'pie'
-
   // Transform data for charts based on the selected type and time frame
   const transformAttendanceData = () => {
     if (!attendanceData || attendanceData.length === 0) return [];
@@ -115,7 +114,7 @@ const StatisticsChart = ({
       Object.entries(employeeData).forEach(([employeeName, data]) => {
         // Only include selected employees if specified
         if (selectedEmployees.length === 0 ||
-            selectedEmployees.includes(employees.find(e => `${e.name} (${e.nickname || 'N/A'})` === employeeName)?.id)) {
+          selectedEmployees.includes(employees.find(e => `${e.name} (${e.nickname || 'N/A'})` === employeeName)?.id)) {
           result[`${employeeName} 근무일수`] = data.workDays;
           result[`${employeeName} 근무시간`] = data.totalWorkHours;
         }
@@ -201,7 +200,7 @@ const StatisticsChart = ({
       Object.entries(employeeData).forEach(([employeeName, data]) => {
         // Only include selected employees if specified
         if (selectedEmployees.length === 0 ||
-            selectedEmployees.includes(employees.find(e => `${e.name} (${e.nickname || 'N/A'})` === employeeName)?.id)) {
+          selectedEmployees.includes(employees.find(e => `${e.name} (${e.nickname || 'N/A'})` === employeeName)?.id)) {
           result[`${employeeName} 작업수`] = data.taskCount;
           result[`${employeeName} 처리항목`] = data.totalItems;
           result[`${employeeName} 소요시간`] = data.totalDuration;
@@ -218,7 +217,85 @@ const StatisticsChart = ({
   };
 
   // Choose the data to display based on the type
-  const chartData = type === 'attendance' ? transformAttendanceData() : transformTaskData();
+  // const chartData = type === 'attendance' ? transformAttendanceData() : transformTaskData();
+
+  const dummyYearlyData = [
+    { period: '2021', '김철수 근무시간': 12, '이영희 근무시간': 11 },
+    { period: '2022', '김철수 근무시간': 14, '이영희 근무시간': 13 },
+    { period: '2023', '김철수 근무시간': 16, '이영희 근무시간': 15 },
+    { period: '2024', '김철수 근무시간': 18, '이영희 근무시간': 17 },
+  ];
+
+
+  const rawData = [
+    { period: '2021', user_name: '김철수', total_hours: 1500 },
+    { period: '2021', user_name: '이영희', total_hours: 1400 },
+    { period: '2021', user_name: '박지훈', total_hours: 1350 },
+    { period: '2021', user_name: '유재석', total_hours: 1600 },
+    { period: '2021', user_name: '배수지', total_hours: 1300 },
+    { period: '2021', user_name: '강호동', total_hours: 1700 },
+    { period: '2021', user_name: '김수현', total_hours: 1550 },
+    { period: '2021', user_name: '이효리', total_hours: 1450 },
+    { period: '2021', user_name: '송중기', total_hours: 1650 },
+    { period: '2021', user_name: '하하', total_hours: 1250 },
+
+    { period: '2022', user_name: '김철수', total_hours: 1580 },
+    { period: '2022', user_name: '이영희', total_hours: 1450 },
+    { period: '2022', user_name: '박지훈', total_hours: 1480 },
+    { period: '2022', user_name: '유재석', total_hours: 1620 },
+    { period: '2022', user_name: '배수지', total_hours: 1380 },
+    { period: '2022', user_name: '강호동', total_hours: 1670 },
+    { period: '2022', user_name: '김수현', total_hours: 1500 },
+    { period: '2022', user_name: '이효리', total_hours: 1490 },
+    { period: '2022', user_name: '송중기', total_hours: 1680 },
+    { period: '2022', user_name: '하하', total_hours: 1300 },
+
+    { period: '2023', user_name: '김철수', total_hours: 1600 },
+    { period: '2023', user_name: '이영희', total_hours: 1500 },
+    { period: '2023', user_name: '박지훈', total_hours: 1550 },
+    { period: '2023', user_name: '유재석', total_hours: 1680 },
+    { period: '2023', user_name: '배수지', total_hours: 1450 },
+    { period: '2023', user_name: '강호동', total_hours: 1750 },
+    { period: '2023', user_name: '김수현', total_hours: 1580 },
+    { period: '2023', user_name: '이효리', total_hours: 1530 },
+    { period: '2023', user_name: '송중기', total_hours: 1780 },
+    { period: '2023', user_name: '하하', total_hours: 1400 },
+
+    { period: '2024', user_name: '김철수', total_hours: 1620 },
+    { period: '2024', user_name: '이영희', total_hours: 1520 },
+    { period: '2024', user_name: '박지훈', total_hours: 1600 },
+    { period: '2024', user_name: '유재석', total_hours: 1700 },
+    { period: '2024', user_name: '배수지', total_hours: 1480 },
+    { period: '2024', user_name: '강호동', total_hours: 1800 },
+    { period: '2024', user_name: '김수현', total_hours: 1630 },
+    { period: '2024', user_name: '이효리', total_hours: 1570 },
+    { period: '2024', user_name: '송중기', total_hours: 1820 },
+    { period: '2024', user_name: '하하', total_hours: 1450 },
+  ];
+
+
+  const transformData = (data) => {
+    const result = {};
+
+    data.forEach(({ period, user_name, total_hours }) => {
+      if (!result[period]) {
+        result[period] = { period };
+      }
+      result[period][`${user_name} 근무시간`] = total_hours;
+    });
+
+    return Object.values(result);
+  };
+
+  const dummyYearlyDatass = transformData(rawData);
+
+  console.log(dummyYearlyDatass);
+
+
+  // 연도별 차트일 경우 더미 데이터 사용
+  const chartData = timeFrame === 'yearly' ? dummyYearlyDatass : type === 'attendance' ? transformAttendanceData() : transformTaskData();
+
+  console.log("차트 데이터 : ", chartData)
 
   // For pie charts - need special data format
   const preparePieChartData = () => {
@@ -303,7 +380,7 @@ const StatisticsChart = ({
           <YAxis />
           <Tooltip />
           <Legend />
-          {dataKeys.slice(0, 5).map((key, index) => (
+          {dataKeys.slice(0, 10).map((key, index) => (
             <Bar key={key} dataKey={key} fill={COLORS[index % COLORS.length]} />
           ))}
         </BarChart>
@@ -316,34 +393,57 @@ const StatisticsChart = ({
     if (chartData.length === 0) {
       return <div className="text-center py-10 text-gray-500">차트를 표시할 데이터가 없습니다</div>;
     }
-
+    console.log(chartData)
     // Get all the keys except the period/date
     const dataKeys = Object.keys(chartData[0]).filter(key =>
       key !== 'period' && key !== 'date'
     );
+    console.log(dataKeys)
 
+    // const dataKeys = ["a", "b","c"]
     return (
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
           data={chartData}
           margin={{
             top: 20,
-            right: 30,
+            right: 100,
             left: 20,
-            bottom: 60,
+            bottom: 60,  // bottom margin을 더 늘려서 x축 레이블의 공간을 확보
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
+          
           <XAxis
             dataKey={timeFrame === 'daily' ? 'date' : 'period'}
-            angle={-45}
+            angle={-45}  // 텍스트 회전 각도
             textAnchor="end"
-            height={60}
+            height={50}
+            label={{
+              value: '년도', // x축 레이블
+              position: 'right', // 레이블 위치
+              offset: 20, // 텍스트 간격 조정
+            }}
+            tick={{ 
+              interval: 0, // 모든 값 표시
+            }}
           />
-          <YAxis />
+          
+          <YAxis
+            label={{
+              value: '시간', // y축 레이블
+              angle: -90, // y축 레이블 회전
+              position: 'insideLeft', // y축 레이블 위치
+              offset: -10, // y축 레이블과 차트 간의 간격 조정
+            }}
+            tick={{ 
+              interval: 0, // y축도 모든 값 표시
+            }}
+          />
+          
           <Tooltip />
           <Legend />
-          {dataKeys.slice(0, 5).map((key, index) => (
+          {dataKeys.slice(0, dataKeys.length).map((key, index) => (
             <Line
               key={key}
               type="monotone"
@@ -355,6 +455,7 @@ const StatisticsChart = ({
         </LineChart>
       </ResponsiveContainer>
     );
+    
   };
 
   // Render pie chart
@@ -398,31 +499,28 @@ const StatisticsChart = ({
         </h3>
         <div className="flex space-x-2">
           <button
-            className={`px-3 py-1 rounded text-sm ${
-              chartType === 'bar'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
+            className={`px-3 py-1 rounded text-sm ${chartType === 'bar'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
             onClick={() => setChartType('bar')}
           >
             막대 차트
           </button>
           <button
-            className={`px-3 py-1 rounded text-sm ${
-              chartType === 'line'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
+            className={`px-3 py-1 rounded text-sm ${chartType === 'line'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
             onClick={() => setChartType('line')}
           >
             선 차트
           </button>
           <button
-            className={`px-3 py-1 rounded text-sm ${
-              chartType === 'pie'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
+            className={`px-3 py-1 rounded text-sm ${chartType === 'pie'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
             onClick={() => setChartType('pie')}
           >
             파이 차트

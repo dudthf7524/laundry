@@ -15,6 +15,10 @@ export const initialState = {
     user_list_done: false,
     user_list_error: null,
 
+    user_update_Loading: false,
+    user_update_done: false,
+    user_update_error: null,
+
     user_auth_update_Loading: false,
     user_auth_update_done: false,
     user_auth_update_error: null,
@@ -23,7 +27,9 @@ export const initialState = {
 
     user: null,
 
-    userLists: null
+    userLists: null,
+
+    userUpdates: null
 
 };
 
@@ -38,6 +44,10 @@ export const USER_AUTH_FAILURE = "USER_AUTH_FAILURE";
 export const USER_LIST_REQUEST = "USER_LIST_REQUEST";
 export const USER_LIST_SUCCESS = "USER_LIST_SUCCESS";
 export const USER_LIST_FAILURE = "USER_LIST_FAILURE";
+
+export const USER_UPDATE_REQUEST = "USER_UPDATE_REQUEST";
+export const USER_UPDATE_SUCCESS = "USER_UPDATE_SUCCESS";
+export const USER_UPDATE_FAILURE = "USER_UPDATE_FAILURE";
 
 export const USER_AUTH_UPDATE_REQUEST = "USER_AUTH_UPDATE_REQUEST";
 export const USER_AUTH_UPDATE_SUCCESS = "USER_AUTH_UPDATE_SUCCESS";
@@ -87,6 +97,20 @@ const reducer = (state = initialState, action) => {
             case USER_LIST_FAILURE:
                 draft.user_list_Loading = false;
                 draft.user_list_error = action.error;
+                break;
+            case USER_UPDATE_REQUEST:
+                draft.user_update_Loading = true;
+                draft.user_update_error = null;
+                draft.user_update_done = false;
+                break;
+            case USER_UPDATE_SUCCESS:
+                draft.user_update_Loading = false;
+                draft.userUpdates = action.data;
+                draft.user_update_done = true;
+                break;
+            case USER_UPDATE_FAILURE:
+                draft.user_update_Loading = false;
+                draft.user_update_error = action.error;
                 break;
             case USER_AUTH_UPDATE_REQUEST:
                 draft.user_auth_update_Loading = true;

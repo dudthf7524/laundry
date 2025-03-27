@@ -9,6 +9,7 @@ import {
   filterByTaskType,
   sortRecords
 } from '../utils/filterUtils';
+
 import { calculateTotalWorkHours, calculateNightWorkHours } from '../utils/dateUtils';
 
 /**

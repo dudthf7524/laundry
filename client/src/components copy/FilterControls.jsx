@@ -1,33 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { employees } from '../data/mockData';
+import { useDispatch, useSelector } from 'react-redux';
+import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
 
 const FilterControls = ({
-  onDateRangeChange,
-  onMonthChange,
-  onYearChange,
-  onEmployeeChange,
-  onRoleTypeChange,
-  onTaskTypeChange,
-  taskTypes,
-  onResetFilters,
-  dateRangeFilter,
-  monthFilter,
-  yearFilter,
-  employeeFilter,
-  roleTypeFilter,
-  taskTypeFilter,
-  showTaskTypeFilter = false,
+  // onDateRangeChange,
+  // onMonthChange,
+  // onYearChange,
+  // onEmployeeChange,
+  // onRoleTypeChange,
+  // onTaskTypeChange,
+  // taskTypes,
+  // onResetFilters,
+  // dateRangeFilter,
+  // monthFilter,
+  // yearFilter,
+  // employeeFilter,
+  // roleTypeFilter,
+  // taskTypeFilter,
+  // showTaskTypeFilter = false,
+  setFilterType,
+  setStartDate, 
+  setEndDate,
+  setMonth,
+  setYear
+  // setFilterType, 
 }) => {
-  const [filterType, setFilterType] = useState('date'); // 'date', 'month', or 'year'
+  const [filterType, setFilterTypess] = useState('date'); // 'date', 'month', or 'year'
+  // const [startDate, setStartDate] = useState(null);
+  // const [endDate, setEndDate] = useState(null);
+  // const [month, setMonth] = useState(null);
+  // const [year, setYear] = useState(null);
 
-  // Extract unique role types from employees
   const roleTypes = [...new Set(employees.map(emp => emp.role))];
-
-  // Get years from 2020 to current year
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 2019 }, (_, i) => currentYear - i);
-
-  // Get months for the month selector
   const months = [
     { value: '01', label: '1월' },
     { value: '02', label: '2월' },
@@ -43,75 +50,60 @@ const FilterControls = ({
     { value: '12', label: '12월' },
   ];
 
-  const handleDateRangeChange = (e) => {
-    const { name, value } = e.target;
-    if (name === 'startDate' || name === 'endDate') {
-      onDateRangeChange(
-        name === 'startDate' ? value : dateRangeFilter.startDate,
-        name === 'endDate' ? value : dateRangeFilter.endDate
-      );
-    }
+  const handleStartDateChange = (e) => {
+    const selectedStartDate = e.target.value;
+    setStartDate(selectedStartDate)
   };
 
+  const handleEndDateChange = (e) => {
+    const selectedEndDate = e.target.value;
+    setEndDate(selectedEndDate)
+  };
   const handleMonthChange = (e) => {
-    const selectedYear = e.target.form.yearForMonth.value;
     const selectedMonth = e.target.value;
-
-    if (selectedYear && selectedMonth) {
-      onMonthChange(`${selectedYear}-${selectedMonth}`);
-    }
+    setMonth(selectedMonth)
+   
   };
-
   const handleYearChange = (e) => {
-    onYearChange(e.target.value);
+    const selectedYear = e.target.value;
+    setYear(selectedYear)
   };
-
-  const handleEmployeeChange = (e) => {
-    onEmployeeChange(e.target.value ? parseInt(e.target.value) : null);
-  };
-
-  const handleRoleTypeChange = (e) => {
-    onRoleTypeChange(e.target.value || null);
-  };
-
-  const handleTaskTypeChange = (e) => {
-    onTaskTypeChange(e.target.value || null);
-  };
-
   const handleFilterTypeChange = (type) => {
+
     setFilterType(type);
-    onResetFilters();
+    setFilterTypess(type)
+    setStartDate(null)
+    setEndDate(null)
+    setMonth(null)
+    setYear(null)
   };
 
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">
       <div className="flex flex-wrap gap-4 mb-4">
         <button
-          className={`px-3 py-1 rounded text-sm ${
-            filterType === 'date'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          className={`px-3 py-1 rounded text-sm ${filterType === 'date'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
           onClick={() => handleFilterTypeChange('date')}
         >
           일별 조회
         </button>
         <button
-          className={`px-3 py-1 rounded text-sm ${
-            filterType === 'month'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          className={`px-3 py-1 rounded text-sm ${filterType === 'month'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
           onClick={() => handleFilterTypeChange('month')}
         >
           월별 조회
         </button>
         <button
-          className={`px-3 py-1 rounded text-sm ${
-            filterType === 'year'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          className={`px-3 py-1 rounded text-sm ${filterType === 'year'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
           onClick={() => handleFilterTypeChange('year')}
         >
           연도별 조회
@@ -128,8 +120,8 @@ const FilterControls = ({
               type="date"
               id="startDate"
               name="startDate"
-              value={dateRangeFilter.startDate || ''}
-              onChange={handleDateRangeChange}
+              // value={dateRangeFilter.startDate || ''}
+              onChange={handleStartDateChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
@@ -141,18 +133,18 @@ const FilterControls = ({
               type="date"
               id="endDate"
               name="endDate"
-              value={dateRangeFilter.endDate || ''}
-              onChange={handleDateRangeChange}
+              // value={dateRangeFilter.endDate || ''}
+              onChange={handleEndDateChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
-          <div>
+          {/* <div>
             <label htmlFor="employee" className="block text-sm font-medium text-gray-700 mb-1">
               직원
             </label>
             <select
               id="employee"
-              value={employeeFilter || ''}
+              // value={employeeFilter || ''}
               onChange={handleEmployeeChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
@@ -170,7 +162,7 @@ const FilterControls = ({
             </label>
             <select
               id="roleType"
-              value={roleTypeFilter || ''}
+              // value={roleTypeFilter || ''}
               onChange={handleRoleTypeChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
@@ -181,8 +173,8 @@ const FilterControls = ({
                 </option>
               ))}
             </select>
-          </div>
-          {showTaskTypeFilter && (
+          </div> */}
+          {/* {showTaskTypeFilter && (
             <div>
               <label htmlFor="taskType" className="block text-sm font-medium text-gray-700 mb-1">
                 업무 유형
@@ -201,7 +193,7 @@ const FilterControls = ({
                 ))}
               </select>
             </div>
-          )}
+          )} */}
         </form>
       )}
 
@@ -215,8 +207,9 @@ const FilterControls = ({
               id="yearForMonth"
               name="yearForMonth"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-              defaultValue={currentYear}
+              onChange={handleYearChange}
             >
+              <option value="">연도 선택</option>
               {years.map((year) => (
                 <option key={year} value={year}>
                   {year}년
@@ -242,13 +235,13 @@ const FilterControls = ({
               ))}
             </select>
           </div>
-          <div>
+          {/* <div>
             <label htmlFor="employeeMonth" className="block text-sm font-medium text-gray-700 mb-1">
               직원
             </label>
             <select
               id="employeeMonth"
-              value={employeeFilter || ''}
+              // value={employeeFilter || ''}
               onChange={handleEmployeeChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
@@ -266,7 +259,7 @@ const FilterControls = ({
             </label>
             <select
               id="roleTypeMonth"
-              value={roleTypeFilter || ''}
+              // value={roleTypeFilter || ''}
               onChange={handleRoleTypeChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
@@ -277,8 +270,8 @@ const FilterControls = ({
                 </option>
               ))}
             </select>
-          </div>
-          {showTaskTypeFilter && (
+          </div> */}
+          {/* {showTaskTypeFilter && (
             <div>
               <label htmlFor="taskTypeMonth" className="block text-sm font-medium text-gray-700 mb-1">
                 업무 유형
@@ -297,7 +290,7 @@ const FilterControls = ({
                 ))}
               </select>
             </div>
-          )}
+          )} */}
         </form>
       )}
 
@@ -321,13 +314,13 @@ const FilterControls = ({
               ))}
             </select>
           </div>
-          <div>
+          {/* <div>
             <label htmlFor="employeeYear" className="block text-sm font-medium text-gray-700 mb-1">
               직원
             </label>
             <select
               id="employeeYear"
-              value={employeeFilter || ''}
+              // value={employeeFilter || ''}
               onChange={handleEmployeeChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
@@ -345,7 +338,7 @@ const FilterControls = ({
             </label>
             <select
               id="roleTypeYear"
-              value={roleTypeFilter || ''}
+              // value={roleTypeFilter || ''}
               onChange={handleRoleTypeChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
@@ -356,8 +349,8 @@ const FilterControls = ({
                 </option>
               ))}
             </select>
-          </div>
-          {showTaskTypeFilter && (
+          </div> */}
+          {/* {showTaskTypeFilter && (
             <div>
               <label htmlFor="taskTypeYear" className="block text-sm font-medium text-gray-700 mb-1">
                 업무 유형
@@ -376,13 +369,13 @@ const FilterControls = ({
                 ))}
               </select>
             </div>
-          )}
+          )} */}
         </form>
       )}
 
       <div className="mt-4 flex justify-end">
         <button
-          onClick={onResetFilters}
+          // onClick={onResetFilters}
           className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
         >
           필터 초기화

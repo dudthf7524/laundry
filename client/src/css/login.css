@@ -1,3 +1,5 @@
+
+/* .login 스타일 */
 .login {
   display: flex;
   flex-direction: column;
@@ -8,20 +10,18 @@
   justify-content: center;
 }
 
+/* 제목 스타일 */
 .login h1 {
   font-family: '양진체';
   font-size: 36px;
   margin-bottom: 5px;
   background: linear-gradient(90deg, #ff7eb3, #ff758c, #ff6b73);
-  /* 그라데이션 색상 */
   -webkit-background-clip: text;
-  /* 배경을 텍스트로 클립 */
   -webkit-text-fill-color: transparent;
-  /* 글자를 투명하게 만듦 */
   text-align: center;
-  /* 가운데 정렬 */
 }
 
+/* 부제목 스타일 */
 .login h2 {
   font-size: 16px;
   margin: 0;
@@ -30,45 +30,7 @@
   color: #383838;
 }
 
-.login form div {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.login form div input {
-  width: 60%;
-  padding: 10px;
-  margin-top: 10px;
-  margin-right: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-family: 'Pretendard';
-}
-
-.login form div button {
-  width: 40%;
-  padding: 10px;
-  margin-top: 10px;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  display: flex;
-  border-radius: 5px;
-  background-color: #00b7ff;
-  color: #fff;
-  font-size: 12px;
-  cursor: pointer;
-  box-sizing: border-box;
-}
-
-.login form div button.disabled {
-  background-color: #d3d3d3;
-  color: #999;
-  cursor: not-allowed;
-}
-
+/* 폼 스타일 */
 .login form {
   display: flex;
   flex-direction: column;
@@ -80,6 +42,7 @@
   box-sizing: border-box;
 }
 
+/* 입력 필드 스타일 */
 .login form input {
   width: 100%;
   padding: 10px;
@@ -90,6 +53,7 @@
   box-sizing: border-box;
 }
 
+/* 버튼 스타일 */
 .login form button {
   width: 100%;
   padding: 10px;
@@ -105,7 +69,6 @@
   font-size: 16px;
   cursor: pointer;
   box-sizing: border-box;
-  font-size: 12px;
 }
 
 .login form button:hover {
@@ -116,23 +79,67 @@
 .login-link {
   cursor: pointer;
   color: #00b7ff;
-  /* 파란색 텍스트 */
   margin-top: 20px;
-  /* 위쪽 여백 */
   font-size: 14px;
   font-family: 'Pretendard', sans-serif;
 }
 
 .login-link:hover {
   color: #0056b3;
-  /* 마우스 오버 시 어두운 파란색 */
   text-decoration: none;
 }
 
+/* 에러 메시지 스타일 */
 .error-message {
   position: relative;
   bottom: 20px;
   color: #ff6b73;
   font-size: 12px;
   margin-top: 10px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .login h1 {
+    font-size: 28px; /* 화면이 작을 때 제목 크기 줄이기 */
+  }
+
+  .login h2 {
+    font-size: 14px; /* 부제목 크기 줄이기 */
+  }
+
+  .login form {
+    width: 90%; /* 폼 너비 조정 */
+    padding: 15px; /* 여백 줄이기 */
+  }
+
+  .login form input {
+    padding: 8px; /* 입력 필드의 패딩 줄이기 */
+  }
+
+  .login form button {
+    padding: 12px; /* 버튼의 패딩 조정 */
+  }
+
+  .login-link {
+    font-size: 12px; /* 로그인 링크 크기 줄이기 */
+  }
+}
+
+@media (max-width: 480px) {
+  .login h1 {
+    font-size: 24px; /* 더 작은 화면에서 제목 크기 줄이기 */
+  }
+
+  .login form input {
+    padding: 8px; /* 입력 필드의 패딩 추가로 줄이기 */
+  }
+
+  .login form button {
+    font-size: 14px; /* 버튼의 글씨 크기 줄이기 */
+  }
+
+  .login-link {
+    font-size: 10px; /* 로그인 링크 크기 더 줄이기 */
+  }
 }

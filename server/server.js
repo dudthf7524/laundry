@@ -21,9 +21,12 @@ const timeRoutes = require('./routes/time');
 const processRoutes = require('./routes/process');
 const userProcessRoutes = require('./routes/userProcess');
 const taskRoutes = require('./routes/task');
-const workRoutes = require('./routes/work');
-
-
+const attendanceStartRoutes = require('./routes/attendanceStart');
+const attendanceEndRoutes = require('./routes/attendanceEnd');
+const vacationRoutes = require('./routes/vacation');
+const companyAddressRoutes = require('./routes/companyAddress');
+const taskStartRoutes = require('./routes/taskStart');
+const taskEndRoutes = require('./routes/taskEnd');
 
 const authData = require("./modelsInitializeData/authData");
 const processData = require("./modelsInitializeData/processData");
@@ -73,12 +76,13 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.static(path.join(__dirname, "./build")));
+// 정적 파일을 제공하는 미들웨어 설정
+app.use(express.static(path.join(__dirname, "../client/build")));
 
+// 루트 요청 시 index.html 반환
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "./build/index.html"));
+  res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
-
 
 // API 라우트 설정
 app.use('/user', userRoutes);
@@ -87,10 +91,15 @@ app.use('/time', timeRoutes);
 app.use('/process', processRoutes);
 app.use('/userProcess', userProcessRoutes);
 app.use('/task', taskRoutes);
-app.use('/work', workRoutes);
+app.use('/attendanceStart', attendanceStartRoutes);
+app.use('/attendanceEnd', attendanceEndRoutes);
+app.use('/vacation', vacationRoutes);
+app.use('/companyAddress', companyAddressRoutes);
+app.use('/taskStart', taskStartRoutes);
+app.use('/taskEnd', taskEndRoutes);
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "./build/index.html"));
+  res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
 
 
