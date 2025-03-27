@@ -10,7 +10,7 @@ const containerStyle = {
 
 const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-const WorkAddress = () => {
+const CompanyAddress = () => {
   const [location, setLocation] = useState({ lat: 35.9733646723136, lng: 128.939298096262 }); // 기본 위치
   const [radius, setRadius] = useState(500); // 기본 반경 (500m)
   const [autocomplete, setAutocomplete] = useState(null);
@@ -69,10 +69,8 @@ const WorkAddress = () => {
   };
 
   return (
-    <div className="work_address p-4 md:p-8">
+    <div className="work_address">
       <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">근무지 설정</h2>
-
         <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
           {/* 검색 입력창 */}
           <div className="relative mb-4">
@@ -118,7 +116,7 @@ const WorkAddress = () => {
             </div>
             <button
               onClick={handleSave}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              className="w-full px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             >
               설정
             </button>
@@ -129,4 +127,4 @@ const WorkAddress = () => {
   );
 };
 
-export default WorkAddress;
+export default CompanyAddress;

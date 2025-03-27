@@ -65,7 +65,17 @@ router.post("/year", async (req, res) => {
     }
 });
 
+router.get("/today", authMiddlewareSession, async (req, res) => {
+  
+    const user_code = req.user.user_code;
 
+    try {
+        const result = await attendanceStart.attendanceToday(user_code)
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
 
 
 module.exports = router;

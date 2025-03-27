@@ -11,5 +11,15 @@ router.get("/list", async (req, res) => {
     }
 });
 
+router.post("/update", async (req, res) => {
+    console.log(req.body)
+    try {
+        const result = await process.processUpdate(req.body);
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
+
 
 module.exports = router;

@@ -7,6 +7,10 @@ import {
     PROCESS_LIST_SUCCESS,
     PROCESS_LIST_FAILURE,
 
+    PROCESS_UPDATE_REQUEST,
+    PROCESS_UPDATE_SUCCESS,
+    PROCESS_UPDATE_FAILURE,
+
 } from "../reducers/process";
 
 
@@ -38,7 +42,35 @@ function* processList() {
 }
 
 
+function* watchProcessUpdate() {
+    yield takeLatest(PROCESS_UPDATE_REQUEST, processUpdate);
+}
+
+function processUpdateAPI(data) {
+
+    return axios.post("/process/update", data);
+}
+
+function* processUpdate(action) {
+    try {
+        const result = yield call(processUpdateAPI, action.data);
+        yield put({
+            type: PROCESS_UPDATE_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) {
+            alert("업무 설정이 완료되었습니다.")
+            window.location.href="/admin/settings"
+         }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: PROCESS_UPDATE_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
 
 export default function* processSaga() {
-    yield all([fork(watchProcessList), ]);
+    yield all([fork(watchProcessList), fork(watchProcessUpdate),]);
 }

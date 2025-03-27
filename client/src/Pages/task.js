@@ -255,6 +255,12 @@ const Task = () => {
                 </div>
                 <div className="work_time_box">
                     <div className="work_time_title">&nbsp;</div>
+                    <div className="work_time_title">총 업무시간</div>
+                    <div className="work_time_content">{totalWorkTime || "0시간"}</div>
+                    <div className="work_time_title">&nbsp;</div>
+                </div>
+                <div className="work_time_box">
+                    <div className="work_time_title">&nbsp;</div>
                     <div className="work_time_title">업무 종료 날짜</div>
                     <div className="work_time_content">{taskStartNewOne?.task_end?.task_end_date || "미정"}</div>
                     <div className="work_time_title">&nbsp;</div>
@@ -262,18 +268,13 @@ const Task = () => {
                     <div className="work_time_content">{taskStartNewOne?.task_end?.task_end_time || "미정"}</div>
                     <div className="work_time_title">&nbsp;</div>
                 </div>
-                {/* <div className="work_time_box">
-                    <div className="work_time_title">&nbsp;</div>
-                    <div className="work_time_title">총 업무시간</div>
-                    <div className="work_time_content">{totalWorkTime || "0시간"}</div>
-                    <div className="work_time_title">&nbsp;</div>
-                </div> */}
+
             </div>
 
             {/* 업무 시작/종료 버튼 */}
             <div className="work_time_buttons">
                 <button onClick={handleStart} disabled={!taskStartNewOne?.task_end && taskStartNewOne}>업무시작</button>
-                <button onClick={handleEnd}>업무종료</button>
+                <button onClick={handleEnd} disabled={taskStartNewOne?.task_end || !taskStartNewOne}>업무종료</button>
             </div>
 
             <div>오늘 업무 총평: 참 잘했어요</div>

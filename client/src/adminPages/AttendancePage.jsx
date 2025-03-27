@@ -165,11 +165,11 @@ const AttendancePage = () => {
               </button>
             </div>
 
-            {/* <StatisticsChart
+            <StatisticsChart
               attendanceData={filteredAttendanceRecords}
               type="attendance"
               timeFrame={timeFrame}
-            /> */}
+            />
 
             <Chart/>
           </div>

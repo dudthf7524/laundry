@@ -12,9 +12,9 @@ import {
 
 // 더미 데이터 (API 연동 시 변경 가능)
 const dataByYear = [
-    { date: "2022", user1: 600, user2: 200, user3: 500, user4: 1000, user5: 1400, user6: 2100 },
-    { date: "2023", user1: 700, user2: 300, user3: 600, user4: 1200, user5: 1600, user6: 2200 },
-    { date: "2024", user1: 800, user2: 400, user3: 700, user4: 1300, user5: 1800, user6: 2300 },
+    { date: "2022", user1: 600, user2: 200, user3: 500, user4: 1000, user5: 1400, user6: 2100, user7: 10 },
+    { date: "2023", user1: 700, user2: 300, user3: 600, user4: 1200, user5: 1600, user6: 2200, user7: 10 },
+    { date: "2024", user1: 800, user2: 400, user3: 700, user4: 1300, user5: 1800, user6: 2300, user7: 2100 },
 ];
 
 const dataByMonth = [
@@ -28,9 +28,6 @@ const dataByDay = [
     { date: "02일", user1: 8, user2: 7, user3: 8, user4: 11, user5: 14, user6: 17 },
     { date: "03일", user1: 8, user2: 7, user3: 9, user4: 12, user5: 15, user6: 18 },
 ];
-
-
-
 
 const AttendanceChart = () => {
     const [selectedData, setSelectedData] = useState("year");
@@ -55,7 +52,7 @@ const AttendanceChart = () => {
     };
 
     const renderLines = () => {
-        const users = ["user1", "user2", "user3", "user4", "user5", "user6"];
+        const users = ["user1", "user2", "user3", "user4", "user5", "user6", "user7"];
         return users.map((user, index) => {
             if (selectedUsers[index]) {
                 const color = ["#8884d8", "#82ca9d", "#ffc658", "#d62728", "#2ca02c", "#ff7f0e"][index];
@@ -84,7 +81,7 @@ const AttendanceChart = () => {
 
             {/* 사용자 선택 UI */}
             <div className="flex space-x-2 mb-4">
-                {["사용자 1", "사용자 2", "사용자 3", "사용자 4", "사용자 5", "사용자 6"].map((user, index) => (
+                {["사용자 1", "사용자 2", "사용자 3", "사용자 4", "사용자 5", "사용자 6", "사용자 7"].map((user, index) => (
                     <label key={index} className="inline-flex items-center space-x-2">
                         <input
                             type="checkbox"

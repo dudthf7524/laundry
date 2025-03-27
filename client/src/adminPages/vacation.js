@@ -166,7 +166,7 @@ const goToday = () => {
           <p className="mt-1">사유: {selectedVacation?.vacation_content}</p>
           <div className="mt-4 flex space-x-2">
             <button onClick={vacationAllow} className="px-4 py-2 bg-green-500 text-white rounded">승인</button>
-            <button className="px-4 py-2 bg-red-500 text-white rounded">거절</button>
+            {/* <button className="px-4 py-2 bg-red-500 text-white rounded">거절</button> */}
           </div>
         </div>
       )}

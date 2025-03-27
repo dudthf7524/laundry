@@ -209,9 +209,9 @@ const Attendance = () => {
             내 위치 찾기
             {isModalOpen && (
                 <div className="modal-overlay fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-[9999]">
-                    {/* <div className="w-4/5 modal-content bg-white rounded-lg p-6 shadow-lg">
+                    <div className="w-4/5 modal-content bg-white rounded-lg p-6 shadow-lg">
                         <MyLocation setIsWithinRadius={setIsWithinRadius} closeModal={closeModal} />
-                    </div> */}
+                    </div>
                 </div>
             )}
 

@@ -22,8 +22,13 @@ export const initialState = {
     attendanceStart_year_one_done: false,
     attendanceStart_year_one_error: null,
 
+    attendanceStart_today_Loading: false,
+    attendanceStart_today_one_done: false,
+    attendanceStart_today_one_error: null,
+
     attendanceStartNewOne: null,
-    attendanceStartYear: null
+    attendanceStartYear: null,
+    attendanceStartToday: null
 };
 
 
@@ -46,6 +51,10 @@ export const ATTENDANCESTART_MONTH_FAILURE = "ATTENDANCESTART_MONTH_FAILURE";
 export const ATTENDANCESTART_YEAR_REQUEST = "ATTENDANCESTART_YEAR_REQUEST";
 export const ATTENDANCESTART_YEAR_SUCCESS = "ATTENDANCESTART_YEAR_SUCCESS";
 export const ATTENDANCESTART_YEAR_FAILURE = "ATTENDANCESTART_YEAR_FAILURE";
+
+export const ATTENDANCESTART_TODAY_REQUEST = "ATTENDANCESTART_TODAY_REQUEST";
+export const ATTENDANCESTART_TODAY_SUCCESS = "ATTENDANCESTART_TODAY_SUCCESS";
+export const ATTENDANCESTART_TODAY_FAILURE = "ATTENDANCESTART_TODAY_FAILURE";
 
 const reducer = (state = initialState, action) => {
     return produce(state, (draft) => {
@@ -119,7 +128,20 @@ const reducer = (state = initialState, action) => {
                 draft.attendanceStart_year_Loading = false;
                 draft.attendanceStart_year_error = action.error;
                 break;
-
+            case ATTENDANCESTART_TODAY_REQUEST:
+                draft.attendanceStart_year_Loading = true;
+                draft.attendanceStart_year_error = null;
+                draft.attendanceStart_year_done = false;
+                break;
+            case ATTENDANCESTART_TODAY_SUCCESS:
+                draft.attendanceStart_year_Loading = false;
+                draft.attendanceStartToday = action.data
+                draft.attendanceStart_year_done = true;
+                break;
+            case ATTENDANCESTART_TODAY_FAILURE:
+                draft.attendanceStart_year_Loading = false;
+                draft.attendanceStart_year_error = action.error;
+                break;
             default:
                 return state;
         }

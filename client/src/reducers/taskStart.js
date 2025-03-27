@@ -22,13 +22,16 @@ export const initialState = {
     taskStart_year_done: false,
     taskStart_year_error: null,
 
+    taskStart_today_Loading: false,
+    taskStart_today_done: false,
+    taskStart_today_error: null,
+
     taskStartNewOne: null,
 
     taskStartFilterData: null,
 
-
+    taskStartToday: null,
 };
-
 
 export const TASKSTART_REGISTER_REQUEST = "TASKSTART_REGISTER_REQUEST";
 export const TASKSTART_REGISTER_SUCCESS = "TASKSTART_REGISTER_SUCCESS";
@@ -49,6 +52,10 @@ export const TASKSTART_MONTH_FAILURE = "TASKSTART_MONTH_FAILURE";
 export const TASKSTART_YEAR_REQUEST = "TASKSTART_YEAR_REQUEST";
 export const TASKSTART_YEAR_SUCCESS = "TASKSTART_YEAR_SUCCESS";
 export const TASKSTART_YEAR_FAILURE = "TASKSTART_YEAR_FAILURE";
+
+export const TASKSTART_TODAY_REQUEST = "TASKSTART_TODAY_REQUEST";
+export const TASKSTART_TODAY_SUCCESS = "TASKSTART_TODAY_SUCCESS";
+export const TASKSTART_TODAY_FAILURE = "TASKSTART_TODAY_FAILURE";
 
 const reducer = (state = initialState, action) => {
     return produce(state, (draft) => {
@@ -121,6 +128,20 @@ const reducer = (state = initialState, action) => {
             case TASKSTART_YEAR_FAILURE:
                 draft.taskStart_year_Loading = false;
                 draft.taskStart_year_error = action.error;
+                break;
+            case TASKSTART_TODAY_REQUEST:
+                draft.taskStart_today_Loading = true;
+                draft.taskStart_today_error = null;
+                draft.taskStart_today_done = false;
+                break;
+            case TASKSTART_TODAY_SUCCESS:
+                draft.taskStart_today_Loading = false;
+                draft.taskStartToday = action.data
+                draft.taskStart_today_done = true;
+                break;
+            case TASKSTART_TODAY_FAILURE:
+                draft.taskStart_today_Loading = false;
+                draft.taskStart_today_error = action.error;
                 break;
             default:
                 return state;

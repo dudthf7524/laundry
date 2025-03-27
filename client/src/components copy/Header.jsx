@@ -40,7 +40,7 @@ const Header = () => {
     {
       category: '설정',
       links: [
-        { name: '근무지 설정', path: '/admin/company/address' },
+        { name: '시스템 설정', path: '/admin/settings' },
         { name: '설정', path: '/admin/settings', requiredPermission: ['master'] },
       ],
     },

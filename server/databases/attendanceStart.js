@@ -173,7 +173,37 @@ const attendanceStartMonth = async (data) => {
     }
 };
 
+const attendanceToday = async (user_code) => {
+    
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+    const day = String(today.getDate()).padStart(2, '0'); // 두 자리로 표시
+    const formattedDate = `${year}-${month}-${day}`;
 
+    try {
+        const result = await attendanceStart.findOne({
+            where: {
+                user_code: user_code,
+                attendance_start_date: formattedDate,
+            },
+            include: [
+                {
+                    model: attendanceEnd,
+                    required: false, // 퇴근 데이터가 없어도 출근 데이터만 가져오기
+
+                }
+            ],
+            order: [['attendance_start_id', 'DESC']],
+
+        });
+        console.log("출근에대한 퇴근데어터 여부 ", result)
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+
+};
 
 
 module.exports = {
@@ -182,4 +212,5 @@ module.exports = {
     attendanceStartYear,
     attendanceStartMonth,
     attendanceStartDate,
+    attendanceToday,
 };

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Auth from './auth';
+import TaskSetting from './taskSetting';
+import CompanyAddress from './companyAddress';
 const SettingsPage = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
@@ -49,9 +51,9 @@ const SettingsPage = () => {
               }`}
             onClick={() => setActiveTab('general')}
           >
-            일반 설정
+            업무 설정
           </button>
-          <button
+          {/* <button
             className={`px-6 py-4 text-sm font-medium ${activeTab === 'attendance'
                 ? 'border-b-2 border-blue-500 text-blue-600'
                 : 'text-gray-600 hover:text-gray-800 hover:border-gray-300'
@@ -68,7 +70,7 @@ const SettingsPage = () => {
             onClick={() => setActiveTab('task')}
           >
             업무통계 설정
-          </button>
+          </button> */}
           <button
             className={`px-6 py-4 text-sm font-medium ${activeTab === 'permissions'
                 ? 'border-b-2 border-blue-500 text-blue-600'
@@ -76,7 +78,7 @@ const SettingsPage = () => {
               }`}
             onClick={() => setActiveTab('permissions')}
           >
-            권한 설정
+            근무지 설정
           </button>
         </nav>
 
@@ -84,53 +86,8 @@ const SettingsPage = () => {
           {/* General Settings Tab */}
           {activeTab === 'general' && (
             <div>
-              <h2 className="text-lg font-medium text-gray-900 mb-4">일반 설정</h2>
-
-              <div className="space-y-6">
-                <div>
-                  <label htmlFor="company-name" className="block text-sm font-medium text-gray-700 mb-1">
-                    회사명
-                  </label>
-                  <input
-                    type="text"
-                    id="company-name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    defaultValue="직원관리시스템"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-1">
-                    시간대
-                  </label>
-                  <select
-                    id="timezone"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    defaultValue="Asia/Seoul"
-                  >
-                    <option value="Asia/Seoul">한국 표준시 (UTC+9)</option>
-                    <option value="UTC">협정 세계시 (UTC)</option>
-                    <option value="America/New_York">동부 표준시 (UTC-5)</option>
-                    <option value="Europe/London">그리니치 표준시 (UTC+0)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="language" className="block text-sm font-medium text-gray-700 mb-1">
-                    언어
-                  </label>
-                  <select
-                    id="language"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    defaultValue="ko"
-                  >
-                    <option value="ko">한국어</option>
-                    <option value="en">영어</option>
-                    <option value="ja">일본어</option>
-                    <option value="zh">중국어</option>
-                  </select>
-                </div>
-              </div>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">업무 설정</h2>
+              <TaskSetting/>
             </div>
           )}
 
@@ -268,66 +225,15 @@ const SettingsPage = () => {
           {/* Permissions Settings Tab */}
           {activeTab === 'permissions' && (
             <div>
-
-           
-              <h2 className="text-lg font-medium text-gray-900 mb-4">권한 설정</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">근무지 설정</h2>
 
               <div className="space-y-6">
-                <div>
-                  <h3 className="text-md font-medium text-gray-800 mb-2">권한 수준</h3>
-                  <div className="bg-gray-50 p-4 rounded-md space-y-4">
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700">마스터</h4>
-                      <p className="text-sm text-gray-500">본인 및 근무자들 (직원들) 모두의 모든 데이터를 확인할 수 있고 수정도 할 수 있음 (전체 관리자)</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700">서브마스터</h4>
-                      <p className="text-sm text-gray-500">본인 및 근무자들(직원들) 모두의 모든 데이터를 확인 할 수 있음 (수정은 안됨)</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700">매니저</h4>
-                      <p className="text-sm text-gray-500">본인 및 직급이 '알바'인 사람들의 모든 데이터를 확인 할 수 있음(수정안 안됨) (볼수없는 항목은 총근무시간합, 연장근무시간)</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700">직원</h4>
-                      <p className="text-sm text-gray-500">본인의 데이터를 확인할 수 있음 (수정은 안됨) (볼수없는 항목은 총근무시간합, 연장근무시간)</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-md font-medium text-gray-800 mb-2">보이지 않는 필드 설정</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="hide-total-work-hours"
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        defaultChecked
-                      />
-                      <label htmlFor="hide-total-work-hours" className="ml-2 block text-sm text-gray-700">
-                        매니저/직원에게 총근무시간합 숨기기
-                      </label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="hide-overtime"
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        defaultChecked
-                      />
-                      <label htmlFor="hide-overtime" className="ml-2 block text-sm text-gray-700">
-                        매니저/직원에게 연장근무시간 숨기기
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <Auth />
+                <CompanyAddress />
               </div>
             </div>
           )}
 
-          <div className="mt-8 flex justify-end">
+          {/* <div className="mt-8 flex justify-end">
             <button
               type="button"
               className="mr-3 px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
@@ -340,7 +246,7 @@ const SettingsPage = () => {
             >
               설정 저장
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

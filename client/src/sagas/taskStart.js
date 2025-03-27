@@ -22,6 +22,10 @@ import {
     TASKSTART_YEAR_SUCCESS,
     TASKSTART_YEAR_FAILURE,
 
+    TASKSTART_TODAY_REQUEST,
+    TASKSTART_TODAY_SUCCESS,
+    TASKSTART_TODAY_FAILURE,
+
 } from "../reducers/taskStart";
 
 function* watchTaskStartRegister() {
@@ -100,7 +104,7 @@ function* taskStartDate(action) {
             type: TASKSTART_DATE_SUCCESS,
             data: result.data,
         });
-        if (result.data) { }
+       
     } catch (err) {
         console.error(err);
         yield put({
@@ -127,7 +131,7 @@ function* taskStartMonth(action) {
             type: TASKSTART_MONTH_SUCCESS,
             data: result.data,
         });
-        if (result.data) { }
+        
     } catch (err) {
         console.error(err);
         yield put({
@@ -154,7 +158,7 @@ function* taskStartYear(action) {
             type: TASKSTART_YEAR_SUCCESS,
             data: result.data,
         });
-        if (result.data) { }
+        
     } catch (err) {
         console.error(err);
         yield put({
@@ -164,6 +168,37 @@ function* taskStartYear(action) {
     }
 }
 
+
+function* watchTaskStartToday() {
+    yield takeLatest(TASKSTART_TODAY_REQUEST, taskStartToday);
+}
+
+function taskStartTodayAPI() {
+
+    return axios.get("/taskStart/today");
+}
+
+function* taskStartToday() {
+    try {
+        const result = yield call(taskStartTodayAPI,);
+        if (result.data === "common") {
+            window.location.href = "/";
+            return;
+        }
+        yield put({
+            type: TASKSTART_TODAY_SUCCESS,
+            data: result.data,
+        });
+        
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: TASKSTART_TODAY_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
 export default function* taskStartSaga() {
-    yield all([fork(watchTaskStartRegister), fork(watchTaskStartNewOne), fork(watchTaskStartDate), fork(watchTaskStartMonth), fork(watchTaskStartYear)]);
+    yield all([fork(watchTaskStartRegister), fork(watchTaskStartNewOne), fork(watchTaskStartDate), fork(watchTaskStartMonth), fork(watchTaskStartYear), fork(watchTaskStartToday)]);
 }

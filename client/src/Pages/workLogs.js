@@ -61,7 +61,6 @@ const WorkLogs = () => {
         const totalDays = [...Array(firstDay).fill(''), ...thisDates];
 
         return totalDays.map((d, i) => {
-            console.log(d)
             if (d === '') {
                 return <div key={i} className="date empty"></div>;
             }

@@ -23,6 +23,10 @@ import {
     ATTENDANCESTART_YEAR_SUCCESS,
     ATTENDANCESTART_YEAR_FAILURE,
 
+    ATTENDANCESTART_TODAY_REQUEST,
+    ATTENDANCESTART_TODAY_SUCCESS,
+    ATTENDANCESTART_TODAY_FAILURE,
+
 } from "../reducers/attendanceStart";
 
 function* watchAttendanceStartRegister() {
@@ -103,7 +107,7 @@ function attendanceStartDateAPI(data) {
 function* attendanceStartDate(action) {
     try {
         const result = yield call(attendanceStartDateAPI, action.data);
-       
+
         yield put({
             type: ATTENDANCESTART_DATE_SUCCESS,
             data: result.data,
@@ -130,7 +134,7 @@ function attendanceStartMonthAPI(data) {
 function* attendanceStartMonth(action) {
     try {
         const result = yield call(attendanceStartMonthAPI, action.data);
-       
+
         yield put({
             type: ATTENDANCESTART_MONTH_SUCCESS,
             data: result.data,
@@ -157,7 +161,7 @@ function attendanceStartYearAPI(data) {
 function* attendanceStartYear(action) {
     try {
         const result = yield call(attendanceStartYearAPI, action.data);
-       
+
         yield put({
             type: ATTENDANCESTART_YEAR_SUCCESS,
             data: result.data,
@@ -172,10 +176,47 @@ function* attendanceStartYear(action) {
     }
 }
 
+function* watchAttendanceStartToday() {
+    yield takeLatest(ATTENDANCESTART_TODAY_REQUEST, attendanceStartToday);
+}
+
+function attendanceStartTodayAPI() {
+
+    return axios.get("/attendanceStart/today");
+}
+
+function* attendanceStartToday() {
+    try {
+        const result = yield call(attendanceStartTodayAPI, );
+        if (result.data === "common") {
+            window.location.href = "/";
+            return;
+        }
+        yield put({
+            type: ATTENDANCESTART_TODAY_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: ATTENDANCESTART_TODAY_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
 
 
 
 
 export default function* attendanceStartSaga() {
-    yield all([fork(watchAttendanceStartRegister), fork(watchAttendanceStartNewOne), fork(watchAttendanceStartYear), fork(watchAttendanceStartMonth), fork(watchAttendanceStartDate)]);
+    yield all([
+        fork(watchAttendanceStartRegister),
+        fork(watchAttendanceStartNewOne),
+        fork(watchAttendanceStartYear),
+        fork(watchAttendanceStartMonth),
+        fork(watchAttendanceStartDate),
+        fork(watchAttendanceStartToday)
+    ]);
 }
