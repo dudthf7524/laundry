@@ -40,7 +40,6 @@ const Profile = () => {
                      <UserTask />
                 )}
             </div>
-            <BottomBar />
         </>
     );
 };

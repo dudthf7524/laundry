@@ -78,16 +78,12 @@ const Join = () => {
             setError(err.response?.data?.message || '서버 오류가 발생했습니다.');
         }
     };
-
-    const handleLoginClick = () => {
-        navigate('/');
-    };
-
+    
     return (
 
         <div className="join">
             <h1>laundry</h1>
-            <h2>회원가입</h2>
+            <h2>직원등록</h2>
             <form onSubmit={handleJoin}>
                 <div>
                     <input
@@ -140,8 +136,6 @@ const Join = () => {
                     value={formData.user_confirmPassword}
                     onChange={handleInputChange}
                 />
-                <br></br>
-                <h2>입사일</h2>
                 <input
                     type="date"
                     name="user_hire_date"
@@ -149,11 +143,11 @@ const Join = () => {
                     value={formData.user_hire_date}
                     onChange={handleInputChange}
                 />
-                <button type="submit">회원가입</button>
+                <button type="submit">등록</button>
             </form>
             {error && <p className="error-message">{error}</p>}
             {success && <p className="success-message">{success}</p>}
-            <p className="login-link" onClick={handleLoginClick}>로그인하기</p>
+          
             <div className="ocean">
                 <div className="wave"></div>
                 <div className="wave"></div>

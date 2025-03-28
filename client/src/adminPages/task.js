@@ -211,41 +211,48 @@ const Time = () => {
                     {filteredUserLists ? (
                         filteredUserLists?.map((userList, index) => (
                             <li
-                                key={index}
-                                className={`p-4 hover:bg-gray-50 ${selected.user_code === userList.user_code ? 'bg-blue-50' : ''
-                                    }`}
-                            >
-                                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                                    <div className="flex-1">
-                                        <div className="flex items-center">
-                                            <div className="bg-gray-200 rounded-full h-10 w-10 flex items-center justify-center text-gray-700 font-bold">
-                                                {userList.user_name.charAt(0)}
+                            key={index}
+                            className={`cursor-pointer p-4 hover:bg-gray-50 ${selected.user_code === userList.user_code ? 'bg-blue-50' : ''
+                                }`}
+                            onClick={() =>
+                                handleCheckboxChange(userList)
+                            }
+                        >
+                            <div className="flex flex-row md:flex-row md:items-center md:justify-between">
+                                <div className="flex-1">
+                                    <div className="flex items-center">
+                                        <div className="bg-gray-200 rounded-full h-10 w-10 flex items-center justify-center text-gray-700 font-bold">
+                                            {userList.user_name.charAt(0)}
+                                        </div>
+                                        <div className="ml-3">
+                                            <div className="flex items-center">
+                                                <span className="text-lg font-medium text-gray-900">{userList.user_name}</span>
+                                                <span className="ml-2 text-sm text-gray-500">({userList.user_nickname})</span>
+                                                <span className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPermissionColor(userList.auth.auth_code)}`}>
+                                                    {userList.auth.auth_name}
+                                                </span>
                                             </div>
-                                            <div className="ml-3">
-                                                <div className="flex items-center">
-                                                    <span className="text-lg font-medium text-gray-900">{userList.user_name}</span>
-                                                    <span className="ml-2 text-sm text-gray-500">({userList.user_nickname})</span>
-                                                    <span className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPermissionColor(userList.auth.auth_code)}`}>
-                                                        {userList.auth.auth_name}
-                                                    </span>
-                                                </div>
-                                                <div className="text-sm text-gray-500">
-                                                    {userList.user_position} • {getYearsOfService(userList.user_hire_date)}년차
-                                                </div>
+                                            <div className="text-sm text-gray-500">
+                                                {userList.user_position} • {getYearsOfService(userList.user_hire_date)}년차
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-2 md:mt-0 flex items-center">
+
+                                </div>
+                                <div className="flex-2">
+                                    <div className="mt-2 md:mt-0 flex items-center" >
                                         <>
                                             <input type='checkbox' className='h-5 w-5 cursor-pointer'
                                                 checked={selected.user_code === userList.user_code}
                                                 onChange={() =>
                                                     handleCheckboxChange(userList)
-                                                }></input>
+                                                }
+                                            ></input>
                                         </>
                                     </div>
                                 </div>
-                            </li>
+                            </div>
+                        </li>
                         ))
                     ) : (
                         <li className="p-4 text-center text-gray-500">
@@ -294,7 +301,7 @@ const Time = () => {
                         />
                         <button
                             onClick={processRegister}
-                            className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                            className="w-full mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
                             업무 등록
                         </button>
                     </div>

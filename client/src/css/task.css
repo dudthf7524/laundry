@@ -4,7 +4,7 @@
     flex-direction: column;
     gap: 3vh;
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
     padding: 2vw;
     box-sizing: border-box;
     overflow-y: auto;
@@ -48,12 +48,10 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    height: auto;
     padding: 2vw;
     gap: 2vh;
 }
 
-/* 첫 번째 드롭다운 */
 .task .select_one {
     width: 80%;
     height: 40px;
@@ -86,9 +84,8 @@
 
 .task .work_process_time {
     display: flex;
-    flex-direction: row;
-    width: 100%;
     justify-content: space-between;
+    width: 100%;
 }
 
 .task .work_time_one,
@@ -103,7 +100,6 @@
 /* 업무 시작, 종료 버튼 */
 .task .work_time_button {
     display: flex;
-    flex-direction: row;
     gap: 1vw;
 }
 
@@ -115,111 +111,6 @@
     font-size: 1.2rem;
     font-weight: bold;
     text-align: center;
-}
-
-/* 반응형 - 모바일 화면 조정 */
-@media screen and (max-width: 768px) {
-    .task {
-        gap: 2vh;
-    }
-
-    .task .notice {
-        height: auto;
-        flex-direction: column;
-        text-align: center;
-        padding: 2vh;
-    }
-
-    .task .notice p {
-        font-size: 1rem;
-    }
-
-    .task .worker_select {
-        padding: 3vh;
-        height: auto;
-    }
-
-    .task .select_one,
-    .task .select_two {
-        width: 100%;
-        font-size: 0.9rem;
-    }
-
-    .task .work_time {
-        padding: 3vh;
-    }
-
-    .task .work_process_time {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .task .work_time_button {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .task .work_time_button button {
-        width: 100%;
-        height: 45px;
-        font-size: 1rem;
-    }
-}
-
-/* 모달 반응형 */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-.modal_content {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    width: 280px;
-    max-width: 90%;
-    animation: slideUp 0.3s ease-in-out;
-}
-
-/* 버튼 반응형 */
-.modal_content button {
-    margin: 8px;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: 0.2s;
-}
-
-.modal_content button:first-of-type {
-    background: #007bff;
-    color: white;
-    font-weight: bold;
-}
-
-.modal_content button:first-of-type:hover {
-    background: #0056b3;
-}
-
-.modal_content button:last-of-type {
-    background: #ccc;
-    color: black;
-}
-
-.modal_content button:last-of-type:hover {
-    background: #999;
 }
 
 /* 업무 시간 박스 가로 정렬 */
@@ -260,6 +151,7 @@
     display: flex;
     justify-content: center;
     gap: 20px;
+    margin-top: 20px;
     width: 90%;
 }
 
@@ -273,8 +165,108 @@
     text-align: center;
 }
 
-/* 반응형 스타일 */
+/* 모달 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal_content {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    width: 280px;
+    max-width: 90%;
+    animation: slideUp 0.3s ease-in-out;
+}
+
+/* 버튼 */
+.modal_content button {
+    margin: 8px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+.modal_content button:first-of-type {
+    background: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.modal_content button:first-of-type:hover {
+    background: #0056b3;
+}
+
+.modal_content button:last-of-type {
+    background: #ccc;
+    color: black;
+}
+
+.modal_content button:last-of-type:hover {
+    background: #999;
+}
+
+/* ----------- 반응형 ----------- */
 @media screen and (max-width: 768px) {
+    .task {
+        gap: 2vh;
+    }
+
+    .task .notice {
+        height: auto;
+        flex-direction: column;
+        text-align: center;
+        padding: 2vh;
+    }
+
+    .task .notice p {
+        font-size: 1rem;
+    }
+
+    .task .worker_select {
+        padding: 3vh;
+    }
+
+    .task .select_one,
+    .task .select_two {
+        width: 100%;
+        font-size: 0.9rem;
+    }
+
+    .task .work_time {
+        padding: 3vh;
+    }
+
+    .task .work_process_time {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .task .work_time_button {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .task .work_time_button button {
+        height: 45px;
+        font-size: 1rem;
+    }
+
     .task .work_time_container {
         flex-direction: column;
         gap: 10px;
@@ -288,35 +280,9 @@
         flex-direction: column;
         gap: 10px;
     }
-
-    .task .work_time_buttons button {
-        width: 100%;
-    }
 }
 
-
-/* 모달 애니메이션 */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(20px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-/* 모바일에서 모달 크기 줄이기 */
+/* 모달 반응형 */
 @media screen and (max-width: 480px) {
     .modal_content {
         width: 90%;
@@ -330,5 +296,28 @@
     .modal_content button {
         font-size: 0.9rem;
         padding: 8px 12px;
+    }
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
     }
 }

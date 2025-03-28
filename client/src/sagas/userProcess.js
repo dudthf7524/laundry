@@ -33,10 +33,16 @@ function processRegisterAPI(data) {
 function* processRegister(action) {
     try {
         const result = yield call(processRegisterAPI, action.data);
-       
+
+        if(result.data){
+            alert('등록이 완료되었습니다.')
+            window.location.href="/admin/task"
+        }
+
         yield put({
             type: USER_PROCESS_REGISTER_SUCCESS,
         });
+        
         if (result.data) { }
     } catch (err) {
         console.error(err);
@@ -119,7 +125,10 @@ function processDeleteAPI(data) {
 function* processDelete(action) {
     try {
         const result = yield call(processDeleteAPI, action.data);
-       
+        if(result.data){
+            alert('삭제가 완료되었습니다.')
+            window.location.href="/admin/task"
+        }
         yield put({
             type: USER_PROCESS_DELETE_SUCCESS,
         });

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ReactComponent as Icon1 } from '../Assets/Images/star.svg';
+import { ReactComponent as StarIcon  } from '../Assets/Images/star.svg';
 import '../css/task.css';
 import BottomBar from '../components/BottomBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { USER_PROCESS_ONE_LIST_REQUEST } from '../reducers/userProcess';
-import { TASK_REGISTER_REQUEST } from '../reducers/task';
 import { TASK_NEW_ONE_REQUEST } from '../reducers/task';
 import { TASKSTART_NEW_ONE_REQUEST, TASKSTART_REGISTER_REQUEST } from '../reducers/taskStart';
 import { TASKEND_REGISTER_REQUEST } from '../reducers/taskEnd';
@@ -211,8 +210,7 @@ const Task = () => {
         <div className='task'>
             <div></div>
             <div className="notice">
-                <div className="w-10 h-10 cursor-pointer"><img src={`${process.env.PUBLIC_URL}/icon/star.png`} alt="Map Icon" />
-                </div>
+            <StarIcon className="w-5 h-5 cursor-pointer text-yellow-400" />
                 <p>안녕하세요 <span className='user_name'>{user?.user_name}</span>님! 오늘 하루도 화이팅!</p>
             </div>
 
@@ -277,8 +275,6 @@ const Task = () => {
                 <button onClick={handleEnd} disabled={taskStartNewOne?.task_end || !taskStartNewOne}>업무종료</button>
             </div>
 
-            <div>오늘 업무 총평: 참 잘했어요</div>
-            <BottomBar />
 
             {/* 업무 시작 모달 */}
             {isModalOpen && (

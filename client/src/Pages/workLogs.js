@@ -134,8 +134,8 @@ const WorkLogs = () => {
     };
     {/* <div className='w-full h-[80%] overflow-y-auto'></div> */ }
     return (
-        <div className='w-full flex justify-center items-center overflow-y-auto'>
-            <div className='w-[90%]  h-[80%] overflow-y-auto'>
+        <div className="w-full flex flex-col justify-center items-center overflow-y-auto">
+            <div className='w-[90%]'>
                 <div className="mb-6 p-4 w-full">
                     <h1 className="text-3xl font-bold text-gray-900">휴가 신청</h1>
                     <p className="text-gray-700 mt-1 text-lg">날짜를 선택하고 휴가를 신청하세요</p>
@@ -188,7 +188,7 @@ const WorkLogs = () => {
                     </div>
                 )}
             </div>
-            <BottomBar />
+           
         </div>
     );
 };

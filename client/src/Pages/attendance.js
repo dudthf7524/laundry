@@ -191,7 +191,7 @@ const Attendance = () => {
         <div className='attendance'>
             <div></div>
             <div className="notice">
-                <div className="w-10 h-10 cursor-pointer"><img src={`${process.env.PUBLIC_URL}/icon/star.png`} alt="Map Icon" />
+                <div className="w-5 h-5 cursor-pointer"><img src={`${process.env.PUBLIC_URL}/icon/star.png`} alt="Map Icon" />
                 </div>
                 <p>공지입니다</p>
             </div>
@@ -255,8 +255,6 @@ const Attendance = () => {
                     퇴근
                 </button>
             </div>
-
-            <BottomBar />
         </div>
     );
 }

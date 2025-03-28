@@ -21,6 +21,7 @@ import Vacation from './adminPages/vacation';
 import Time from './adminPages/time';
 import Taskcopy from './adminPages/task';
 import WorkAddressCopy from './adminPages/companyAddress';
+import BottomBar from './components/BottomBar';
 
 
 // import { AuthProvider } from './adminContext/adminContext';
@@ -36,6 +37,8 @@ function App() {
     });
   }, []);
   
+  const showBottomBar = location.pathname !== '/' && location.pathname !== '/join';
+
   return (
     <>
       {adminPage ? (
@@ -64,6 +67,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
 
           </Routes>
+          {showBottomBar && <BottomBar />}
         </div>
       )}
 

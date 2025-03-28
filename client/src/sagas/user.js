@@ -1,6 +1,14 @@
 import { all, fork, takeLatest, put, call } from "redux-saga/effects";
 import axios from "axios";
 import {
+    USER_CHECK_REQUEST,
+    USER_CHECK_SUCCESS,
+    USER_CHECK_FAILURE,
+
+    USER_JOIN_REQUEST,
+    USER_JOIN_SUCCESS,
+    USER_JOIN_FAILURE,
+
     USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS,
     USER_LOGIN_FAILURE,
