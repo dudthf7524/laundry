@@ -226,11 +226,11 @@ const Attendance = () => {
                 </div>
                 <div className="work_time_box">
                     <div className="work_time_title">출근시간</div>
-                    <div className="work_time_content">{timeDetail?.start_time}</div>
+                    <div className="work_time_content">{timeDetail?.start_time || '출근시간 미정'}</div>
                     <div className="work_time_title">퇴근시간</div>
-                    <div className="work_time_content">{timeDetail?.end_time}</div>
+                    <div className="work_time_content">{timeDetail?.end_time  || '퇴근시간 미정'}</div>
                     <div className="work_time_title">휴게시간</div>
-                    <div className="work_time_content">{timeDetail?.rest_start_time} ~ {timeDetail?.rest_end_time}</div>
+                    <div className="work_time_content">{timeDetail?.rest_start_time  || '휴게시작시간 미정'} ~ {timeDetail?.rest_end_time  || '휴게종료시간 미정'}</div>
                 </div>
                 <div className="work_time_box">
                     <div className="work_time_title">&nbsp;</div>

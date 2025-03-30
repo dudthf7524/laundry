@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { employees, permissionLevels } from "../data/mockData";
 import { VACATION_ALLOW_REQUEST, VACATION_LIST_REQUEST } from "../reducers/vacation";
 
-const SelectDatePage2 = () => {
+const Vacation = () => {
   const [date, setDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,23 +37,27 @@ const SelectDatePage2 = () => {
 
   const changeMonth = (offset) => {
     setDate((prev) => {
-        const newDate = new Date(prev);
-        newDate.setMonth(newDate.getMonth() + offset);
-        return newDate;
+      const newDate = new Date(prev);
+      newDate.setMonth(newDate.getMonth() + offset);
+      return newDate;
     });
-};
-const goToday = () => {
+  };
+  const goToday = () => {
     setDate(new Date());
-};
+  };
   // 신청된 휴가 날짜 목록 추출
 
 
   // 선택한 날짜의 휴가 정보
 
-  
+
   const selectedVacation = Array.isArray(vacationLists)
-  ? vacationLists.find((v) => v.vacation_state === "신청" && v.vacation_date === selectedDate)
-  : null;
+    ? vacationLists.find((v) => v.vacation_state === "신청" && v.vacation_date === selectedDate)
+    : null;
+
+  const selectedVacationComplete = Array.isArray(vacationLists)
+    ? vacationLists.find((v) => v.vacation_state === "승인" && v.vacation_date === selectedDate)
+    : null;
 
   // 날짜 클릭 시
   const handleDateClick = (year, month, day) => {
@@ -128,7 +132,7 @@ const goToday = () => {
       {/* 캘린더 */}
       <div className="bg-white p-4 rounded-lg shadow mb-6">
         <div className="flex justify-between items-center py-4">
-          <div className="flex justify-center items-center py-4 relative mb-2">
+          <div className="flex justify-center items-center py-4 relative mb-2 w-full">
             <button className="pr-10 nav-btn go-prev text-2xl font-bold" onClick={() => changeMonth(-1)}>
               &lt;
             </button>
@@ -162,6 +166,7 @@ const goToday = () => {
       {selectedVacation && (
         <div className="bg-white p-4 rounded-lg shadow mb-6">
           <h2 className="text-xl font-semibold">휴가 신청 정보</h2>
+          <p className="mt-3">이름: {selectedVacation?.user.user_name}</p>
           <p className="mt-2">날짜: {selectedVacation?.vacation_date}</p>
           <p className="mt-1">사유: {selectedVacation?.vacation_content}</p>
           <div className="mt-4 flex space-x-2">
@@ -170,8 +175,18 @@ const goToday = () => {
           </div>
         </div>
       )}
+
+
+      {selectedVacationComplete && (
+        <div className="bg-white p-4 rounded-lg shadow mb-6">
+          <h2 className="text-xl font-semibold">휴가 신청 정보</h2>
+          <p className="mt-3">이름: {selectedVacationComplete?.user.user_name}</p>
+          <p className="mt-2">날짜: {selectedVacationComplete?.vacation_date}</p>
+          <p className="mt-1">사유: {selectedVacationComplete?.vacation_content}</p>
+        </div>
+      )}
     </div>
   );
 };
 
-export default SelectDatePage2;
+export default Vacation;

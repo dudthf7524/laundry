@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import {
     LineChart,
     Line,
@@ -9,6 +10,8 @@ import {
     Legend,
     ResponsiveContainer,
 } from "recharts";
+import FilterControls from "../components copy/FilterControls";
+
 
 // 더미 데이터 (API 연동 시 변경 가능)
 const dataByYear = [
@@ -29,27 +32,68 @@ const dataByDay = [
     { date: "03일", user1: 8, user2: 7, user3: 9, user4: 12, user5: 15, user6: 18 },
 ];
 
-const AttendanceChart = () => {
+const Chart = () => {
     const [selectedData, setSelectedData] = useState("year");
-    const [selectedUsers, setSelectedUsers] = useState([true, true, false, false, false, false]);
+    const [filterType, setFilterType] = useState('date'); // 'date', 'month', or 'year'
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [month, setMonth] = useState(null);
+    const [year, setYear] = useState(null);
 
-    // 데이터 변경 함수
-    const getChartData = () => {
-        switch (selectedData) {
-            case "month":
-                return dataByMonth;
-            case "day":
-                return dataByDay;
-            default:
-                return dataByYear;
+    
+
+    const vacationDate = async () => {
+        const data = {
+            startDate: startDate,
+            endDate: endDate,
         }
+        // dispatch({
+        //     type: ATTENDANCESTART_DATE_REQUEST,
+        //     data: data,
+        // });
     };
 
-    const handleUserChange = (index) => {
-        const newSelectedUsers = [...selectedUsers];
-        newSelectedUsers[index] = !newSelectedUsers[index];
-        setSelectedUsers(newSelectedUsers);
+    const vacationMonth = async () => {
+        const data = {
+            year: year,
+            month: month,
+        }
+        // dispatch({
+        //     type: ATTENDANCESTART_MONTH_REQUEST,
+        //     data: data,
+        // });
     };
+
+    const vacationYear = async () => {
+        const data = {
+            year: year
+        }
+        // dispatch({
+        //     type: ATTENDANCESTART_YEAR_REQUEST,
+        //     data: data,
+        // });
+    };
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (filterType === "date" && startDate && endDate) {
+            console.log("선택한 시작일", startDate)
+            console.log("선택한 시작일", startDate)
+          
+            // vacationDate();
+        } else if (filterType === "month" && year && month) {
+            console.log("선택한 시작일", startDate)
+            console.log("선택한 시작일", startDate)
+            // vacationMonth();
+        } else if (filterType === "year" && year) {
+            console.log("선택한 시작일", startDate)
+            console.log("선택한 시작일", startDate)
+            // vacationYear();
+        }
+    }, [year, month, startDate, endDate]);
+
+    const [selectedUsers, setSelectedUsers] = useState([true, true, false, false, false, false]);
 
     const renderLines = () => {
         const users = ["user1", "user2", "user3", "user4", "user5", "user6", "user7"];
@@ -62,52 +106,87 @@ const AttendanceChart = () => {
         });
     };
 
+    const getChartData = () => {
+        switch (selectedData) {
+            case "month":
+                return dataByMonth;
+            case "day":
+                return dataByDay;
+            default:
+                return dataByYear;
+        }
+    };
+
     return (
-        <div className="p-6 bg-white shadow-lg rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">출퇴근 통계</h2>
+        <div>
 
-            {/* 버튼 UI */}
-            <div className="flex space-x-2 mb-4">
-                <button onClick={() => setSelectedData("day")} className="px-4 py-2 bg-blue-500 text-white rounded">
-                    일별
-                </button>
-                <button onClick={() => setSelectedData("month")} className="px-4 py-2 bg-green-500 text-white rounded">
-                    월별
-                </button>
-                <button onClick={() => setSelectedData("year")} className="px-4 py-2 bg-red-500 text-white rounded">
-                    연도별
-                </button>
+            <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900">차트</h1>
+                    <p className="text-gray-600 mt-1">
+                        차트 조회 및 비교
+                    </p>
+                </div>
             </div>
 
-            {/* 사용자 선택 UI */}
-            <div className="flex space-x-2 mb-4">
-                {["사용자 1", "사용자 2", "사용자 3", "사용자 4", "사용자 5", "사용자 6", "사용자 7"].map((user, index) => (
-                    <label key={index} className="inline-flex items-center space-x-2">
-                        <input
-                            type="checkbox"
-                            checked={selectedUsers[index]}
-                            onChange={() => handleUserChange(index)}
-                            className="form-checkbox"
-                        />
-                        <span>{user}</span>
-                    </label>
-                ))}
+
+            <FilterControls
+                setFilterType={setFilterType}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
+                setMonth={setMonth}
+                setYear={setYear}
+            />
+
+            <div className="p-6 bg-white shadow-lg rounded-lg">
+                <h2 className="text-xl font-semibold mb-4">출퇴근 통계</h2>
+
+                {/* 버튼 UI */}
+                {/* <div className="flex mb-4 space-x-2">
+                    <button
+                        className={`px-3 py-1 rounded text-sm ${timeFrame === 'daily'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                        onClick={() => handleTimeFrameChange('daily')}
+                    >
+                        일별
+                    </button>
+                    <button
+                        className={`px-3 py-1 rounded text-sm ${timeFrame === 'monthly'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                        onClick={() => handleTimeFrameChange('monthly')}
+                    >
+                        월별
+                    </button>
+                    <button
+                        className={`px-3 py-1 rounded text-sm ${timeFrame === 'yearly'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                        onClick={() => handleTimeFrameChange('yearly')}
+                    >
+                        연도별
+                    </button>
+                </div> */}
+
+                {/* 차트 표시 */}
+                <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={getChartData()}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="date" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+
+                        {renderLines()}
+                    </LineChart>
+                </ResponsiveContainer>
             </div>
-
-            {/* 차트 표시 */}
-            <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={getChartData()}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-
-                    {renderLines()}
-                </LineChart>
-            </ResponsiveContainer>
         </div>
     );
 };
 
-export default AttendanceChart;
+export default Chart;

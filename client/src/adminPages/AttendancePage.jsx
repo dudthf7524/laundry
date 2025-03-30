@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 
 
-import Chart from './chart';
+import Chart from './chartTest';
 import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
 
 const AttendancePage = () => {
@@ -74,6 +74,7 @@ const AttendancePage = () => {
   };
 
   const dispatch = useDispatch();
+  
   useEffect(() => {
     if (filterType === "date" && startDate && endDate) {
       vacationDate();
@@ -107,7 +108,7 @@ const AttendancePage = () => {
     <div>
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">근태 관리</h1>
+          <h1 className="text-2xl font-bold text-gray-900">근태</h1>
           <p className="text-gray-600 mt-1">
             직원들의 근태 기록을 조회하고 관리합니다
           </p>

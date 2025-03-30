@@ -39,6 +39,8 @@ db.companyAddress = require("./companyAddress")(sequelize, Sequelize);
 db.taskStart = require("./taskStart")(sequelize, Sequelize);
 db.taskEnd = require("./taskEnd")(sequelize, Sequelize);
 
+db.notice = require("./notice")(sequelize, Sequelize);
+
 // 관계 설정
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

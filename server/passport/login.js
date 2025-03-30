@@ -14,8 +14,8 @@ module.exports = () => {
             },
             async (req, user_id, user_password, done) => {
 
-                console.log("login_id :" + user_id)
-                console.log("password :" + user_password)
+                console.log("login_id :", user_id)
+                console.log("password :", user_password)
                 try {
                     const result = await user.userLogin(user_id, user_password);
                     if (result) {

@@ -34,9 +34,10 @@ const userJoin = async (data) => {
 };
 
 const userLogin = async (user_id, user_password) => {
+    console.log(user_id);
     try {
         const result = await user.findOne({ where: { user_id: user_id }, raw: true })
-        
+        console.log(result)
         if(result){
             if(result.user_password === user_password){
                 return result;
@@ -88,6 +89,7 @@ const userUpdate = async (data) => {
                 user_position: data.user_position, 
                 user_hire_date: data.user_hire_date, 
             },
+            
             {
                 where: {
                     user_code: data.user_code,

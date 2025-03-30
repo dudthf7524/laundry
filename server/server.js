@@ -27,9 +27,14 @@ const vacationRoutes = require('./routes/vacation');
 const companyAddressRoutes = require('./routes/companyAddress');
 const taskStartRoutes = require('./routes/taskStart');
 const taskEndRoutes = require('./routes/taskEnd');
+const chartRoutes = require('./routes/chart');
+const noticeRoutes = require('./routes/notice');
+
 
 const authData = require("./modelsInitializeData/authData");
 const processData = require("./modelsInitializeData/processData");
+const noticeData = require("./modelsInitializeData/noticeData");
+
 passportConfig();
 app.use(express.json());
 
@@ -51,6 +56,7 @@ sequelize
   .then(async () => {
     await authData();
     await processData();
+    await noticeData();
     console.log("✅ 데이터베이스 연결 성공");
 
     app.listen(port, () => {
@@ -98,6 +104,8 @@ app.use('/vacation', vacationRoutes);
 app.use('/companyAddress', companyAddressRoutes);
 app.use('/taskStart', taskStartRoutes);
 app.use('/taskEnd', taskEndRoutes);
+app.use('/chart', chartRoutes);
+app.use('/notice', noticeRoutes);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));

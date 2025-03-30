@@ -21,7 +21,9 @@ import Vacation from './adminPages/vacation';
 import Time from './adminPages/time';
 import Taskcopy from './adminPages/task';
 import WorkAddressCopy from './adminPages/companyAddress';
+import Chart from './adminPages/chart';
 import BottomBar from './components/BottomBar';
+import Notice from './adminPages/notice';
 
 
 // import { AuthProvider } from './adminContext/adminContext';
@@ -54,6 +56,9 @@ function App() {
             <Route path="time" element={<Time />} />
             <Route path="task" element={<Taskcopy />} />
             <Route path="company/address" element={<WorkAddressCopy />} />
+            <Route path="chart" element={<Chart />} />
+            <Route path="notice" element={<Notice />} />
+
           </Route>
         </Routes>
       ) : (

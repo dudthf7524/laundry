@@ -12,6 +12,8 @@ import companyAddressSaga from "./companyAddress";
 import vacationSaga from "./vacation";
 import taskStartSaga from "./taskStart";
 import taskEndSaga from "./taskEnd";
+import chartSaga from "./chart";
+import noticeSaga from "./notice";
 
 import { API_URL } from "../constants";
 
@@ -32,5 +34,8 @@ export default function* rootSaga() {
     fork(companyAddressSaga),
     fork(taskStartSaga),
     fork(taskEndSaga),
+    fork(chartSaga),
+    fork(noticeSaga),
+    
   ]);
 }

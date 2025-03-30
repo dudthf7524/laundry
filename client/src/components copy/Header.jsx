@@ -19,11 +19,21 @@ const Header = () => {
 
   const navLinks = [
     {
+      category: '공지',
+      links: [
+        { name: '공지사항', path: '/admin/notice' },
+       
+      ],
+
+    },
+    {
       category: '통계',
       links: [
-        { name: '근태관리', path: '/admin/attendance' },
-        { name: '업무통계', path: '/admin/tasks' },
+        { name: '근태', path: '/admin/attendance' },
+        { name: '업무', path: '/admin/tasks' },
+        { name: '차트', path: '/admin/chart' },
       ],
+
     },
     {
       category: '관리',
@@ -44,6 +54,7 @@ const Header = () => {
         { name: '설정', path: '/admin/settings', requiredPermission: ['master'] },
       ],
     },
+    
   ];
 
   const filteredNavLinks = navLinks.map(category => ({
