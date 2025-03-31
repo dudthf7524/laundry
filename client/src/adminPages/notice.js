@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { NOTICE_LIST_REQUEST, NOTICE_UPDATE_REQUEST } from '../reducers/notice';
 
 const Notice = () => {
-    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const { noticeLists } = useSelector((state) => state.notice);

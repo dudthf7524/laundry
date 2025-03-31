@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
     LineChart,
     Line,
@@ -11,13 +11,16 @@ import {
     ResponsiveContainer,
 } from "recharts";
 import FilterControls from "../components copy/FilterControls";
+import FilterChart from "../components copy/filterChart";
+import { CHART_DATE_REQUEST } from "../reducers/chart";
+
 
 
 // 더미 데이터 (API 연동 시 변경 가능)
 const dataByYear = [
-    { date: "2022", user1: 600, user2: 200, user3: 500, user4: 1000, user5: 1400, user6: 2100, user7: 10 },
-    { date: "2023", user1: 700, user2: 300, user3: 600, user4: 1200, user5: 1600, user6: 2200, user7: 10 },
-    { date: "2024", user1: 800, user2: 400, user3: 700, user4: 1300, user5: 1800, user6: 2300, user7: 2100 },
+    { attendance_start_date: "2025-03-24", sum_hour: 0, user_name: "김경준", },
+    { attendance_start_date: "2025-03-25", sum_hour: 8, user_name: "김경준", },
+    { attendance_start_date: "2025-03-27", sum_hour: 0, user_name: "김경준", },
 ];
 
 const dataByMonth = [
@@ -39,20 +42,25 @@ const Chart = () => {
     const [endDate, setEndDate] = useState(null);
     const [month, setMonth] = useState(null);
     const [year, setYear] = useState(null);
+    const [user, setUser] = useState(null);
 
     
+    
+   
 
-    const vacationDate = async () => {
+    const chartDate = async () => {
         const data = {
             startDate: startDate,
             endDate: endDate,
+            user_code : user,
         }
-        // dispatch({
-        //     type: ATTENDANCESTART_DATE_REQUEST,
-        //     data: data,
-        // });
+        dispatch({
+            type: CHART_DATE_REQUEST,
+            data: data,
+        });
     };
-
+    const { chartDates } = useSelector((state) => state.chart);
+    console.log(chartDates)
     const vacationMonth = async () => {
         const data = {
             year: year,
@@ -77,26 +85,24 @@ const Chart = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (filterType === "date" && startDate && endDate) {
+        if (filterType === "date" && startDate && endDate && user) {
             console.log("선택한 시작일", startDate)
-            console.log("선택한 시작일", startDate)
-          
-            // vacationDate();
+            console.log("선택한 시작일", endDate)
+            chartDate();
         } else if (filterType === "month" && year && month) {
-            console.log("선택한 시작일", startDate)
-            console.log("선택한 시작일", startDate)
+            console.log("선택한 시작일", year)
+            console.log("선택한 시작일", month)
             // vacationMonth();
         } else if (filterType === "year" && year) {
-            console.log("선택한 시작일", startDate)
-            console.log("선택한 시작일", startDate)
+            console.log("선택한 시작일", year)
             // vacationYear();
         }
-    }, [year, month, startDate, endDate]);
+    }, [year, month, startDate, endDate, ]);
 
     const [selectedUsers, setSelectedUsers] = useState([true, true, false, false, false, false]);
 
     const renderLines = () => {
-        const users = ["user1", "user2", "user3", "user4", "user5", "user6", "user7"];
+        const users = ["sum_hour", "user2", "user3", "user4", "user5", "user6", "user7"];
         return users.map((user, index) => {
             if (selectedUsers[index]) {
                 const color = ["#8884d8", "#82ca9d", "#ffc658", "#d62728", "#2ca02c", "#ff7f0e"][index];
@@ -130,12 +136,13 @@ const Chart = () => {
             </div>
 
 
-            <FilterControls
+            <FilterChart
                 setFilterType={setFilterType}
                 setStartDate={setStartDate}
                 setEndDate={setEndDate}
                 setMonth={setMonth}
                 setYear={setYear}
+                setUser={setUser}
             />
 
             <div className="p-6 bg-white shadow-lg rounded-lg">
@@ -176,7 +183,7 @@ const Chart = () => {
                 <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={getChartData()}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
+                        <XAxis dataKey="attendance_start_date" />
                         <YAxis />
                         <Tooltip />
                         <Legend />

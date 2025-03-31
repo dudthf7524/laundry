@@ -58,6 +58,9 @@ const AttendanceTable = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
+            <th className={getSortableHeaderClass('user_name')} onClick={() => handleSort('user_name')}>
+                선택 {getSortIcon('user_name')}
+              </th>
               <th className={getSortableHeaderClass('user_name')} onClick={() => handleSort('user_name')}>
                 이름 {getSortIcon('user_name')}
               </th>
@@ -91,9 +94,10 @@ const AttendanceTable = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {sortedData? (
+            {sortedData ? (
               sortedData.map((asy, index) => (
                 <tr key={index} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 whitespace-nowrap"><input type='checkbox'></input></td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.user.user_name}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.user.user_position}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_start_date}</td>

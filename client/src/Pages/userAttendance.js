@@ -35,14 +35,14 @@ const UserAttendance = () => {
                 <table className="w-full table-auto border-collapse border border-gray-300">
                     <thead>
                         <tr className="bg-gray-100">
-                            <th className="border p-10 text-left">출근 날짜</th>
-                            <th className="border p-10 text-left">출근 시간</th>
+                            <th className="border p-3 text-left">출근 날짜</th>
+                            <th className="border p-3 text-left">출근 시간</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr className="border">
-                            <td className="border p-10 w-1/2">{attendanceStartToday?.attendance_start_date}</td>
-                            <td className="border p-10 w-1/2">{attendanceStartToday?.attendance_start_time}</td>
+                            <td className="border p-5 w-1/2">{attendanceStartToday?.attendance_start_date}</td>
+                            <td className="border p-5 w-1/2">{attendanceStartToday?.attendance_start_time}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -52,14 +52,14 @@ const UserAttendance = () => {
                 <table className="w-full table-auto border-collapse border border-gray-300">
                     <thead>
                         <tr className="bg-gray-100">
-                            <th className="border p-10 text-left">퇴근 날짜</th>
-                            <th className="border p-10 text-left">퇴근 시간</th>
+                            <th className="border p-3 text-left">퇴근 날짜</th>
+                            <th className="border p-3 text-left">퇴근 시간</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr className="border">
-                            <td className="border p-10 w-1/2">{attendanceStartToday?.attendance_end.attendance_end_date}</td>
-                            <td className="border p-10 w-1/2">{attendanceStartToday?.attendance_end.attendance_end_time}</td>
+                            <td className="border p-5 w-1/2">{attendanceStartToday?.attendance_end.attendance_end_date}</td>
+                            <td className="border p-5 w-1/2">{attendanceStartToday?.attendance_end.attendance_end_time}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -68,13 +68,13 @@ const UserAttendance = () => {
                 <table className="w-full table-auto border-collapse border border-gray-300">
                     <thead>
                         <tr className="bg-gray-100">
-                            <th className="border p-10 text-left">근무시간</th>
-                            <th className="border p-10 text-left">상태</th>
+                            <th className="border p-3 text-left">근무시간</th>
+                            <th className="border p-3 text-left">상태</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr className="border">
-                            <td className="border p-10 w-1/2">
+                            <td className="border p-5 w-1/2">
                                 {calculateWorkDuration(
                                     attendanceStartToday?.attendance_start_date,
                                     attendanceStartToday?.attendance_start_time,
@@ -82,7 +82,7 @@ const UserAttendance = () => {
                                     attendanceStartToday?.attendance_end.attendance_end_time
                                 )}
                             </td>
-                            <td className="border p-10 w-1/2">{attendanceStartToday?.attendance_start_state}</td>
+                            <td className="border p-5 w-1/2">{attendanceStartToday?.attendance_start_state}</td>
                         </tr>
                     </tbody>
                 </table>

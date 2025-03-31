@@ -29,7 +29,7 @@ const taskStartRoutes = require('./routes/taskStart');
 const taskEndRoutes = require('./routes/taskEnd');
 const chartRoutes = require('./routes/chart');
 const noticeRoutes = require('./routes/notice');
-
+const CompanyVacationRoutes = require('./routes/companyVacation');
 
 const authData = require("./modelsInitializeData/authData");
 const processData = require("./modelsInitializeData/processData");
@@ -106,6 +106,7 @@ app.use('/taskStart', taskStartRoutes);
 app.use('/taskEnd', taskEndRoutes);
 app.use('/chart', chartRoutes);
 app.use('/notice', noticeRoutes);
+app.use('/company/vacation', CompanyVacationRoutes);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));

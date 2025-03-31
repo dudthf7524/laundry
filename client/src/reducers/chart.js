@@ -13,6 +13,13 @@ export const initialState = {
     chart_year_Loading: false,
     chart_year_done: false,
     chart_year_error: null,
+
+
+    chartDates : null,
+    chartMonthes : null,
+    chartYears : null,
+
+
 };
 
 
@@ -41,6 +48,7 @@ const reducer = (state = initialState, action) => {
                 break;
             case CHART_DATE_SUCCESS:
                 draft.chart_date_Loading = false;
+                draft.chartDates = action.data;
                 draft.chart_date_done = true;
                 break;
             case CHART_DATE_FAILURE:
@@ -54,6 +62,7 @@ const reducer = (state = initialState, action) => {
                 break;
             case CHART_MONTH_SUCCESS:
                 draft.chart_month_Loading = false;
+                draft.chartMonthes = action.data;
                 draft.chart_month_done = true;
                 break;
             case CHART_MONTH_FAILURE:
@@ -67,6 +76,7 @@ const reducer = (state = initialState, action) => {
                 break;
             case CHART_YEAR_SUCCESS:
                 draft.chart_year_Loading = false;
+                draft.chartYears = action.data;
                 draft.chart_year_done = true;
                 break;
             case CHART_YEAR_FAILURE:

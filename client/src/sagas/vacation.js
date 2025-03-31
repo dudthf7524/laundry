@@ -19,6 +19,10 @@ import {
     VACATION_USER_SUCCESS,
     VACATION_USER_FAILURE,
 
+    VACATION_REGISTER_ADMIN_REQUEST,
+    VACATION_REGISTER_ADMIN_SUCCESS,
+    VACATION_REGISTER_ADMIN_FAILURE,
+
 } from "../reducers/vacation";
 
 
@@ -142,8 +146,37 @@ function* vacationUser() {
 
 
 
+function* watchVacationAdminRegister() {
+    yield takeLatest(VACATION_REGISTER_ADMIN_REQUEST, vacationAdminRegister);
+}
 
+function vacationAdminRegisterAPI(data) {
+
+    return axios.post("/vacation/register/admin", data);
+}
+
+function* vacationAdminRegister(action) {
+    try {
+        const result = yield call(vacationAdminRegisterAPI, action.data);
+        if (result.data) {
+            alert('휴가 설정이 완료되었습니다.')
+            window.location.href = "/admin/vacation";
+        }
+        
+        yield put({
+            type: VACATION_REGISTER_ADMIN_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) {}
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: VACATION_REGISTER_ADMIN_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
 
 export default function* vacationSaga() {
-    yield all([fork(watchVacationRegister), fork(watchVacationList), fork(watchVacationAllow), fork(watchVacationUser),]);
+    yield all([fork(watchVacationRegister), fork(watchVacationList), fork(watchVacationAllow), fork(watchVacationUser), fork(watchVacationAdminRegister)]);
 }

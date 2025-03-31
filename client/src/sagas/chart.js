@@ -35,7 +35,7 @@ function* chartDate(action) {
             window.location.href = "/";
             return;
         } else if (result.data) {
-            window.location.href = "/admin/chart"
+            // window.location.href = "/admin/chart"
         }
         
         yield put({
@@ -86,7 +86,7 @@ function* chartMonth(action) {
 }
 
 function* watchChartYear() {
-    yield takeLatest(CHART_MONTH_REQUEST, charYear);
+    yield takeLatest(CHART_YEAR_REQUEST, charYear);
 }
 
 function charYearAPI(data) {
@@ -105,14 +105,14 @@ function* charYear(action) {
         }
         
         yield put({
-            type: CHART_MONTH_SUCCESS,
+            type: CHART_YEAR_SUCCESS,
             data: result.data,
         });
         if (result.data) {}
     } catch (err) {
         console.error(err);
         yield put({
-            type: CHART_MONTH_FAILURE,
+            type: CHART_YEAR_FAILURE,
             error: err.response.data,
         });
     }

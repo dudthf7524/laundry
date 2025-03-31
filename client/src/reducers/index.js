@@ -13,6 +13,7 @@ import taskStart from "./taskStart";
 import taskEnd from "./taskEnd";
 import chart from "./chart";
 import notice from "./notice";
+import companyVacation from "./companyVacation";
 
 const rootReducer = combineReducers({
   user,
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   taskEnd,
   chart,
   notice,
+  companyVacation
 });
 
 export default rootReducer;
