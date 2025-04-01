@@ -71,7 +71,6 @@ function App() {
             <Route path="/workLogs" element={<WorkLogs />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/login/sucess" element={<LoginSuccess />} />
-            
           </Routes>
           {showBottomBar && <BottomBar />}
         </div>
