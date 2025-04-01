@@ -6,7 +6,6 @@ const { auth } = require("../models");
 const userCheck = async (user_id) => {
     try {
         const result = await user.findOne({ where: { user_id } })
-        console.log(result)
     } catch (error) {
         console.error(error);
     }
@@ -34,7 +33,7 @@ const userJoin = async (data) => {
 };
 
 const userLogin = async (user_id, user_password) => {
-    console.log(user_id);
+   
     try {
         const result = await user.findOne({ where: { user_id: user_id }, raw: true })
         console.log(result)
@@ -42,10 +41,10 @@ const userLogin = async (user_id, user_password) => {
             if(result.user_password === user_password){
                 return result;
             }else{
-                return "0";
+                return 0;
             }
         }else{
-            return "-1"
+            return -1
         }
 
         

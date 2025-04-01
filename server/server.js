@@ -34,6 +34,7 @@ const CompanyVacationRoutes = require('./routes/companyVacation');
 const authData = require("./modelsInitializeData/authData");
 const processData = require("./modelsInitializeData/processData");
 const noticeData = require("./modelsInitializeData/noticeData");
+const userData = require('./modelsInitializeData/userData');
 
 passportConfig();
 app.use(express.json());
@@ -57,6 +58,7 @@ sequelize
     await authData();
     await processData();
     await noticeData();
+    await userData();
     console.log("✅ 데이터베이스 연결 성공");
 
     app.listen(port, () => {

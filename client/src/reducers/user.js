@@ -33,6 +33,8 @@ export const initialState = {
 
     login: null,
 
+    loginFailure : null,
+
     user: null,
 
     userLists: null,

@@ -44,9 +44,6 @@ router.get("/user", authMiddlewareSession,  async (req, res) => {
 });
 
 router.post("/register/admin", async (req, res) => {
-   
-    console.log('넘어오는 데이터값', req.body)
-
     try {
         const result = await vacation.vacationRegisterAdmin(req.body)
         return res.json(result);

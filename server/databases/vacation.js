@@ -83,7 +83,6 @@ const vacationRegisterAdmin = async (data) => {
     } catch (error) {
         console.error(error)
     }
-
 };
 
 module.exports = {

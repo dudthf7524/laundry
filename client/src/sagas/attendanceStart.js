@@ -27,6 +27,10 @@ import {
     ATTENDANCESTART_TODAY_SUCCESS,
     ATTENDANCESTART_TODAY_FAILURE,
 
+    ATTENDANCESTART_UPDATE_REQUEST,
+    ATTENDANCESTART_UPDATE_SUCCESS,
+    ATTENDANCESTART_UPDATE_FAILURE,
+
 } from "../reducers/attendanceStart";
 
 function* watchAttendanceStartRegister() {
@@ -206,7 +210,36 @@ function* attendanceStartToday() {
     }
 }
 
+function* watchAttendanceStartUpdate() {
+    yield takeLatest(ATTENDANCESTART_UPDATE_REQUEST, attendanceStartUpdate);
+}
 
+function attendanceStartUpdateAPI(data) {
+
+    return axios.post("/attendanceStart/update", data);
+}
+
+function* attendanceStartUpdate(action) {
+    try {
+        const result = yield call(attendanceStartUpdateAPI, action.data );
+        if (result.data) {
+           alert('수정이 완료되었습니다.')
+           window.location.href = "/admin/attendance";
+           
+        }
+        yield put({
+            type: ATTENDANCESTART_UPDATE_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: ATTENDANCESTART_UPDATE_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
 
 
 
@@ -217,6 +250,7 @@ export default function* attendanceStartSaga() {
         fork(watchAttendanceStartYear),
         fork(watchAttendanceStartMonth),
         fork(watchAttendanceStartDate),
-        fork(watchAttendanceStartToday)
+        fork(watchAttendanceStartToday),
+        fork(watchAttendanceStartUpdate),
     ]);
 }

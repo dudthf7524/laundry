@@ -62,7 +62,7 @@ const reducer = (state = initialState, action) => {
                 break;
             case CHART_MONTH_SUCCESS:
                 draft.chart_month_Loading = false;
-                draft.chartMonthes = action.data;
+                draft.chartDates = action.data;
                 draft.chart_month_done = true;
                 break;
             case CHART_MONTH_FAILURE:
@@ -76,7 +76,7 @@ const reducer = (state = initialState, action) => {
                 break;
             case CHART_YEAR_SUCCESS:
                 draft.chart_year_Loading = false;
-                draft.chartYears = action.data;
+                draft.chartDates = action.data;
                 draft.chart_year_done = true;
                 break;
             case CHART_YEAR_FAILURE:

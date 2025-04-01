@@ -27,8 +27,6 @@ const timeList = async () => {
     } catch (error) {
         console.error(error)
     }
-    console.log(result)
-
 }
 
 const timeDetail = async (user_code) => {

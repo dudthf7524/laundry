@@ -38,10 +38,15 @@ const Attendance = () => {
     }, [dispatch]);
     
     const attendance = () => {
-        if (!isWithinRadius) {
-            alert('근무지 반경 외부입니다. 출근할 수 없습니다.');
-            return;
-        }
+        // if (!isWithinRadius) {
+        //     alert('근무지 반경 외부입니다. 출근할 수 없습니다.');
+        //     return;
+        // }
+
+          // if (!isWithinRadius) {
+        //     alert('근무지 반경 외부입니다. 출근할 수 없습니다.');
+        //     return;
+        // }
 
         const attendance_start_date = year + "-" + month + "-" + date;
         const attendance_start_time = hours + ":" + minutes;
@@ -66,10 +71,10 @@ const Attendance = () => {
     }
 
     const leaveWork = () => {
-        if (!isWithinRadius) {
-            alert('근무지 반경 외부입니다. 퇴근할 수 없습니다.');
-            return;
-        }
+        // if (!isWithinRadius) {
+        //     alert('근무지 반경 외부입니다. 퇴근할 수 없습니다.');
+        //     return;
+        // }
         const attendance_end_date = year + "-" + month + "-" + date;
         const attendance_end_time = hours + ":" + minutes;
 
@@ -194,9 +199,9 @@ const Attendance = () => {
                 <div className="work_time_box">
                     <div className="work_time_title">&nbsp;</div>
                     <div className="work_time_title">출근날짜</div>
-                    <div className="work_time_content">{attendanceStartNewOne?.attendance_start_date}</div>
+                    <div className="work_time_content">{attendanceStartNewOne?.attendance_start_date || '출근날짜 미정'}</div>
                     <div className="work_time_title">출근시간</div>
-                    <div className="work_time_content">{attendanceStartNewOne?.attendance_start_time}</div>
+                    <div className="work_time_content">{attendanceStartNewOne?.attendance_start_time || '출근시간 미정'}</div>
                     <div className="work_time_title">&nbsp;</div>
                 </div>
                 <div className="work_time_box">
@@ -210,11 +215,10 @@ const Attendance = () => {
                 <div className="work_time_box">
                     <div className="work_time_title">&nbsp;</div>
                     <div className="work_time_title">퇴근날짜</div>
-                    <div className="work_time_content">{attendanceStartNewOne?.attendance_end?.attendance_end_date}</div>
-                    <div className="work_time_title">퇴근사간</div>
-                    <div className="work_time_content">{attendanceStartNewOne?.attendance_end?.attendance_end_time}</div>
+                    <div className="work_time_content">{attendanceStartNewOne?.attendance_end?.attendance_end_date || '퇴근날짜 미정'}</div>
+                    <div className="work_time_title">퇴근시간</div>
+                    <div className="work_time_content">{attendanceStartNewOne?.attendance_end?.attendance_end_time || '퇴근시간 미정'}</div>
                     <div className="work_time_title">&nbsp;</div>
-
                 </div>
             </div>
 

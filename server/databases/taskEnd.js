@@ -2,8 +2,6 @@ const { taskEnd } = require("../models");
 const { process } = require("../models");
 
 const taskEndRegister = async (data, user_code) => {
-    console.log(data)
-    console.log(user_code)
     try {
         const result = await taskEnd.create({
             total_count: data.task_count,

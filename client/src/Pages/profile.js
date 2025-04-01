@@ -7,7 +7,7 @@ import UserTask from './userTask';
 const Profile = () => {
     const [activeTab, setActiveTab] = useState('attendance');
     return (
-        <div className="w-full flex flex-col justify-center items-center overflow-y-auto">
+        <div className="w-full h-full flex flex-col justify-center items-center overflow-y-auto">
             <div className="bg-white rounded-lg shadow w-4/5 h-full">
                 <nav className="flex border-b border-gray-200 w-full">
                     <button

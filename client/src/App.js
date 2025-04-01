@@ -24,7 +24,7 @@ import WorkAddressCopy from './adminPages/companyAddress';
 import Chart from './adminPages/chart';
 import BottomBar from './components/BottomBar';
 import Notice from './adminPages/notice';
-
+import LoginSuccess from './Pages/loginSuccess';
 
 // import { AuthProvider } from './adminContext/adminContext';
 
@@ -39,7 +39,7 @@ function App() {
     });
   }, []);
   
-  const showBottomBar = location.pathname !== '/' && location.pathname !== '/join';
+  const showBottomBar = location.pathname !== '/' && location.pathname !== '/join' && location.pathname !== '/login/sucess';
 
   return (
     <>
@@ -70,7 +70,8 @@ function App() {
             <Route path="/task" element={<Task />} />
             <Route path="/workLogs" element={<WorkLogs />} />
             <Route path="/profile" element={<Profile />} />
-
+            <Route path="/login/sucess" element={<LoginSuccess />} />
+            
           </Routes>
           {showBottomBar && <BottomBar />}
         </div>

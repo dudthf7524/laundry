@@ -51,6 +51,7 @@ const Join = () => {
     };
 
     const handleJoin = async (e) => {
+       
         e.preventDefault();
         setError(null);
         setSuccess(null);
@@ -70,7 +71,7 @@ const Join = () => {
             const response = await axios.post('/user/join', formData);
             if (response.data) {
                 setSuccess('회원가입에 성공했습니다. 로그인 페이지로 이동합니다.');
-                setTimeout(() => navigate('/'), 2000); // 2초 후 로그인 페이지로 이동
+                setTimeout(() => navigate('/admin/employees'), 2000); // 2초 후 로그인 페이지로 이동
             } else {
                 setError(response.data.message || '회원가입에 실패했습니다.');
             }
@@ -148,10 +149,10 @@ const Join = () => {
             {error && <p className="error-message">{error}</p>}
             {success && <p className="success-message">{success}</p>}
           
-            <div className="ocean">
+            {/* <div className="ocean">
                 <div className="wave"></div>
                 <div className="wave"></div>
-            </div>
+            </div> */}
         </div>
     );
 };

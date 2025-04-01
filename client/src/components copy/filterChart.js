@@ -10,7 +10,12 @@ const FilterChart = ({
   setEndDate,
   setMonth,
   setYear,
-  setUser
+  setUser,
+  setStartYear,
+  setEndYear,
+  setStartMonth,
+  setEndMonth,
+
   // setFilterType, 
 }) => {
   const [filterType, setFilterTypess] = useState('date'); // 'date', 'month', or 'year'
@@ -51,6 +56,28 @@ const FilterChart = ({
   const handleYearChange = (e) => {
     const selectedYear = e.target.value;
     setYear(selectedYear)
+  };
+
+
+
+  const handleStartYearChange = (e) => {
+    const selectedYear = e.target.value;
+    setStartYear(selectedYear)
+  };
+
+  const handleEndYearChange = (e) => {
+    const selectedYear = e.target.value;
+    setEndYear(selectedYear)
+  };
+
+  const handleStartMonthChange = (e) => {
+    const selectedYear = e.target.value;
+    setStartMonth(selectedYear)
+  };
+
+  const handleEndMonthChange = (e) => {
+    const selectedYear = e.target.value;
+    setEndMonth(selectedYear)
   };
 
   const handleNameChange = (e) => {
@@ -142,7 +169,7 @@ const FilterChart = ({
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
-          <div>
+          {/* <div>
             <label htmlFor="employee" className="block text-sm font-medium text-gray-700 mb-1">
               직원
             </label>
@@ -158,7 +185,7 @@ const FilterChart = ({
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
           {/* <div>
             <label htmlFor="roleType" className="block text-sm font-medium text-gray-700 mb-1">
               직무형태
@@ -203,13 +230,13 @@ const FilterChart = ({
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label htmlFor="yearForMonth" className="block text-sm font-medium text-gray-700 mb-1">
-              연도
+              시작 연도
             </label>
             <select
               id="yearForMonth"
               name="yearForMonth"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-              onChange={handleYearChange}
+              onChange={handleStartYearChange}
             >
               <option value="">연도 선택</option>
               {years.map((year) => (
@@ -221,13 +248,49 @@ const FilterChart = ({
           </div>
           <div>
             <label htmlFor="month" className="block text-sm font-medium text-gray-700 mb-1">
-              월
+              시작 월
             </label>
             <select
               id="month"
               name="month"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-              onChange={handleMonthChange}
+              onChange={handleStartMonthChange}
+            >
+              <option value="">월 선택</option>
+              {months.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="yearForMonth" className="block text-sm font-medium text-gray-700 mb-1">
+              종료 연도
+            </label>
+            <select
+              id="yearForMonth"
+              name="yearForMonth"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              onChange={handleEndYearChange}
+            >
+              <option value="">연도 선택</option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}년
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="month" className="block text-sm font-medium text-gray-700 mb-1">
+              종료 월
+            </label>
+            <select
+              id="month"
+              name="month"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              onChange={handleEndMonthChange}
             >
               <option value="">월 선택</option>
               {months.map((month) => (
@@ -300,13 +363,31 @@ const FilterChart = ({
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label htmlFor="year" className="block text-sm font-medium text-gray-700 mb-1">
-              연도
+              시작 연도
             </label>
             <select
               id="year"
               name="year"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-              onChange={handleYearChange}
+              onChange={handleStartYearChange}
+            >
+              <option value="">연도 선택</option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}년
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="year" className="block text-sm font-medium text-gray-700 mb-1">
+              종료 연도
+            </label>
+            <select
+              id="year"
+              name="year"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              onChange={handleEndYearChange}
             >
               <option value="">연도 선택</option>
               {years.map((year) => (

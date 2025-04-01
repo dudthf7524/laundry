@@ -3,7 +3,7 @@ import { employees } from '../data/mockData';
 import { useDispatch, useSelector } from 'react-redux';
 import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
 
-const FilterControls = ({
+const FilterTask = ({
   setFilterType,
   setStartDate, 
   setEndDate,
@@ -372,4 +372,4 @@ const FilterControls = ({
   );
 };
 
-export default FilterControls;
+export default FilterTask;

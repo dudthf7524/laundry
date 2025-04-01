@@ -12,10 +12,8 @@ router.post("/register", async (req, res) => {
 });
 
 router.get("/list", async (req, res) => {
-    console.log('여기까지')
     try {
         const result = await companyAddress.companyList()
-        console.log(result)
         return res.json(result);
     } catch (error) {
         console.error(error)

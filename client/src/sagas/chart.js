@@ -31,13 +31,6 @@ function chartDateAPI(data) {
 function* chartDate(action) {
     try {
         const result = yield call(chartDateAPI, action.data);
-        if (result.data === "common") {
-            window.location.href = "/";
-            return;
-        } else if (result.data) {
-            // window.location.href = "/admin/chart"
-        }
-        
         yield put({
             type: CHART_DATE_SUCCESS,
             data: result.data,
@@ -64,13 +57,7 @@ function chartMonthAPI(data) {
 function* chartMonth(action) {
     try {
         const result = yield call(chartMonthAPI, action.data);
-        if (result.data === "common") {
-            window.location.href = "/";
-            return;
-        } else if (result.data) {
-            window.location.href = "/attendance"
-        }
-        
+       
         yield put({
             type: CHART_MONTH_SUCCESS,
             data: result.data,
@@ -97,13 +84,7 @@ function charYearAPI(data) {
 function* charYear(action) {
     try {
         const result = yield call(charYearAPI, action.data);
-        if (result.data === "common") {
-            window.location.href = "/";
-            return;
-        } else if (result.data) {
-            window.location.href = "/attendance"
-        }
-        
+      
         yield put({
             type: CHART_YEAR_SUCCESS,
             data: result.data,

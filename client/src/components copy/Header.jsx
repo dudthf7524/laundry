@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useSelector } from 'react-redux';
 
 const Header = () => {
   const { currentUser, logout } = useAuth();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
-
+  const { user } = useSelector((state) => state.user);
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
@@ -22,7 +23,7 @@ const Header = () => {
       category: '공지',
       links: [
         { name: '공지사항', path: '/admin/notice' },
-       
+
       ],
 
     },
@@ -54,15 +55,23 @@ const Header = () => {
         { name: '설정', path: '/admin/settings', requiredPermission: ['master'] },
       ],
     },
-    
+
   ];
 
-  const filteredNavLinks = navLinks.map(category => ({
-    ...category,
-    links: category.links.filter(link =>
-      !link.requiredPermission || (currentUser && link.requiredPermission.includes(currentUser.permission))
-    ),
-  }));
+  const filteredNavLinks = navLinks
+    .filter(category => {
+      // "관리" or "설정" 카테고리는 user.user_code가 "A1"일 때만 표시
+      if ((category.category === '관리' || category.category === '설정') && user?.user_code !== 'A1') {
+        return false;
+      }
+      return true;
+    })
+    .map(category => ({
+      ...category,
+      links: category.links.filter(link =>
+        !link.requiredPermission || (currentUser && link.requiredPermission.includes(currentUser.permission))
+      ),
+    }));
 
   const isActive = (path) => location.pathname === path;
 
@@ -108,10 +117,10 @@ const Header = () => {
 
           {/* 유저 정보 및 로그아웃 */}
           <div className="hidden md:flex items-center space-x-4">
-            {currentUser ? (
+            {user ? (
               <>
                 <span className="text-sm">
-                  <span className="font-medium">{currentUser.name}</span> ({currentUser.permissionDetails?.name || '일반'})
+                  <span className="font-medium">{user.user_name}</span> ({user.permissionDetails?.name || '일반'})
                 </span>
                 <button
                   onClick={logout}
@@ -176,10 +185,10 @@ const Header = () => {
             ))}
 
             <div className="border-t border-blue-500 mt-2 pt-2">
-              {currentUser ? (
+              {user ? (
                 <>
                   <div className="px-4 py-1 text-sm">
-                    <span className="font-medium">{currentUser.name}</span> ({currentUser.permissionDetails?.name || '일반'})
+                    <span className="font-medium">{user.user_name}</span> ({user.permissionDetails?.name || '일반'})
                   </div>
                   <button
                     onClick={() => {
@@ -193,7 +202,7 @@ const Header = () => {
                 </>
               ) : (
                 <Link
-                  to="/login"
+                  to="/"
                   className="block px-4 py-2 hover:bg-blue-700"
                   onClick={() => setMobileMenuOpen(false)}
                 >

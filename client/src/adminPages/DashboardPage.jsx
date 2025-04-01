@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import StatisticsChart from '../components copy/StatisticsChart';
 import { attendanceRecords, taskRecords } from '../data/mockData';
@@ -12,7 +12,8 @@ const DashboardPage = () => {
     workingNow: 0,
     completedTasks: 0,
   });
-
+  const location = useLocation();
+  console.log(location); // 현재 U
   // Calculate today's date
   const today = getCurrentDate();
 
@@ -107,8 +108,9 @@ const DashboardPage = () => {
           </div>
         </div>
       </div>
+      
 
-      {/* Charts */}
+      {/* Charts
       <div className="grid grid-cols-1 gap-6">
         <StatisticsChart
           attendanceData={attendanceRecords.slice(0, 20)}
@@ -121,7 +123,7 @@ const DashboardPage = () => {
           type="task"
           timeFrame="daily"
         />
-      </div>
+      </div> */}
     </div>
   );
 };

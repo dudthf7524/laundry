@@ -5,8 +5,6 @@ const { taskEnd } = require("../models");
 const { user } = require("../models");
 
 const taskStartRegister = async (data, user_code) => {
-    console.log(data)
-    console.log(user_code)
     try {
         const result = await taskStart.create({
             task_count: data.task_count,

@@ -34,7 +34,7 @@ const attendanceStartNewOne = async (user_code) => {
             order: [['attendance_start_id', 'DESC']],
 
         });
-        console.log("출근에대한 퇴근데어터 여부 ", result)
+      
         return result;
     } catch (error) {
         console.error(error);
@@ -49,7 +49,7 @@ const attendanceStartYear = async (data) => {
                 {
                     model: attendanceEnd,
                     required: false,
-                    attributes: ['attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
+                    attributes: ['attendance_end_id', 'attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
                 },
                 {
                     model: user,
@@ -59,6 +59,7 @@ const attendanceStartYear = async (data) => {
             ],
             where: Sequelize.literal(`SUBSTRING(attendance_start_date, 1, 4) = '${data.year}'`),
             attributes: [
+                'attendance_start_id',
                 'attendance_start_date',
                 'attendance_start_time',
                 'attendance_start_state',
@@ -76,7 +77,7 @@ const attendanceStartYear = async (data) => {
                 ],
             ],
         });
-       
+
         return results;
     } catch (error) {
         console.error('Error fetching attendance:', error);
@@ -92,7 +93,7 @@ const attendanceStartDate = async (data) => {
                 {
                     model: attendanceEnd,
                     required: false,
-                    attributes: ['attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
+                    attributes: ['attendance_end_id', 'attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
                 },
                 {
                     model: user,
@@ -105,7 +106,9 @@ const attendanceStartDate = async (data) => {
                     [Op.gte]: data.startDate, // 2024-03-24 이상
                     [Op.lte]: data.endDate,   // 2025-06-24 이하
                 },
-            },            attributes: [
+            },
+            attributes: [
+                'attendance_start_id',
                 'attendance_start_date',
                 'attendance_start_time',
                 'attendance_start_state',
@@ -123,7 +126,7 @@ const attendanceStartDate = async (data) => {
                 ],
             ],
         });
-       
+
         return results;
     } catch (error) {
         console.error('Error fetching attendance:', error);
@@ -138,7 +141,7 @@ const attendanceStartMonth = async (data) => {
                 {
                     model: attendanceEnd,
                     required: false,
-                    attributes: ['attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
+                    attributes: ['attendance_end_id', 'attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
                 },
                 {
                     model: user,
@@ -148,6 +151,7 @@ const attendanceStartMonth = async (data) => {
             ],
             where: Sequelize.literal(`SUBSTRING(attendance_start_date, 1, 7) = '${data.year}-${data.month}'`),
             attributes: [
+                'attendance_start_id',
                 'attendance_start_date',
                 'attendance_start_time',
                 'attendance_start_state',
@@ -165,7 +169,7 @@ const attendanceStartMonth = async (data) => {
                 ],
             ],
         });
-       
+
         return results;
     } catch (error) {
         console.error('Error fetching attendance:', error);
@@ -174,7 +178,7 @@ const attendanceStartMonth = async (data) => {
 };
 
 const attendanceToday = async (user_code) => {
-    
+
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
@@ -197,11 +201,56 @@ const attendanceToday = async (user_code) => {
             order: [['attendance_start_id', 'DESC']],
 
         });
-        console.log("출근에대한 퇴근데어터 여부 ", result)
+        
         return result;
     } catch (error) {
         console.error(error);
     }
+
+};
+
+const attendanceUpdate = async (data) => {
+
+    console.log(data)
+
+    try {
+        await attendanceStart.update(
+            {
+                attendance_start_date: data.attendance_start_date, 
+                attendance_start_time: data.attendance_start_time, 
+                attendance_start_state: data.attendance_start_state, 
+            },
+            
+            {
+                where: {
+                    attendance_start_id: data.attendance_start_id,
+                },
+            },
+
+        )
+    } catch (error) {
+        console.error(error);
+    }
+
+    try {
+        const result = await attendanceEnd.update(
+            {
+                attendance_end_date: data.attendance_end_date, 
+                attendance_end_time: data.attendance_end_time, 
+            },
+            {
+                where: {
+                    attendance_end_id: data.attendance_end_id,
+                },
+            },
+
+        )
+        return result;
+
+    } catch (error) {
+        console.error(error);
+    }
+   
 
 };
 
@@ -213,4 +262,5 @@ module.exports = {
     attendanceStartMonth,
     attendanceStartDate,
     attendanceToday,
+    attendanceUpdate,
 };

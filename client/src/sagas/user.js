@@ -28,6 +28,7 @@ import {
     USER_AUTH_UPDATE_REQUEST,
     USER_AUTH_UPDATE_SUCCESS,
     USER_AUTH_UPDATE_FAILURE,
+
 } from "../reducers/user";
 
 // ✅ 사용자 로그인
@@ -43,16 +44,35 @@ function userLoginAPI(data) {
 function* userLogin(action) {
     try {
         const result = yield call(userLoginAPI, action.data);
-        if(result.data){
-            window.location.href = "/task"
+
+
+        console.log(result.data)
+        if (result.data === -1) {
+            yield put({
+                type: USER_LOGIN_FAILURE,
+                error: result.data,
+            });
+            return;
         }
-        yield put({
-            type: USER_LOGIN_SUCCESS,
-            data: result.data,
-        });
+        if (result.data === 0) {
+            yield put({
+                type: USER_LOGIN_FAILURE,
+                error: result.data,
+            });
+            return;
+        }
+
+        if (result.data) {
+            yield put({
+                type: USER_LOGIN_SUCCESS,
+                error: result.data,
+            });
+            window.location.href = "/login/sucess"
+
+        }
+
 
     } catch (err) {
-        console.error(err);
         yield put({
             type: USER_LOGIN_FAILURE,
             error: err.response.data,
@@ -177,5 +197,5 @@ function* userAuthUpdate(action) {
 
 
 export default function* userSaga() {
-    yield all([fork(watchUserLogin), fork(watchUserAuth), fork(watchUserList), fork(watchUserUpdate), fork(watchUserAuthUpdate), ]);
+    yield all([fork(watchUserLogin), fork(watchUserAuth), fork(watchUserList), fork(watchUserUpdate), fork(watchUserAuthUpdate),]);
 }

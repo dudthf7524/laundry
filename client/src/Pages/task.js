@@ -21,9 +21,7 @@ const Task = () => {
 
 
 
-    console.log(taskNewOne)
 
-    console.log(taskStartNewOne)
 
     const todayDate = new Date();
     const formattedDate = todayDate.toISOString().split("T")[0];
@@ -63,7 +61,6 @@ const Task = () => {
 
     const [selectedProcess, setSelectedProcess] = useState(null);
 
-    console.log(selectedProcess)
 
 
     // 선택 시 데이터 업데이트
@@ -71,7 +68,6 @@ const Task = () => {
         setStartTime(null)
         setEndTime(null)
         const selectedIndex = event.target.value;
-        console.log(selectedIndex)
         setSelectedProcess(userProcessOneLists[selectedIndex]); // 선택한 데이터 저장
     };
 
@@ -98,7 +94,6 @@ const Task = () => {
         setStartTime(getFormattedTime(new Date()));
         setEndTime(null);
         setTotalWorkTime(null);
-        console.log(selectedProcess)
         setIsModalOpen(true);
     };
 
@@ -106,10 +101,7 @@ const Task = () => {
         setStartTime(getFormattedTime(new Date()));
         setEndTime(null);
         setTotalWorkTime(null);
-        console.log(startTime)
-        console.log(selectedProcess.user_process_count)
-        console.log(selectedProcess.process.process_code)
-        console.log(formattedDate)
+
 
         const data = {
             task_count: selectedProcess.user_process_count,
@@ -138,10 +130,6 @@ const Task = () => {
     }
 
     const handleEndConfirm = () => {
-        console.log(endTime)
-        console.log(totalWorkTime)
-        console.log(totalCount)
-
         const data = {
             task_count: totalCount,
             task_end_time: endTime,
@@ -153,7 +141,6 @@ const Task = () => {
             data: data,
         });
         setIsModalOpen(false);
-
     }
 
 

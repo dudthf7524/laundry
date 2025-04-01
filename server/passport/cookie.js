@@ -7,6 +7,7 @@ module.exports = async () => {
   try {
     await passport.serializeUser((user, done) => {
       console.log(user)
+
       process.nextTick(() => {
         done(null, { user_id:user.user_id });
       })

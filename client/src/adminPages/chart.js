@@ -10,9 +10,8 @@ import {
     Legend,
     ResponsiveContainer,
 } from "recharts";
-import FilterControls from "../components copy/FilterControls";
 import FilterChart from "../components copy/filterChart";
-import { CHART_DATE_REQUEST } from "../reducers/chart";
+import { CHART_DATE_REQUEST, CHART_MONTH_REQUEST, CHART_YEAR_REQUEST } from "../reducers/chart";
 
 
 
@@ -34,8 +33,9 @@ const dataByYear = [
     { attendance_start_date: "2025-03-24", sum_hour: 7, user_name: "최영솔솔" },
     { attendance_start_date: "2025-03-25", sum_hour: 8, user_name: "최영솔솔" },
     { attendance_start_date: "2025-03-27", sum_hour: 9, user_name: "최영솔솔" },
-    
 ];
+
+
 
 
 const dataByMonth = [
@@ -51,51 +51,84 @@ const dataByDay = [
 ];
 
 const Chart = () => {
+
     const [selectedData, setSelectedData] = useState("year");
     const [filterType, setFilterType] = useState('date'); // 'date', 'month', or 'year'
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+
+
+    const [startYear, setStartYear] = useState(null);
+    const [endYear, setEndYear] = useState(null);
+
+    const [startMonth, setStartMonth] = useState(null);
+    const [endMonth, setEndMonth] = useState(null);
+
     const [month, setMonth] = useState(null);
     const [year, setYear] = useState(null);
     const [user, setUser] = useState(null);
 
+    const [hiddenUsers, setHiddenUsers] = useState([]); // 숨겨진 사용자 목록
 
-    // const groupDataByUser = () => {
-    //     const groupedData = {};
-    //     dataByYear.forEach(({ attendance_start_date, sum_hour, user_name }) => {
-    //         if (!groupedData[user_name]) {
-    //             groupedData[user_name] = [];
-    //         }
-    //         groupedData[user_name].push({ attendance_start_date, sum_hour });
-    //     });
-
-    //     return groupedData;
-    // };
+    const toggleUser = (userKey) => {
+        setHiddenUsers((prev) =>
+            prev.includes(userKey) ? prev.filter((u) => u !== userKey) : [...prev, userKey]
+        );
+    };
 
     const renderLines = () => {
-        const userColors = ["#8884d8", "#82ca9d", "#ff7300", "#ff0000"]; // 사용자별 색상 지정
+        const userColors = ["#8884d8", "#82ca9d", "#ff7300", "#ff0000", "#00C49F"]; // 사용자별 색상 지정
         const groupedData = groupDataByUser();
-        return Object.keys(groupedData).map((user, index) => (
-            <Line key={user} type="monotone" dataKey={user} stroke={userColors[index % userColors.length]} strokeWidth={2} />
-        ));
+        return Object.keys(groupedData)
+            .filter(user => !hiddenUsers.includes(user)) // 선택되지 않은 사용자만 표시
+            .map((user, index) => (
+                <Line key={user} type="monotone" dataKey={user} stroke={userColors[index % userColors.length]} strokeWidth={2} />
+            ));
     };
-    
-    // X축 데이터를 날짜순 정렬
-    // const getChartData = () => {
-    //     const users = groupDataByUser();
-    //     const allDates = [...new Set(dataByYear.map(d => d.attendance_start_date))].sort();
-        
-    //     return allDates.map(date => {
-    //         const entry = { attendance_start_date: date };
-    //         Object.keys(users).forEach(user => {
-    //             const userEntry = users[user].find(d => d.attendance_start_date === date);
-    //             entry[user] = userEntry ? userEntry.sum_hour : null; // 데이터가 없는 경우 null 처리
-    //         });
-    //         return entry;
-    //     });
-    // };
 
+    // ✅ 사용자별 체크박스 스타일 Legend
+    const renderCustomLegend = () => {
+        const groupedData = groupDataByUser();
+        return (
+            <div style={{ display: "flex", gap: "10px", marginBottom: "10px", flexWrap: "wrap" }}>
+                {Object.keys(groupedData).map((user, index) => (
+                    <label key={user} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                        <input
+                            type="checkbox"
+                            checked={!hiddenUsers.includes(user)}
+                            onChange={() => toggleUser(user)}
+                            style={{ marginRight: "5px" }}
+                        />
+                        <span style={{ color: ["#8884d8", "#82ca9d", "#ff7300", "#ff0000", "#00C49F"][index % 5] }}>
+                            {user}
+                        </span>
+                    </label>
+                ))}
+            </div>
+        );
+    };
 
+    // ✅ 툴팁(Tooltip) 커스터마이징 (시간:분 형식)
+    const CustomTooltip = ({ active, payload }) => {
+        if (active && payload && payload.length) {
+            return (
+                <div style={{ background: "#fff", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}>
+                    <p><strong>{payload[0].payload.data}</strong></p>
+                    {payload.map((entry, index) => {
+                        const totalHours = entry.value;
+                        const hours = Math.floor(totalHours);
+                        const minutes = Math.round((totalHours - hours) * 60);
+                        return (
+                            <p key={index} style={{ color: entry.color }}>
+                                {entry.name}: {hours}시간 {minutes}분
+                            </p>
+                        );
+                    })}
+                </div>
+            );
+        }
+        return null;
+    };
 
     const chartDate = async () => {
         const data = {
@@ -110,121 +143,85 @@ const Chart = () => {
     };
     const { chartDates } = useSelector((state) => state.chart);
     console.log(chartDates)
-    const vacationMonth = async () => {
+
+    const chartMonth = async () => {
         const data = {
-            year: year,
-            month: month,
+            startDate: startYear+"-"+startMonth,
+            endDate: endYear+"-"+endMonth,
         }
-        // dispatch({
-        //     type: ATTENDANCESTART_MONTH_REQUEST,
-        //     data: data,
-        // });
+        dispatch({
+            type: CHART_MONTH_REQUEST,
+            data: data,
+        });
     };
 
-    const vacationYear = async () => {
+    const chartYear = async () => {
         const data = {
-            year: year
+            startYear: startYear,
+            endYear: endYear
         }
-        // dispatch({
-        //     type: ATTENDANCESTART_YEAR_REQUEST,
-        //     data: data,
-        // });
+        dispatch({
+            type: CHART_YEAR_REQUEST,
+            data: data,
+        });
     };
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (filterType === "date" && startDate && endDate && user) {
+        if (filterType === "date" && startDate && endDate) {
             console.log("선택한 시작일", startDate)
             console.log("선택한 시작일", endDate)
             chartDate();
-        } else if (filterType === "month" && year && month) {
-            console.log("선택한 시작일", year)
-            console.log("선택한 시작일", month)
-            // vacationMonth();
-        } else if (filterType === "year" && year) {
-            console.log("선택한 시작일", year)
-            // vacationYear();
+        } else if (filterType === "month" && startYear && endYear && startMonth && endMonth) {
+            console.log("선택한 시작일", startYear)
+            console.log("선택한 시작일", endYear)
+            console.log("선택한 시작일", startMonth)
+            console.log("선택한 시작일", endMonth)
+            chartMonth();
+        } else if (filterType === "year" && startYear && endYear) {
+            console.log("선택한 시작일", startYear)
+            console.log("선택한 시작일", endYear)
+            chartYear();
         }
-    }, [year, month, startDate, endDate,]);
-
-    const [selectedUsers, setSelectedUsers] = useState([true, true, false, false, false, false]);
-
-    // const renderLines = () => {
-    //     const users = ["sum_hour", "user2", "user3", "user4", "user5", "user6", "user7"];
-    //     return users.map((user, index) => {
-    //         if (selectedUsers[index]) {
-    //             const color = ["#8884d8", "#82ca9d", "#ffc658", "#d62728", "#2ca02c", "#ff7f0e"][index];
-    //             return <Line key={user} type="monotone" dataKey={user} stroke={color} strokeWidth={2} name={`사용자 ${index + 1}`} />;
-    //         }
-    //         return null;
-    //     });
-    // };
-
-    // const getChartData = () => {
-    //     switch (selectedData) {
-    //         case "month":
-    //             return dataByMonth;
-    //         case "day":
-    //             return dataByDay;
-    //         default:
-    //             return dataByYear;
-    //     }
-    // };
-
-
-    // const getChartData = () => {
-    //     return dataByYear
-    //         .map(item => ({
-    //             ...item,
-    //             attendance_start_date: new Date(item.attendance_start_date).toISOString().split("T")[0], // YYYY-MM-DD 형식
-    //         }))
-    //         .sort((a, b) => new Date(a.attendance_start_date) - new Date(b.attendance_start_date)); // 날짜순 정렬
-    // };
-
-    // // 선을 동적으로 생성하는 함수
-    // const renderLines = () => (
-    //     <Line type="monotone" dataKey="sum_hour" stroke="#8884d8" strokeWidth={2} />
-    // );
-    
-    const [hiddenUsers, setHiddenUsers] = useState([]); // 숨겨진 사용자 목록
-
-    const toggleUser = (userName) => {
-        setHiddenUsers((prev) =>
-            prev.includes(userName) ? prev.filter((u) => u !== userName) : [...prev, userName]
-        );
-    };
-
-
+    }, [year, month, startDate, endDate, startYear, endYear, startMonth, endMonth]);
 
 
     const groupDataByUser = () => {
         const groupedData = {};
-        dataByYear.forEach(({ attendance_start_date, sum_hour, user_name }) => {
-            if (!groupedData[user_name]) {
-                groupedData[user_name] = [];
+
+        chartDates?.forEach(({ date, user_name, user_code, sum_hour, sum_minute }) => {
+            const key = `${user_name} (${user_code})`; // 같은 이름 구분하기 위해 user_code 추가
+            if (!groupedData[key]) {
+                groupedData[key] = [];
             }
-            groupedData[user_name].push({ attendance_start_date, sum_hour });
+
+            const hours = Number(sum_hour);
+            const minutes = Number(sum_minute);
+
+            groupedData[key].push({
+                date,
+                total_hours: hours + minutes / 60 // ✅ 분을 시간으로 변환하여 추가
+            });
+
         });
-    
+
         return groupedData;
     };
-    
-    // X축 데이터를 날짜순 정렬
+
     const getChartData = () => {
         const users = groupDataByUser();
-        const allDates = [...new Set(dataByYear.map(d => d.attendance_start_date))].sort();
-        
+        const allDates = [...new Set(chartDates?.map(d => d.date))].sort();
+
         return allDates.map(date => {
-            const entry = { attendance_start_date: date };
+            const entry = { date: date };
             Object.keys(users).forEach(user => {
-                const userEntry = users[user].find(d => d.attendance_start_date === date);
-                entry[user] = userEntry ? userEntry.sum_hour : null; // 데이터가 없는 경우 null 처리
+                const userEntry = users[user].find(d => d.date === date);
+                entry[user] = userEntry ? userEntry.total_hours : null;
             });
             return entry;
         });
     };
-    
 
     return (
         <div>
@@ -246,6 +243,10 @@ const Chart = () => {
                 setMonth={setMonth}
                 setYear={setYear}
                 setUser={setUser}
+                setStartYear={setStartYear}
+                setEndYear={setEndYear}
+                setStartMonth={setStartMonth}
+                setEndMonth={setEndMonth}
             />
 
             <div className="p-6 bg-white shadow-lg rounded-lg">
@@ -283,30 +284,16 @@ const Chart = () => {
                 </div> */}
 
                 {/* 차트 표시 */}
+                {renderCustomLegend()} {/* 체크박스 형태의 사용자 선택 추가 */}
                 <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={getChartData()}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="attendance_start_date" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-
+                        <XAxis dataKey="date" />
+                        <YAxis label={{ value: "총 근무 시간 (시간)", angle: -90, position: "insideLeft" }} />
+                        <Tooltip content={<CustomTooltip />} /> {/* ✅ 툴팁 적용 */}
                         {renderLines()}
                     </LineChart>
                 </ResponsiveContainer>
-
-                <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={getChartData()}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="attendance_start_date" />
-                <YAxis />
-                <Tooltip />
-                <Legend
-                    onClick={(e) => toggleUser(e.value)} // 클릭하면 사용자 숨김/보임 토글
-                />
-                {renderLines()}
-            </LineChart>
-        </ResponsiveContainer>
             </div>
         </div>
     );
