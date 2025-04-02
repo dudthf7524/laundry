@@ -38,7 +38,7 @@ const Header = () => {
     {
       category: '차트',
       links: [
-        { name: '근무시간', path: '/admin/chart' },
+        { name: '총 근무시간', path: '/admin/chart' },
         { name: '지각', path: '/admin/chart/late' },
 
       ],

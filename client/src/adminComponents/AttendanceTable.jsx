@@ -45,16 +45,22 @@ const AttendanceTable = ({ setSelected, selected }) => {
     sortedData = [...attendanceStartYear].sort((a, b) => {
       if (!sortConfig.field) return 0;
 
-      const valueA = a.user[sortConfig.field] || a[sortConfig.field];
-      const valueB = b.user[sortConfig.field] || b[sortConfig.field];
+      let valueA = a.user[sortConfig.field] || a[sortConfig.field];
+      let valueB = b.user[sortConfig.field] || b[sortConfig.field];
 
-      if (typeof valueA === 'string' && typeof valueB === 'string') {
-        return sortConfig.direction === 'asc'
-          ? valueA.localeCompare(valueB, 'ko-KR')
-          : valueB.localeCompare(valueA, 'ko-KR');
+      // 출근 날짜 정렬 시 날짜 변환 후 비교
+      if (sortConfig.field === "attendance_start_date") {
+        valueA = new Date(valueA);
+        valueB = new Date(valueB);
       }
 
-      return sortConfig.direction === 'asc' ? valueA - valueB : valueB - valueA;
+      if (typeof valueA === "string" && typeof valueB === "string") {
+        return sortConfig.direction === "asc"
+          ? valueA.localeCompare(valueB, "ko-KR")
+          : valueB.localeCompare(valueA, "ko-KR");
+      }
+
+      return sortConfig.direction === "asc" ? valueA - valueB : valueB - valueA;
     });
   }
   console.log(sortedData)
@@ -70,10 +76,13 @@ const AttendanceTable = ({ setSelected, selected }) => {
         이름: asy.user.user_name,
         직무형태: asy.user.user_position,
         출근날짜: asy.attendance_start_date,
-        출근시간: asy.attendance_start_time,
+        지정출근시간: asy.start_time,
+        지정퇴근시간: asy.attendance_end.end_time,
+        휴게시간: asy.rest_start_time+"~"+asy.rest_end_time,
+        살제출근시간: asy.attendance_start_time,
         출근상태: asy.attendance_start_state,
         퇴근날짜: asy.attendance_end?.attendance_end_date || "-",
-        퇴근시간: asy.attendance_end?.attendance_end_time || "-",
+        실제퇴근시간: asy.attendance_end?.attendance_end_time || "-",
         퇴근상태: asy.attendance_end?.attendance_end_state || "-",
         총근무시간: `${asy.sum_hour}시간 ${asy.sum_minute}분`,
       }))
@@ -117,32 +126,39 @@ const AttendanceTable = ({ setSelected, selected }) => {
               <th className={getSortableHeaderClass('user_name')} onClick={() => handleSort('user_name')}>
                 이름 {getSortIcon('user_name')}
               </th>
-              <th className={getSortableHeaderClass('user_position')} onClick={() => handleSort('user_position')}>
+              <th className={getSortableHeaderClass('user_position')}>
                 직무형태
               </th>
               <th className={getSortableHeaderClass('attendance_start_date')} onClick={() => handleSort('attendance_start_date')}>
-                출근날짜
+                출근날짜 {getSortIcon('attendance_start_date')}
               </th>
-              <th className={getSortableHeaderClass('attendance_start_time')} onClick={() => handleSort('attendance_start_time')}>
-                출근시간
+              <th className={getSortableHeaderClass('attendance_start_time')}>
+                지정 출근시간
               </th>
-              <th className={getSortableHeaderClass('attendance_start_state')} onClick={() => handleSort('attendance_start_state')}>
+              <th className={getSortableHeaderClass('attendance_start_time')}>
+                지정 퇴근시간
+              </th>
+              <th className={getSortableHeaderClass('attendance_start_time')}>
+                휴게시간
+              </th>
+              <th className={getSortableHeaderClass('attendance_start_time')}>
+                실제 출근시간
+              </th>
+              <th className={getSortableHeaderClass('attendance_start_state')} >
                 출근상태
               </th>
-              <th className={getSortableHeaderClass('attendance_end_date')} onClick={() => handleSort('attendance_end_date')}>
+              <th className={getSortableHeaderClass('attendance_end_date')} >
                 퇴근날짜
               </th>
-              <th className={getSortableHeaderClass('attendance_end_time')} onClick={() => handleSort('attendance_end_time')}>
-                퇴근시간
+              <th className={getSortableHeaderClass('attendance_end_time')} >
+                살제 퇴근시간
               </th>
-              <th className={getSortableHeaderClass('attendance_end_state')} onClick={() => handleSort('attendance_end_state')}>
+              <th className={getSortableHeaderClass('attendance_end_state')} >
                 퇴근상태
               </th>
-              {!isFieldHidden('totalWorkHours') && (
-                <th className={getSortableHeaderClass('sum_hour')} onClick={() => handleSort('sum_hour')}>
-                  총근무시간
-                </th>
-              )}
+              <th className={getSortableHeaderClass('sum_hour')} >
+                총근무시간
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -157,6 +173,9 @@ const AttendanceTable = ({ setSelected, selected }) => {
                   <td className="px-4 py-3 whitespace-nowrap">{asy.user.user_name}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.user.user_position}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_start_date}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{asy.start_time}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end?.end_time}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{asy.rest_start_time}~{asy.rest_end_time}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_start_time}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_start_state}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end?.attendance_end_date}</td>

@@ -32,6 +32,19 @@ const TaskStatsTable = ({ onSort, sortConfig, taskName, filteredByTaskType }) =>
     }
   };
 
+  const sortedData = [...(taskStartFilterData || [])].sort((a, b) => {
+    const aValue = a.task_start_date;
+    const bValue = b.task_start_date;
+
+    if (sortConfig.field === 'date') {
+      return sortConfig.direction === 'asc'
+        ? new Date(aValue) - new Date(bValue)
+        : new Date(bValue) - new Date(aValue);
+    }
+    return 0;
+  });
+
+
   const getSortableHeaderClass = (field) => {
     return `px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50 ${sortConfig.field === field ? 'bg-gray-50' : ''
       }`;
@@ -99,8 +112,8 @@ const TaskStatsTable = ({ onSort, sortConfig, taskName, filteredByTaskType }) =>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {taskStartFilterData?.length > 0 ? (
-              taskStartFilterData.map((data, index) => (
+            {sortedData ?.length > 0 ? (
+              sortedData .map((data, index) => (
                 <tr key={index} className="hover:bg-gray-50">
                   <td className="px-4 py-3 whitespace-nowrap">{data.task_start_date}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{data.user.user_name}({data.user.user_position})</td>
@@ -115,7 +128,7 @@ const TaskStatsTable = ({ onSort, sortConfig, taskName, filteredByTaskType }) =>
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">{data.task_end?.hour_average}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{calculateDifference(data.avg_count_per_hour, data.task_end?.hour_average)}</td>
-                  </tr>
+                </tr>
               ))
             ) : (
               <tr>

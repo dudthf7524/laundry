@@ -45,63 +45,7 @@ const attendanceStartNewOne = async (user_code) => {
 
 };
 
-const attendanceStartYear = async (data) => {
-    try {
-        const results = await attendanceStart.findAll({
-            include: [
-                {
-                    model: attendanceEnd,
-                    required: false,
-                    attributes: ['attendance_end_id', 'attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
-                },
-                {
-                    model: user,
-                    required: true,
-                    attributes: ['user_name', 'user_position'], // ✅ 필요한 필드만 가져오기
-                },
-            ],
-            where: Sequelize.literal(`SUBSTRING(attendance_start_date, 1, 4) = '${data.year}'`),
-            attributes: [
-                'attendance_start_id',
-                'attendance_start_date',
-                'attendance_start_time',
-                'attendance_start_state',
-                [
-                    Sequelize.literal(`
-                        FLOOR((
-                            TIMESTAMPDIFF(SECOND, 
-                                CONCAT(attendance_start_date, ' ', attendance_start_time), 
-                                CONCAT(attendance_end_date, ' ', attendance_end_time))
-                            - TIMESTAMPDIFF(SECOND, 
-                                CONCAT(attendance_start_date, ' ', rest_start_time), 
-                                CONCAT(attendance_start_date, ' ', rest_end_time))
-                        ) / 3600)
-                    `),
-                    'sum_hour',
-                ],
-                [
-                    Sequelize.literal(`
-                        FLOOR((
-                            TIMESTAMPDIFF(SECOND, 
-                                CONCAT(attendance_start_date, ' ', attendance_start_time), 
-                                CONCAT(attendance_end_date, ' ', attendance_end_time))
-                            - TIMESTAMPDIFF(SECOND, 
-                                CONCAT(attendance_start_date, ' ', rest_start_time), 
-                                CONCAT(attendance_start_date, ' ', rest_end_time))
-                        ) % 3600 / 60)
-                    `),
-                    'sum_minute',
-                ],
-            ],
-        });
 
-        return results;
-    } catch (error) {
-        console.error('Error fetching attendance:', error);
-        throw error;
-    }
-
-};
 
 const attendanceStartDate = async (data) => {
     try {
@@ -114,7 +58,8 @@ const attendanceStartDate = async (data) => {
                         'attendance_end_id',
                         'attendance_end_date',
                         'attendance_end_time',
-                        'attendance_end_state'
+                        'attendance_end_state',
+                        'end_time',
                     ],
                 },
                 {
@@ -134,6 +79,9 @@ const attendanceStartDate = async (data) => {
                 'attendance_start_date',
                 'attendance_start_time',
                 'attendance_start_state',
+                'start_time',
+                'rest_start_time',
+                'rest_end_time',
                 [
                     Sequelize.literal(`
                         FLOOR((
@@ -225,6 +173,64 @@ const attendanceStartMonth = async (data) => {
         console.error('Error fetching attendance:', error);
         throw error;
     }
+};
+
+const attendanceStartYear = async (data) => {
+    try {
+        const results = await attendanceStart.findAll({
+            include: [
+                {
+                    model: attendanceEnd,
+                    required: false,
+                    attributes: ['attendance_end_id', 'attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
+                },
+                {
+                    model: user,
+                    required: true,
+                    attributes: ['user_name', 'user_position'], // ✅ 필요한 필드만 가져오기
+                },
+            ],
+            where: Sequelize.literal(`SUBSTRING(attendance_start_date, 1, 4) = '${data.year}'`),
+            attributes: [
+                'attendance_start_id',
+                'attendance_start_date',
+                'attendance_start_time',
+                'attendance_start_state',
+                [
+                    Sequelize.literal(`
+                        FLOOR((
+                            TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                CONCAT(attendance_end_date, ' ', attendance_end_time))
+                            - TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                CONCAT(attendance_start_date, ' ', rest_end_time))
+                        ) / 3600)
+                    `),
+                    'sum_hour',
+                ],
+                [
+                    Sequelize.literal(`
+                        FLOOR((
+                            TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                CONCAT(attendance_end_date, ' ', attendance_end_time))
+                            - TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                CONCAT(attendance_start_date, ' ', rest_end_time))
+                        ) % 3600 / 60)
+                    `),
+                    'sum_minute',
+                ],
+            ],
+        });
+
+        return results;
+    } catch (error) {
+        console.error('Error fetching attendance:', error);
+        throw error;
+    }
+
 };
 
 const attendanceToday = async (user_code) => {
