@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import '../css/attendance.css';
-import BottomBar from "../components/BottomBar";
 import { useDispatch, useSelector } from 'react-redux';
 import { TIME_DETAIL_REQUEST } from '../reducers/time';
 import { ATTENDANCESTART_NEW_ONE_REQUEST, ATTENDANCESTART_REGISTER_REQUEST } from '../reducers/attendanceStart';
@@ -13,7 +12,7 @@ import Today from './today';
 const Attendance = () => {
     //✅정의
     const dispatch = useDispatch();
-    const [currentTime, setCurrentTime] = useState(new Date());
+    const [currentTime] = useState(new Date());
     const [isWithinRadius, setIsWithinRadius] = useState(false); // 근무지 반경 내 여부
 
     // 날짜 포맷팅
@@ -23,27 +22,19 @@ const Attendance = () => {
     // 시간 포맷팅
     const hours = currentTime.getHours();
     const minutes = String(currentTime.getMinutes()).padStart(2, '0');
-   
-    //✅정의
-
-    //✅함수
- 
-
-
 
     const { noticeLists } = useSelector((state) => state.notice);
 
     useEffect(() => {
         dispatch({ type: NOTICE_LIST_REQUEST });
     }, [dispatch]);
-    
-    const attendance = () => {
-        // if (!isWithinRadius) {
-        //     alert('근무지 반경 외부입니다. 출근할 수 없습니다.');
-        //     return;
-        // }
 
-          // if (!isWithinRadius) {
+    const attendance = () => {
+        if (!timeDetail) {
+            alert('지정된 출근/퇴근 시간이 존재하지 않습니다.\n관리자에게 문의 해주세요.');
+            return;
+        }
+        // if (!isWithinRadius) {
         //     alert('근무지 반경 외부입니다. 출근할 수 없습니다.');
         //     return;
         // }
@@ -62,8 +53,11 @@ const Attendance = () => {
             attendance_start_date: attendance_start_date,
             attendance_start_time: attendance_start_time,
             attendance_start_state: attendance_start_state,
+            start_time : timeDetail.start_time,
+            rest_start_time : timeDetail.rest_start_time,
+            rest_end_time : timeDetail.rest_end_time,
+            
         }
-       
         dispatch({
             type: ATTENDANCESTART_REGISTER_REQUEST,
             data: data
@@ -71,6 +65,10 @@ const Attendance = () => {
     }
 
     const leaveWork = () => {
+        if (!timeDetail) {
+            alert('지정된 출근/퇴근 시간이 존재하지 않습니다.\n관리자에게 문의 해주세요.');
+            return;
+        }
         // if (!isWithinRadius) {
         //     alert('근무지 반경 외부입니다. 퇴근할 수 없습니다.');
         //     return;
@@ -80,28 +78,21 @@ const Attendance = () => {
 
         var attendance_end_state = "퇴근";
 
-        // if (timeDetail?.end_time < attendance_end_time) {
-        //     attendance_end_state = "지각";
-        // } else {
-        //     attendance_end_state = "정상";
-        // }
-
         const data = {
             attendance_end_date: attendance_end_date,
             attendance_end_time: attendance_end_time,
             attendance_end_state: attendance_end_state,
+            end_time : timeDetail.end_time,
             user_code: attendanceStartNewOne.user_code,
             attendance_start_id: attendanceStartNewOne.attendance_start_id,
         }
-   
+
         dispatch({
             type: ATTENDANCEEND_TIME_REQUEST,
             data: data
         });
     };
-    //✅함수
-
-    //✅데이터
+  
     const { timeDetail } = useSelector((state) => state.time);
 
     const attendanceStartNewOneRequest = () => {
@@ -114,7 +105,7 @@ const Attendance = () => {
     const { attendanceStartNewOne } = useSelector((state) => state.attendanceStart);
 
 
- 
+
 
     const timeDetailLoding = () => {
         dispatch({
@@ -126,11 +117,10 @@ const Attendance = () => {
     //✅데이터
 
     useEffect(() => {
-        // today();
         timeDetailLoding();
         attendanceStartNewOneRequest();
     }, []);
-    
+
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
@@ -154,7 +144,6 @@ const Attendance = () => {
     };
     return (
         <div className='attendance'>
-            <div></div>
             <div className="notice cursor-pointer" onClick={openNoticeModal}>
                 <div className="w-5 h-5 cursor-pointer"><img src={`${process.env.PUBLIC_URL}/icon/star.png`} alt="Map Icon" />
                 </div>

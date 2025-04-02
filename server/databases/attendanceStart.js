@@ -9,6 +9,9 @@ const attendanceStartRegister = async (data, user_code) => {
             attendance_start_date: data.attendance_start_date,
             attendance_start_time: data.attendance_start_time,
             attendance_start_state: data.attendance_start_state,
+            start_time: data.start_time,
+            rest_start_time: data.rest_start_time,
+            rest_end_time: data.rest_end_time,
             user_code: user_code,
             raw: true
         });
@@ -34,7 +37,7 @@ const attendanceStartNewOne = async (user_code) => {
             order: [['attendance_start_id', 'DESC']],
 
         });
-      
+
         return result;
     } catch (error) {
         console.error(error);
@@ -65,13 +68,27 @@ const attendanceStartYear = async (data) => {
                 'attendance_start_state',
                 [
                     Sequelize.literal(`
-                        LPAD(FLOOR(TIMESTAMPDIFF(SECOND, CONCAT(attendance_start_date, ' ', attendance_start_time), CONCAT(attendance_end_date, ' ', attendance_end_time)) / 3600), 2, '0')
+                        FLOOR((
+                            TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                CONCAT(attendance_end_date, ' ', attendance_end_time))
+                            - TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                CONCAT(attendance_start_date, ' ', rest_end_time))
+                        ) / 3600)
                     `),
                     'sum_hour',
                 ],
                 [
                     Sequelize.literal(`
-                        LPAD(FLOOR((TIMESTAMPDIFF(SECOND, CONCAT(attendance_start_date, ' ', attendance_start_time), CONCAT(attendance_end_date, ' ', attendance_end_time)) % 3600) / 60), 2, '0')
+                        FLOOR((
+                            TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                CONCAT(attendance_end_date, ' ', attendance_end_time))
+                            - TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                CONCAT(attendance_start_date, ' ', rest_end_time))
+                        ) % 3600 / 60)
                     `),
                     'sum_minute',
                 ],
@@ -93,18 +110,23 @@ const attendanceStartDate = async (data) => {
                 {
                     model: attendanceEnd,
                     required: false,
-                    attributes: ['attendance_end_id', 'attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
+                    attributes: [
+                        'attendance_end_id',
+                        'attendance_end_date',
+                        'attendance_end_time',
+                        'attendance_end_state'
+                    ],
                 },
                 {
                     model: user,
                     required: true,
-                    attributes: ['user_name', 'user_position'], // ✅ 필요한 필드만 가져오기
+                    attributes: ['user_name', 'user_position'],
                 },
             ],
             where: {
                 attendance_start_date: {
-                    [Op.gte]: data.startDate, // 2024-03-24 이상
-                    [Op.lte]: data.endDate,   // 2025-06-24 이하
+                    [Op.gte]: data.startDate, // 시작일 (예: 2024-03-24)
+                    [Op.lte]: data.endDate,   // 종료일 (예: 2025-06-24)
                 },
             },
             attributes: [
@@ -114,13 +136,27 @@ const attendanceStartDate = async (data) => {
                 'attendance_start_state',
                 [
                     Sequelize.literal(`
-                        LPAD(FLOOR(TIMESTAMPDIFF(SECOND, CONCAT(attendance_start_date, ' ', attendance_start_time), CONCAT(attendance_end_date, ' ', attendance_end_time)) / 3600), 2, '0')
+                        FLOOR((
+                            TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                CONCAT(attendance_end_date, ' ', attendance_end_time))
+                            - TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                CONCAT(attendance_start_date, ' ', rest_end_time))
+                        ) / 3600)
                     `),
                     'sum_hour',
                 ],
                 [
                     Sequelize.literal(`
-                        LPAD(FLOOR((TIMESTAMPDIFF(SECOND, CONCAT(attendance_start_date, ' ', attendance_start_time), CONCAT(attendance_end_date, ' ', attendance_end_time)) % 3600) / 60), 2, '0')
+                        FLOOR((
+                            TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                CONCAT(attendance_end_date, ' ', attendance_end_time))
+                            - TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                CONCAT(attendance_start_date, ' ', rest_end_time))
+                        ) % 3600 / 60)
                     `),
                     'sum_minute',
                 ],
@@ -157,13 +193,27 @@ const attendanceStartMonth = async (data) => {
                 'attendance_start_state',
                 [
                     Sequelize.literal(`
-                        LPAD(FLOOR(TIMESTAMPDIFF(SECOND, CONCAT(attendance_start_date, ' ', attendance_start_time), CONCAT(attendance_end_date, ' ', attendance_end_time)) / 3600), 2, '0')
+                        FLOOR((
+                            TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                CONCAT(attendance_end_date, ' ', attendance_end_time))
+                            - TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                CONCAT(attendance_start_date, ' ', rest_end_time))
+                        ) / 3600)
                     `),
                     'sum_hour',
                 ],
                 [
                     Sequelize.literal(`
-                        LPAD(FLOOR((TIMESTAMPDIFF(SECOND, CONCAT(attendance_start_date, ' ', attendance_start_time), CONCAT(attendance_end_date, ' ', attendance_end_time)) % 3600) / 60), 2, '0')
+                        FLOOR((
+                            TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                CONCAT(attendance_end_date, ' ', attendance_end_time))
+                            - TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                CONCAT(attendance_start_date, ' ', rest_end_time))
+                        ) % 3600 / 60)
                     `),
                     'sum_minute',
                 ],
@@ -201,7 +251,7 @@ const attendanceToday = async (user_code) => {
             order: [['attendance_start_id', 'DESC']],
 
         });
-        
+
         return result;
     } catch (error) {
         console.error(error);
@@ -216,11 +266,11 @@ const attendanceUpdate = async (data) => {
     try {
         await attendanceStart.update(
             {
-                attendance_start_date: data.attendance_start_date, 
-                attendance_start_time: data.attendance_start_time, 
-                attendance_start_state: data.attendance_start_state, 
+                attendance_start_date: data.attendance_start_date,
+                attendance_start_time: data.attendance_start_time,
+                attendance_start_state: data.attendance_start_state,
             },
-            
+
             {
                 where: {
                     attendance_start_id: data.attendance_start_id,
@@ -235,8 +285,8 @@ const attendanceUpdate = async (data) => {
     try {
         const result = await attendanceEnd.update(
             {
-                attendance_end_date: data.attendance_end_date, 
-                attendance_end_time: data.attendance_end_time, 
+                attendance_end_date: data.attendance_end_date,
+                attendance_end_time: data.attendance_end_time,
             },
             {
                 where: {
@@ -250,7 +300,7 @@ const attendanceUpdate = async (data) => {
     } catch (error) {
         console.error(error);
     }
-   
+
 
 };
 

@@ -1,19 +1,18 @@
-import { useEffect, useState } from 'react';
-import { employees } from '../data/mockData';
-import { useDispatch, useSelector } from 'react-redux';
-import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const FilterControls = ({
   setFilterType,
-  setStartDate, 
+  setStartDate,
   setEndDate,
   setMonth,
   setYear,
   handleEditClick,
 }) => {
   const [filterType, setFilterTypess] = useState('date'); // 'date', 'month', or 'year'
+  const { user } = useSelector((state) => state.user);
 
-  const roleTypes = [...new Set(employees.map(emp => emp.role))];
+
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 2019 }, (_, i) => currentYear - i);
   const months = [
@@ -43,7 +42,7 @@ const FilterControls = ({
   const handleMonthChange = (e) => {
     const selectedMonth = e.target.value;
     setMonth(selectedMonth)
-   
+
   };
   const handleYearChange = (e) => {
     const selectedYear = e.target.value;
@@ -362,12 +361,14 @@ const FilterControls = ({
           필터 초기화
         </button>
       </div> */}
-      <div className="flex justify-end p-4">
+      {
+        user?.auth_code === "A1" ? <div className="flex justify-end p-4">
           {/* ✅ 수정 버튼 추가 */}
-          <button  onClick={handleEditClick}  className="bg-blue-500 text-white px-4 py-2 rounded">
+          <button onClick={handleEditClick} className="bg-blue-500 text-white px-4 py-2 rounded">
             수정
           </button>
-        </div>
+        </div> : ''
+      }
     </div>
   );
 };

@@ -15,6 +15,8 @@ import taskEndSaga from "./taskEnd";
 import chartSaga from "./chart";
 import noticeSaga from "./notice";
 import conpanyVacationSaga from "./conpanyVacation";
+import logoutSaga from "./logout";
+import chartLateSaga from "./chartLate";
 
 import { API_URL } from "../constants";
 
@@ -38,5 +40,7 @@ export default function* rootSaga() {
     fork(chartSaga),
     fork(noticeSaga),
     fork(conpanyVacationSaga),
+    fork(logoutSaga),
+    fork(chartLateSaga),
   ]);
 }

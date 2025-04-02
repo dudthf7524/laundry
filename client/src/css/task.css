@@ -221,16 +221,13 @@
 }
 
 /* ----------- 반응형 ----------- */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 600px) {
     .task {
         gap: 2vh;
     }
 
     .task .notice {
-        height: auto;
-        flex-direction: column;
-        text-align: center;
-        padding: 2vh;
+        height: 70px;
     }
 
     .task .notice p {

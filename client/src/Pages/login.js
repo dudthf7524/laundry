@@ -74,6 +74,14 @@ const Login = () => {
     const dispatch = useDispatch();
 
     const handleLogin = (e) => {
+if(credentials.user_id === ""){
+    alert("아이디를 입력해주세요")
+    return;
+}else if(credentials.user_password === ""){
+    alert('비밀번호를 입력해주세요')
+    return;
+}
+
         e.preventDefault();
 
         dispatch({

@@ -5,6 +5,7 @@ const authMiddlewareSession = require('../middleware/authMiddlewareSession');
 
 router.post("/register", authMiddlewareSession, async (req, res) => {
     const user_code = req.user.user_code;
+    console.log(req.body)
     try {
         const result = await attendanceStart.attendanceStartRegister(req.body, user_code)
         return res.json(result);

@@ -8,6 +8,7 @@ const taskEndRegister = async (data, user_code) => {
             task_end_date: data.task_end_date,
             task_end_time: data.task_end_time,
             user_code: user_code,
+            hour_average :data.hour_average,
             task_start_id: data.task_start_id,
             task_end_state: '정상',
             raw: true

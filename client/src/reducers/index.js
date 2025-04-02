@@ -14,6 +14,8 @@ import taskEnd from "./taskEnd";
 import chart from "./chart";
 import notice from "./notice";
 import companyVacation from "./companyVacation";
+import logout from "./logout";
+import chartLate from "./chartLate";
 
 const rootReducer = combineReducers({
   user,
@@ -30,7 +32,9 @@ const rootReducer = combineReducers({
   taskEnd,
   chart,
   notice,
-  companyVacation
+  companyVacation,
+  logout,
+  chartLate,
 });
 
 export default rootReducer;

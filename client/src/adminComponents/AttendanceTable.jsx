@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSelector } from 'react-redux';
+import * as XLSX from "xlsx"; // 📌 엑셀 라이브러리 추가
 
 const AttendanceTable = ({ setSelected, selected }) => {
   const { isFieldHidden } = useAuth();
@@ -8,10 +9,8 @@ const AttendanceTable = ({ setSelected, selected }) => {
 
   const [expandedRowId, setExpandedRowId] = useState(null);
   const [sortConfig, setSortConfig] = useState({ field: null, direction: 'asc' });
-
-  // const [selected, setSelected] = useState(null); // ✅ 선택된 항목 상태
-  const [isModalOpen, setIsModalOpen] = useState(false); // ✅ 모달 열림 상태
-  // const [editData, setEditData] = useState({}); // ✅ 수정할 데이터 상태
+  const { user } = useSelector((state) => state.user);
+  const excelImage = `${process.env.PUBLIC_URL}/icon/excel.png`;
 
   // 정렬 처리 함수
   const handleSort = (field) => {
@@ -20,16 +19,6 @@ const AttendanceTable = ({ setSelected, selected }) => {
       direction: prev.field === field && prev.direction === 'asc' ? 'desc' : 'asc',
     }));
   };
-
-  // const handleCheckboxChange = (asy) => {
-  //   console.log(asy)
-  //   setSelected(prev => ({
-  //     ...prev,
-  //     attendance_start_id: asy.attendance_start_id,
-
-  //     // 필요에 따라 더 많은 정보를 추가할 수 있습니다
-  //   }));
-  // };
 
   const handleCheckboxChange = (asy) => {
     if (!asy.attendance_end) {
@@ -49,14 +38,8 @@ const AttendanceTable = ({ setSelected, selected }) => {
     });
   };
 
-  // 입력값 변경 핸들러
 
-  // const [selected, setSelected] = useState({
-  //   attendance_start_id: "",
-  // });
   var sortedData;
-
-
   // 정렬된 데이터 반환
   if (attendanceStartYear) {
     sortedData = [...attendanceStartYear].sort((a, b) => {
@@ -74,7 +57,34 @@ const AttendanceTable = ({ setSelected, selected }) => {
       return sortConfig.direction === 'asc' ? valueA - valueB : valueB - valueA;
     });
   }
+  console.log(sortedData)
+  const exportToExcel = () => {
+    if (!sortedData) {
+      alert("엑셀로 내보낼 데이터가 없습니다.");
+      return;
+    }
 
+    // 데이터를 엑셀 형식으로 변환
+    const worksheet = XLSX.utils.json_to_sheet(
+      sortedData.map((asy) => ({
+        이름: asy.user.user_name,
+        직무형태: asy.user.user_position,
+        출근날짜: asy.attendance_start_date,
+        출근시간: asy.attendance_start_time,
+        출근상태: asy.attendance_start_state,
+        퇴근날짜: asy.attendance_end?.attendance_end_date || "-",
+        퇴근시간: asy.attendance_end?.attendance_end_time || "-",
+        퇴근상태: asy.attendance_end?.attendance_end_state || "-",
+        총근무시간: `${asy.sum_hour}시간 ${asy.sum_minute}분`,
+      }))
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "출퇴근 기록");
+
+    // 파일 다운로드
+    XLSX.writeFile(workbook, "Attendance_Report.xlsx");
+  };
 
 
   // 정렬 아이콘 표시
@@ -93,14 +103,17 @@ const AttendanceTable = ({ setSelected, selected }) => {
 
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-      <div className="overflow-x-auto">
 
+      <div className="overflow-auto max-h-[500px]">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+          <thead className="bg-gray-50 sticky top-0 z-10">
             <tr>
-              <th className={getSortableHeaderClass('user_name')} onClick={() => handleSort('user_name')}>
-                선택
-              </th>
+              {
+                user?.auth_code === "A1" ? <th className={getSortableHeaderClass('user_name')} onClick={() => handleSort('user_name')}>
+                  선택
+                </th> : ''
+              }
+
               <th className={getSortableHeaderClass('user_name')} onClick={() => handleSort('user_name')}>
                 이름 {getSortIcon('user_name')}
               </th>
@@ -130,16 +143,17 @@ const AttendanceTable = ({ setSelected, selected }) => {
                   총근무시간
                 </th>
               )}
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">자세히</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {sortedData ? (
               sortedData.map((asy, index) => (
                 <tr key={index} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 whitespace-nowrap"><input type='checkbox'
-                    checked={selected?.attendance_start_id === asy.attendance_start_id}
-                    onChange={() => handleCheckboxChange(asy)}></input></td>
+                  {
+                    user?.auth_code === "A1" ? <td className="px-4 py-3 whitespace-nowrap"><input type='checkbox'
+                      checked={selected?.attendance_start_id === asy.attendance_start_id}
+                      onChange={() => handleCheckboxChange(asy)}></input></td> : ''
+                  }
                   <td className="px-4 py-3 whitespace-nowrap">{asy.user.user_name}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.user.user_position}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_start_date}</td>
@@ -149,11 +163,6 @@ const AttendanceTable = ({ setSelected, selected }) => {
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end?.attendance_end_time}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end?.attendance_end_state}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.sum_hour}시간 {asy.sum_minute}분</td>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <button onClick={() => setExpandedRowId(expandedRowId === asy.id ? null : asy.id)} className="text-blue-600 hover:text-blue-900">
-                      {expandedRowId === asy.id ? '접기' : '펼치기'}
-                    </button>
-                  </td>
                 </tr>
               ))
             ) : (
@@ -166,6 +175,14 @@ const AttendanceTable = ({ setSelected, selected }) => {
           </tbody>
         </table>
 
+      </div>
+      <div className="p-4 flex justify-center">
+        <div
+          className="w-full h-12 cursor-pointer border border-gray-300 rounded-lg flex items-center justify-center hover:border-gray-500"
+          onClick={exportToExcel}
+        >
+          <img className="w-10 h-10" src={excelImage} alt="excel" />
+        </div>
       </div>
 
     </div>

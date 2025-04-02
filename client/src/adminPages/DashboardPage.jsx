@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import StatisticsChart from '../components copy/StatisticsChart';
 import { attendanceRecords, taskRecords } from '../data/mockData';
 import { getCurrentDate } from '../utils/dateUtils';
+import { useSelector } from 'react-redux';
 
 const DashboardPage = () => {
   const { currentUser } = useAuth();
@@ -12,10 +13,9 @@ const DashboardPage = () => {
     workingNow: 0,
     completedTasks: 0,
   });
-  const location = useLocation();
-  console.log(location); // 현재 U
-  // Calculate today's date
+
   const today = getCurrentDate();
+  const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
     // Count employees working today
@@ -42,7 +42,7 @@ const DashboardPage = () => {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">
-          {currentUser ? `안녕하세요, ${currentUser.name}님!` : '대시보드'}
+          {user ? `안녕하세요, ${user.user_name}님!` : '대시보드'}
         </h1>
         <p className="text-gray-600 mt-1">
           {today} 기준 근태 및 업무 통계 현황입니다.

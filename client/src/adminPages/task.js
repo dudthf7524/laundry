@@ -129,8 +129,11 @@ const Time = () => {
 
     const processRegister = (e) => {
         e.preventDefault();
-        if (formData.process_code === '') {
+        if (formData.user_process_code === '') {
             alert('업무공정을 선택해주세요')
+            return;
+        }else if (formData.user_process_count === '') {
+            alert('업무수량을 입력해주세요')
             return;
         }
         formData.user_code = selected.user_code;

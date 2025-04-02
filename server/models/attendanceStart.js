@@ -24,6 +24,21 @@ module.exports = (sequelize) => {
             allowNull: false,
             defaultValue: "",
         },
+        start_time: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: "",
+        },
+        rest_start_time: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: "",
+        },
+        rest_end_time: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: "",
+        },
         user_code: {
             type: DataTypes.INTEGER,
             allowNull: false,

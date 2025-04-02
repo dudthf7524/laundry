@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import FilterControls from '../components copy/FilterControls';
-import AttendanceTable from '../components copy/AttendanceTable';
+import FilterControls from '../adminComponents/FilterControls';
+import AttendanceTable from '../adminComponents/AttendanceTable';
 import { useDispatch, useSelector } from 'react-redux';
 import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCESTART_UPDATE_REQUEST, ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
 
@@ -15,7 +15,6 @@ const AttendancePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // ✅ 모달 열림 상태
   const [editData, setEditData] = useState({}); // ✅ 수정할 데이터 상태
 
-  console.log(editData)
   const vacationDate = async () => {
     const data = {
       startDate: startDate,

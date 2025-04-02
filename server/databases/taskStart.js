@@ -55,7 +55,7 @@ const taskStartDate = async (data) => {
                 {
                     model: taskEnd,
                     required: false,
-                    attributes: ['task_end_date', 'task_end_time', 'total_count'], // ✅ 명확하게 필드 지정
+                    attributes: ['task_end_date', 'task_end_time', 'total_count', 'hour_average'], // ✅ 명확하게 필드 지정
                 },
                 {
                     model: user,
@@ -88,6 +88,17 @@ const taskStartDate = async (data) => {
                     `),
                     'sum_minute',
                 ],
+                [
+                    Sequelize.literal(`
+                    ROUND(
+                        total_count / 
+                        (FLOOR(TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) / 3600) +
+                        (FLOOR((TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) % 3600) / 60) / 60)), 
+                        2
+                    )
+                `),
+                    'avg_count_per_hour',
+                ],
             ],
         });
 
@@ -106,7 +117,7 @@ const taskStartMonth = async (data) => {
                 {
                     model: taskEnd,
                     required: false,
-                    attributes: ['task_end_date', 'task_end_time', 'total_count'], // ✅ 명확하게 필드 지정
+                    attributes: ['task_end_date', 'task_end_time', 'total_count', 'hour_average'], // ✅ 명확하게 필드 지정
                 },
                 {
                     model: user,
@@ -135,6 +146,17 @@ const taskStartMonth = async (data) => {
                     `),
                     'sum_minute',
                 ],
+                [
+                    Sequelize.literal(`
+                    ROUND(
+                        total_count / 
+                        (FLOOR(TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) / 3600) +
+                        (FLOOR((TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) % 3600) / 60) / 60)), 
+                        2
+                    )
+                `),
+                    'avg_count_per_hour',
+                ],
             ],
         });
 
@@ -152,7 +174,7 @@ const taskStartYear = async (data) => {
                 {
                     model: taskEnd,
                     required: false,
-                    attributes: ['task_end_date', 'task_end_time', 'total_count'], // ✅ 명확하게 필드 지정
+                    attributes: ['task_end_date', 'task_end_time', 'total_count', 'hour_average'], // ✅ 명확하게 필드 지정
                 },
                 {
                     model: user,
@@ -180,6 +202,17 @@ const taskStartYear = async (data) => {
                         LPAD(FLOOR((TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) % 3600) / 60), 2, '0')
                     `),
                     'sum_minute',
+                ],
+                [
+                    Sequelize.literal(`
+                    ROUND(
+                        total_count / 
+                        (FLOOR(TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) / 3600) +
+                        (FLOOR((TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) % 3600) / 60) / 60)), 
+                        2
+                    )
+                `),
+                    'avg_count_per_hour',
                 ],
             ],
         });

@@ -4,13 +4,22 @@ const { process } = require("../models");
 
 const userProcessRegister = async (data) => {
     try {
-        const result = await userProcess.create({
-            user_code: data.user_code,
-            user_process_code: data.user_process_code,
-            user_process_count: data.user_process_count,
-            raw: true
+        const result1 = await userProcess.findOne({
+            attributes: ["user_process_code"],
+            where: { user_code: data.user_code, user_process_code: data.user_process_code },
         });
-        return result;
+
+        if (result1) {
+            return -1;
+        } else {
+            const result = await userProcess.create({
+                user_code: data.user_code,
+                user_process_code: data.user_process_code,
+                user_process_count: data.user_process_count,
+                raw: true
+            });
+            return result;
+        }
     } catch (error) {
         console.error(error)
     }
@@ -28,7 +37,7 @@ const userProcessList = async () => {
                 },
             ],
         });
-     
+
         return result;
 
     } catch (error) {

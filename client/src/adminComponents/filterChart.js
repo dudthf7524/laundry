@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import { employees } from '../data/mockData';
 import { useDispatch, useSelector } from 'react-redux';
-import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
 import { USER_LIST_REQUEST } from '../reducers/user';
 
 const FilterChart = ({
@@ -10,18 +8,12 @@ const FilterChart = ({
   setEndDate,
   setMonth,
   setYear,
-  setUser,
   setStartYear,
   setEndYear,
   setStartMonth,
   setEndMonth,
-
-  // setFilterType, 
 }) => {
   const [filterType, setFilterTypess] = useState('date'); // 'date', 'month', or 'year'
-
-  const roleTypes = [...new Set(employees.map(emp => emp.role))];
-
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 2019 }, (_, i) => currentYear - i);
   const months = [
@@ -80,10 +72,6 @@ const FilterChart = ({
     setEndMonth(selectedYear)
   };
 
-  const handleNameChange = (e) => {
-    const selectedUser = e.target.value;
-    setUser(selectedUser)
-  };
   const handleFilterTypeChange = (type) => {
 
     setFilterType(type);
@@ -456,14 +444,14 @@ const FilterChart = ({
         </form>
       )}
 
-      <div className="mt-4 flex justify-end">
+      {/* <div className="mt-4 flex justify-end">
         <button
           // onClick={onResetFilters}
           className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
         >
           필터 초기화
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

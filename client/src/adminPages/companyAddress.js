@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { GoogleMap, LoadScript, Marker, Circle, Autocomplete } from "@react-google-maps/api";
-import { useDispatch } from "react-redux";
-import { COMPANYADDRESS_REGISTER_REQUEST } from "../reducers/companyAddress";
+import { useDispatch, useSelector } from "react-redux";
+import { COMPANYADDRESS_DELETE_REQUEST, COMPANYADDRESS_LIST_REQUEST, COMPANYADDRESS_REGISTER_REQUEST } from "../reducers/companyAddress";
 
 const containerStyle = {
   width: "100%",
@@ -9,6 +9,8 @@ const containerStyle = {
 };
 
 const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
+
 
 const CompanyAddress = () => {
   const [location, setLocation] = useState({ lat: 35.9733646723136, lng: 128.939298096262 }); // 기본 위치
@@ -51,15 +53,15 @@ const CompanyAddress = () => {
     console.log("위도:", location.lat);
     console.log("경도:", location.lng);
     console.log("근무 반경:", radius, "m");
-    if(!address){
+    if (!address) {
       alert('근무지를 검색해주세요')
       return;
     }
     const data = {
-      address : address,
-      location_latitude : location.lat,
-      location_hardness : location.lng,
-      radius : radius,
+      address: address,
+      location_latitude: location.lat,
+      location_hardness: location.lng,
+      radius: radius,
     }
     dispatch({
       type: COMPANYADDRESS_REGISTER_REQUEST,
@@ -67,6 +69,29 @@ const CompanyAddress = () => {
     });
 
   };
+  useEffect(() => {
+    dispatch({
+      type: COMPANYADDRESS_LIST_REQUEST,
+    });
+  }, [dispatch]);
+
+  const { companyAddressLists } = useSelector((state) => state.companyAddress);
+  console.log(companyAddressLists)
+  
+  const handleDelete = (company_address_id) => {
+    if (window.confirm(`업무를 삭제하시겠습니까?`)) {
+
+      const data = {
+        company_address_id: company_address_id
+      };
+      console.log(data)
+      dispatch({
+        type: COMPANYADDRESS_DELETE_REQUEST,
+        data: data,
+      });
+    }
+  };
+
 
   return (
     <div className="work_address">
@@ -123,6 +148,23 @@ const CompanyAddress = () => {
           </div>
         </LoadScript>
       </div>
+      <div className="grid grid-cols-3 gap-4 p-3 font-semibold bg-gray-200 rounded-md text-gray-900">
+        <p>주소</p>
+        <p>반경</p>
+        <p className="text-center">삭제</p>
+      </div>
+      <div className="grid grid-cols-3 gap-4 p-4 border rounded-lg shadow-sm bg-gray-50 items-center">
+        <p className="text-gray-900">{companyAddressLists?.address || '미등록'}</p>
+        <p className="text-gray-700">{companyAddressLists?.radius || 0}m</p>
+        <button
+          className="text-red-500 font-bold text-xl hover:text-red-700 transition duration-200 text-center"
+          onClick={() => handleDelete(companyAddressLists?.company_address_id)}
+        >
+          {companyAddressLists ? '✖' : ''}
+        </button>
+      </div>
+
+
     </div>
   );
 };

@@ -16,8 +16,7 @@ export const initialState = {
 
 
     chartDates : null,
-    chartMonthes : null,
-    chartYears : null,
+    
 
 
 };

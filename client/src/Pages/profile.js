@@ -5,10 +5,9 @@ import UserAttendance from './userAttendance';
 import UserTask from './userTask';
 
 const Profile = () => {
-    const [activeTab, setActiveTab] = useState('attendance');
+    const [activeTab, setActiveTab] = useState('my');
     return (
-        <div className="w-full h-full flex flex-col justify-center items-center overflow-y-auto">
-            <div className="bg-white rounded-lg shadow w-4/5 h-full">
+        <div className="w-full h-full flex flex-col justify-center items-center overflow-y-auto bg-white">
                 <nav className="flex border-b border-gray-200 w-full">
                     <button
                         className={`px-6 py-4 text-sm font-medium ${activeTab === 'attendance'
@@ -28,6 +27,15 @@ const Profile = () => {
                     >
                         업무
                     </button>
+                    <button
+                        className={`px-6 py-4 text-sm font-medium ${activeTab === 'my'
+                            ? 'border-b-2 border-blue-500 text-blue-600 w-full'
+                            : 'text-gray-600 hover:text-gray-800 hover:border-gray-300 w-full'
+                            }`}
+                        onClick={() => setActiveTab('my')}
+                    >
+                        내 정보
+                    </button>
                 </nav>
 
                 {/* Task Settings Tab */}
@@ -39,8 +47,12 @@ const Profile = () => {
                 {activeTab === 'task' && (
                     <UserTask />
                 )}
+
+                {activeTab === 'my' && (
+                    <UserTask />
+                )}
             </div>
-        </div>
+       
     );
 };
 

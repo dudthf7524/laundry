@@ -3,7 +3,7 @@ const { Op, Sequelize } = require("sequelize");
 
 const chartDate = async (data) => {
 
-   
+
     try {
         const attendanceData = await attendanceStart.findAll({
             attributes: [
@@ -14,18 +14,35 @@ const chartDate = async (data) => {
                 // ⬇️ sum_hour: 08 → 8로 표시 (LPAD 제거)
                 [
                     Sequelize.literal(`
-                        FLOOR(SUM(TIMESTAMPDIFF(SECOND, 
-                            CONCAT(attendance_start_date, ' ', attendance_start_time), 
-                            CONCAT(attendance_end.attendance_end_date, ' ', attendance_end.attendance_end_time))) / 3600)
+                        FLOOR(SUM(
+                            TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                CONCAT(attendance_end.attendance_end_date, ' ', attendance_end.attendance_end_time)
+                            ) 
+                            - TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                CONCAT(attendance_start_date, ' ', rest_end_time)
+                            )
+                        ) / 3600)
                     `),
                     "sum_hour",
                 ],
-                // ⬇️ sum_minute도 LPAD 제거
+
+                // ✅ sum_minute (총 근무 시간에서 휴식 시간 차감 후 분 단위 변환)
                 [
                     Sequelize.literal(`
-                        FLOOR((SUM(TIMESTAMPDIFF(SECOND, 
-                            CONCAT(attendance_start_date, ' ', attendance_start_time), 
-                            CONCAT(attendance_end.attendance_end_date, ' ', attendance_end.attendance_end_time))) % 3600) / 60)
+                        FLOOR((
+                            SUM(
+                                TIMESTAMPDIFF(SECOND, 
+                                    CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                    CONCAT(attendance_end.attendance_end_date, ' ', attendance_end.attendance_end_time)
+                                ) 
+                                - TIMESTAMPDIFF(SECOND, 
+                                    CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                    CONCAT(attendance_start_date, ' ', rest_end_time)
+                                )
+                            )
+                        ) % 3600 / 60)
                     `),
                     "sum_minute",
                 ],
@@ -67,7 +84,7 @@ const chartDate = async (data) => {
 
 const chartMonth = async (data) => {
 
- 
+
 
     try {
         const attendanceData = await attendanceStart.findAll({
@@ -130,7 +147,7 @@ const chartMonth = async (data) => {
 
 const chartYear = async (data) => {
 
-  
+
 
     try {
         const attendanceData = await attendanceStart.findAll({

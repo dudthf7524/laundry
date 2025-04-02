@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ReactComponent as StarIcon  } from '../Assets/Images/star.svg';
+import { ReactComponent as StarIcon } from '../Assets/Images/star.svg';
 import '../css/task.css';
-import BottomBar from '../components/BottomBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { USER_PROCESS_ONE_LIST_REQUEST } from '../reducers/userProcess';
-import { TASK_NEW_ONE_REQUEST } from '../reducers/task';
 import { TASKSTART_NEW_ONE_REQUEST, TASKSTART_REGISTER_REQUEST } from '../reducers/taskStart';
 import { TASKEND_REGISTER_REQUEST } from '../reducers/taskEnd';
 
@@ -20,15 +18,14 @@ const Task = () => {
     const taskOne = null;  // 데이터가 배열이라면 첫 번째 항목을 가져옵니다.
 
 
-
-
+    console.log(userProcessOneLists)
+    console.log(taskStartNewOne)
 
     const todayDate = new Date();
     const formattedDate = todayDate.toISOString().split("T")[0];
 
     useEffect(() => {
         userProcessOneList();
-        taskNew()
         taskStartNew();
     }, []);
 
@@ -44,12 +41,6 @@ const Task = () => {
     const userProcessOneList = () => {
         dispatch({
             type: USER_PROCESS_ONE_LIST_REQUEST,
-        });
-    };
-
-    const taskNew = () => {
-        dispatch({
-            type: TASK_NEW_ONE_REQUEST,
         });
     };
 
@@ -134,7 +125,8 @@ const Task = () => {
             task_count: totalCount,
             task_end_time: endTime,
             task_end_date: formattedDate,
-            task_start_id: taskStartNewOne.task_start_id
+            task_start_id: taskStartNewOne.task_start_id,
+            hour_average: taskStartNewOne?.process.hour_average
         };
         dispatch({
             type: TASKEND_REGISTER_REQUEST,
@@ -195,27 +187,37 @@ const Task = () => {
 
     return (
         <div className='task'>
-            <div></div>
+
             <div className="notice">
-            <StarIcon className="w-5 h-5 cursor-pointer text-yellow-400" />
+                <StarIcon className="w-5 h-5" />
                 <p>안녕하세요 <span className='user_name'>{user?.user_name}</span>님! 오늘 하루도 화이팅!</p>
             </div>
 
             <div className="worker_select">
                 {/* 옵션 선택 드롭다운 */}
                 <select className='select_one' onChange={handleChange}>
-                    {!taskStartNewOne?.task_end ? (
-                        <option value="current">{taskStartNewOne?.process.process_name}</option>
-                    ) : (
-                        <>
-                            <option>업무공정을 선택해주세요</option>
-                            {userProcessOneLists?.map((userProcessOneList, index) => (
-                                <option key={index} value={index}>
-                                    {userProcessOneList.process.process_name}
-                                </option>
-                            ))}
-                        </>
-                    )}
+                    {taskStartNewOne ? (
+                        !taskStartNewOne.task_end ? (
+                            <option value="current">{taskStartNewOne?.process.process_name}</option>
+                        ) : (
+                            <>
+                                <option>업무공정을 선택해주세요</option>
+                                {userProcessOneLists?.map((userProcessOneList, index) => (
+                                    <option key={index} value={index}>
+                                        {userProcessOneList.process.process_name}
+                                    </option>
+                                ))}
+                            </>
+                        )
+                    ) : <>
+                        <option>업무공정을 선택해주세요</option>
+                        {userProcessOneLists?.map((userProcessOneList, index) => (
+                            <option key={index} value={index}>
+                                {userProcessOneList.process.process_name}
+                            </option>
+                        ))}
+                    </>}
+
                 </select>
 
                 {/* 선택된 업무 정보 */}

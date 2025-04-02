@@ -30,8 +30,7 @@ db.user = require("./user")(sequelize, Sequelize);
 db.process = require("./process")(sequelize, Sequelize);
 db.time = require("./time")(sequelize, Sequelize);
 db.userProcess = require("./userProcess")(sequelize, Sequelize);
-db.task = require("./task")(sequelize, Sequelize);
-db.work = require("./work")(sequelize, Sequelize);
+
 db.attendanceStart = require("./attendanceStart")(sequelize, Sequelize);
 db.attendanceEnd = require("./attendanceEnd")(sequelize, Sequelize);
 db.vacation = require("./vacation")(sequelize, Sequelize);
