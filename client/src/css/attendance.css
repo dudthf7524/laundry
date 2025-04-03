@@ -146,7 +146,7 @@
   flex-direction: column;
   gap: 3vh;
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   padding: 2vw;
   box-sizing: border-box;
   overflow-y: auto;

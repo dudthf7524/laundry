@@ -12,14 +12,21 @@ router.post("/register", async (req, res) => {
 });
 
 router.get("/list", async (req, res) => {
-    console.log('여기까지')
     try {
         const result = await companyAddress.companyList()
-        console.log(result)
         return res.json(result);
     } catch (error) {
         console.error(error)
     }
 });
 
+router.post("/delete", async (req, res) => {
+    console.log(req.body)
+    try {
+        const result = await companyAddress.companyDelete(req.body)
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
 module.exports = router;

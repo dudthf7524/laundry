@@ -21,7 +21,11 @@ import Vacation from './adminPages/vacation';
 import Time from './adminPages/time';
 import Taskcopy from './adminPages/task';
 import WorkAddressCopy from './adminPages/companyAddress';
-
+import Chart from './adminPages/chart';
+import ChartLate from './adminPages/chartLate';
+import BottomBar from './components/BottomBar';
+import Notice from './adminPages/notice';
+import LoginSuccess from './Pages/loginSuccess';
 
 // import { AuthProvider } from './adminContext/adminContext';
 
@@ -35,7 +39,9 @@ function App() {
       type: USER_AUTH_REQUEST,
     });
   }, []);
-  
+
+  const showBottomBar = location.pathname !== '/' && location.pathname !== '/join' && location.pathname !== '/login/sucess';
+
   return (
     <>
       {adminPage ? (
@@ -51,6 +57,10 @@ function App() {
             <Route path="time" element={<Time />} />
             <Route path="task" element={<Taskcopy />} />
             <Route path="company/address" element={<WorkAddressCopy />} />
+            <Route path="chart" element={<Chart />} />
+            <Route path="chart/late" element={<ChartLate />} />
+            <Route path="notice" element={<Notice />} />
+
           </Route>
         </Routes>
       ) : (
@@ -62,8 +72,9 @@ function App() {
             <Route path="/task" element={<Task />} />
             <Route path="/workLogs" element={<WorkLogs />} />
             <Route path="/profile" element={<Profile />} />
-
+            <Route path="/login/sucess" element={<LoginSuccess />} />
           </Routes>
+          {showBottomBar && <BottomBar />}
         </div>
       )}
 

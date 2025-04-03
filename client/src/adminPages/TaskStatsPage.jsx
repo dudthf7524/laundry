@@ -1,50 +1,27 @@
 import { useEffect, useState } from 'react';
-import { useDataManager } from '../hooks/useDataManager';
-import FilterControls from '../components copy/FilterControls';
-import TaskStatsTable from '../components copy/TaskStatsTable';
-import StatisticsChart from '../components copy/StatisticsChart';
-import { taskTypes } from '../data/mockData';
+import FilterTask from '../adminComponents/filterTask';
+import TaskStatsTable from '../adminComponents/TaskStatsTable';
 import { useDispatch, useSelector } from 'react-redux';
-import { TASKSTART_DATE_REQUEST, TASKSTART_MONTH_REQUEST, TASKSTART_YEAR_REQUEST } from '../reducers/taskStart';
+import { TASKSTART_DATE_REQUEST, TASKSTART_MONTH_REQUEST, TASKSTART_UPDATE_REQUEST, TASKSTART_YEAR_REQUEST } from '../reducers/taskStart';
 import { PROCESS_LIST_REQUEST } from '../reducers/process';
 
 const TaskStatsPage = () => {
-  const {
-    dateRangeFilter,
-    monthFilter,
-    yearFilter,
-    employeeFilter,
-    taskTypeFilter,
-    sortConfig,
-    filteredTaskRecords,
-    taskStats,
-    setDateRange,
-    // setMonth,
-    // setYear,
-    setEmployee,
-    setTaskType,
-    setSorting,
-    resetFilters,
-  } = useDataManager();
-
   const { processLists } = useSelector((state) => state.process);
-  console.log(processLists)
-
-
-  const [showChart, setShowChart] = useState(false);
-  const [timeFrame, setTimeFrame] = useState('daily');
   const [selectedTaskType, setSelectedTaskType] = useState(null);
-
-  const [filterType, setFilterType] = useState('date'); // 'date', 'month', or 'year'
+  const [taskName, setTaskName] = useState(null);
+  const [selected, setSelected] = useState(null); 
+  const [filterType, setFilterType] = useState('date'); 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [month, setMonth] = useState(null);
   const [year, setYear] = useState(null);
-  
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [editData, setEditData] = useState({}); 
+
   const handleProcessLists = async () => {
     dispatch({
       type: PROCESS_LIST_REQUEST,
-     
+
     });
   };
 
@@ -80,8 +57,7 @@ const TaskStatsPage = () => {
     });
   };
 
-console.log("사작일", startDate)
-console.log("종료일", endDate)
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -91,38 +67,52 @@ console.log("종료일", endDate)
       handleMonth();
     } else if (filterType === "year" && year) {
       handleYear();
-    } else{
+    } else {
       handleProcessLists();
     }
   }, [year, month, startDate, endDate]);
 
 
-  const handleShowChart = () => {
-    setShowChart(!showChart);
-  };
-
-  const handleTimeFrameChange = (newTimeFrame) => {
-    setTimeFrame(newTimeFrame);
-  };
-
-  const handleTaskTypeSelect = (type) => {
+  const handleTaskTypeSelect = (type, process_name) => {
     setSelectedTaskType(type === selectedTaskType ? null : type);
-    setTaskType(type === selectedTaskType ? null : type);
+    setTaskName(process_name);
   };
 
   const { taskStartFilterData } = useSelector((state) => state.taskStart);
+
+  const filteredByTaskType = selectedTaskType
+    && taskStartFilterData ? taskStartFilterData.filter(record => String(record.process?.process_code) === String(selectedTaskType))
+    : taskStartFilterData;
+
+  const handleEditClick = () => {
+    console.log(selected)
+    if (selected) {
+      setEditData({ ...selected });
+      setIsModalOpen(true);
+    } else {
+      alert("수정할 항목을 선택해주세요.");
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+    const handleSave = () => {
+      console.log("수정된 데이터:", editData);
+      dispatch({
+        type: TASKSTART_UPDATE_REQUEST,
+        data: editData,
+      });
   
-  console.log(selectedTaskType)
-
-  console.log(taskStartFilterData)
-
-
-  const filteredByTaskType = selectedTaskType 
-  && taskStartFilterData? taskStartFilterData.filter(record => String(record.process?.process_code) === String(selectedTaskType))
-  : taskStartFilterData;
-  console.log(filteredByTaskType)
-
-
+      setIsModalOpen(false);
+     
+      
+    };
   return (
     <div>
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
@@ -132,38 +122,27 @@ console.log("종료일", endDate)
             직원들의 업무 수행 기록과 효율성을 분석합니다
           </p>
         </div>
-        <div className="mt-4 sm:mt-0">
-          <button
-            onClick={handleShowChart}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            {showChart ? '차트 숨기기' : '차트 보기'}
-          </button>
-        </div>
       </div>
-
-      <FilterControls
-         setFilterType = {setFilterType}
-         setStartDate = {setStartDate}
-         setEndDate = {setEndDate}
-         setMonth = {setMonth}
-         setYear = {setYear}
+      <FilterTask
+        setFilterType={setFilterType}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        setMonth={setMonth}
+        setYear={setYear}
+        handleEditClick={handleEditClick}
       />
-
-      {/* Task type selection buttons */}
       <div className="mb-6">
         <div className="bg-white p-4 rounded-lg shadow">
           <h3 className="text-lg font-medium text-gray-900 mb-3">업무 유형 선택</h3>
           <div className="flex flex-wrap gap-2">
-            {processLists?.map((process ,index) => (
+            {processLists?.map((process, index) => (
               <button
                 key={index}
-                onClick={() => handleTaskTypeSelect(process.process_code)}
-                className={`px-3 py-1 rounded text-sm ${
-                  selectedTaskType === process.process_code
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
+                onClick={() => handleTaskTypeSelect(process.process_code, process.process_name)}
+                className={`px-3 py-1 rounded text-sm ${selectedTaskType === process.process_code
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
               >
                 {process.process_name}
               </button>
@@ -179,102 +158,49 @@ console.log("종료일", endDate)
           </div>
         </div>
       </div>
+      <div className="mb-6">
+        <TaskStatsTable
+          taskName={taskName}
+          filteredByTaskType={filteredByTaskType}
+          setSelected={setSelected}
+          selected={selected}
+        />
+      </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white w-4/5 p-6 rounded-lg shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">업무 정보 수정</h2>
 
-      {showChart && (
-        <div className="mb-6">
-          <div className="bg-white p-4 rounded-lg shadow">
-            <div className="flex mb-4 space-x-2">
-              <button
-                className={`px-3 py-1 rounded text-sm ${
-                  timeFrame === 'daily'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-                onClick={() => handleTimeFrameChange('daily')}
-              >
-                일별
-              </button>
-              <button
-                className={`px-3 py-1 rounded text-sm ${
-                  timeFrame === 'monthly'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-                onClick={() => handleTimeFrameChange('monthly')}
-              >
-                월별
-              </button>
-              <button
-                className={`px-3 py-1 rounded text-sm ${
-                  timeFrame === 'yearly'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-                onClick={() => handleTimeFrameChange('yearly')}
-              >
-                연도별
-              </button>
-            </div>
+            <label>이름</label>
+            <input type="text" readOnly name="user_name" value={editData.user_name} onChange={handleInputChange} className="border p-2 w-full mb-2" />
 
-            <StatisticsChart
-              // taskData={filteredByTaskType}
-              type="task"
-              timeFrame={timeFrame}
-            />
+            <label>직무형태</label>
+            <input type="textg" readOnly name="user_position" value={editData.user_position} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>업무 시작 날짜</label>
+            <input type="date" name="task_start_date" value={editData.task_start_date} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>시작시간</label>
+            <input type="text" name="task_start_time" value={editData.task_start_time} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>업무 종료 날짜</label>
+            <input type="date" name="task_end_date" value={editData.task_end_date || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>종료시간</label>
+            <input type="text" name="task_end_time" value={editData.task_end_time || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>개수</label>
+            <input type="number" name="total_count" value={editData.total_count || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <button onClick={ ()=> handleSave()} className="w-full bg-blue-500 text-white px-4 py-2 rounded text-center">
+              저장
+            </button>
+            <button onClick={() => setIsModalOpen(false)} className="w-full bg-gray-300 text-black px-4 py-2 rounded text-center mt-2">
+              취소
+            </button>
           </div>
         </div>
       )}
-
-      <div className="mb-6">
-        <TaskStatsTable
-          // records={filteredByTaskType}
-          onSort={setSorting}
-          sortConfig={sortConfig}
-          taskType={selectedTaskType}
-          filteredByTaskType={filteredByTaskType}
-        />
-      </div>
-
-      {/* Task type statistics summary */}
-      {/* {taskStats.taskTypeStats && taskStats.taskTypeStats.length > 0 && (
-        <div className="bg-white p-4 rounded-lg shadow mb-4">
-          <h3 className="text-lg font-medium text-gray-900 mb-3">업무 유형별 통계</h3>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    업무 유형
-                  </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    작업 수
-                  </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    총 처리 항목
-                  </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    총 소요 시간
-                  </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    항목당 평균 시간
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {taskStats.taskTypeStats.map((stat, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 whitespace-nowrap font-medium">{stat.taskType}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">{stat.records}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">{stat.totalItems}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">{stat.totalDuration}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">{stat.averageTimePerItem}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 };

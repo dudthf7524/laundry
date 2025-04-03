@@ -8,8 +8,6 @@ const Auth = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
 
-
-    // Handle search input change
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
@@ -20,6 +18,7 @@ const Auth = () => {
     }, []);
 
     const dispatch = useDispatch();
+    
     const userList = async () => {
         dispatch({
             type: USER_LIST_REQUEST,
@@ -31,8 +30,6 @@ const Auth = () => {
             type: AUTH_LIST_REQUEST,
         });
     };
-
-
 
     const { userLists } = useSelector((state) => state.user) || { userLists: [] };
 
@@ -88,14 +85,14 @@ const Auth = () => {
         }));
     };
 
-  
+
     const handleCheckboxChangeAuth = (category, value) => {
         setSelectedAuth((prev) => ({
             ...prev,
             [category]: value,
         }));
     };
-  
+
     const [selected, setSelected] = useState({
         user_code: "",
         user_name: "",
@@ -106,7 +103,7 @@ const Auth = () => {
         auth_name: "",
     });
     const authUpdate = () => {
-       
+
         const data = {
             auth_code: selectedAuth.auth_code,
             user_code: selected.user_code
@@ -177,11 +174,13 @@ const Auth = () => {
                         filteredUserLists?.map((userList, index) => (
                             <li
                                 key={index}
-                                className={`p-4 hover:bg-gray-50 ${selected.user_code === userList.user_code ? 'bg-blue-50' : ''
+                                className={`cursor-pointer p-4 hover:bg-gray-50 ${selected.user_code === userList.user_code ? 'bg-blue-50' : ''
                                     }`}
-                               
+                                onClick={() =>
+                                    handleCheckboxChange(userList)
+                                }
                             >
-                                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                                <div className="flex flex-row md:flex-row md:items-center md:justify-between">
                                     <div className="flex-1">
                                         <div className="flex items-center">
                                             <div className="bg-gray-200 rounded-full h-10 w-10 flex items-center justify-center text-gray-700 font-bold">
@@ -200,16 +199,19 @@ const Auth = () => {
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
-                                    <div className="mt-2 md:mt-0 flex items-center" >
-                                        <>
-                                            <input type='checkbox' className='h-5 w-5 cursor-pointer'
-                                                checked={selected.user_code === userList.user_code}
-                                                onChange={() =>
-                                                    handleCheckboxChange(userList)
-                                                }
+                                    <div className="flex-2">
+                                        <div className="mt-2 md:mt-0 flex items-center" >
+                                            <>
+                                                <input type='checkbox' className='h-5 w-5 cursor-pointer'
+                                                    checked={selected.user_code === userList.user_code}
+                                                    onChange={() =>
+                                                        handleCheckboxChange(userList)
+                                                    }
                                                 ></input>
-                                        </>
+                                            </>
+                                        </div>
                                     </div>
                                 </div>
                             </li>
@@ -265,17 +267,15 @@ const Auth = () => {
                             {
                                 authLists.map((authList, index) => {
                                     return (
-                                        <div className="text-sm text-gray-700" key={index}>
+                                        <div className="text-sm pb-4" key={index}>
 
                                             <input type='checkbox'
                                                 checked={selectedAuth.auth_code === authList.auth_code}
                                                 onChange={() =>
                                                     handleCheckboxChangeAuth("auth_code", authList.auth_code)
                                                 }></input>
-                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPermissionColor(authList.auth_code)}`}>{authList.auth_name}</span>
-                                            <div className="text-sm text-gray-700">
-                                                &nbsp;
-                                            </div>
+                                            <span className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPermissionColor(authList.auth_code)}`}>{authList.auth_name}</span>
+                                          
                                         </div>
                                     )
                                 })

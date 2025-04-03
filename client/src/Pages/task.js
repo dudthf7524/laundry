@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ReactComponent as Icon1 } from '../Assets/Images/star.svg';
+import { ReactComponent as StarIcon } from '../Assets/Images/star.svg';
 import '../css/task.css';
-import BottomBar from '../components/BottomBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { USER_PROCESS_ONE_LIST_REQUEST } from '../reducers/userProcess';
-import { TASK_REGISTER_REQUEST } from '../reducers/task';
-import { TASK_NEW_ONE_REQUEST } from '../reducers/task';
 import { TASKSTART_NEW_ONE_REQUEST, TASKSTART_REGISTER_REQUEST } from '../reducers/taskStart';
 import { TASKEND_REGISTER_REQUEST } from '../reducers/taskEnd';
 
@@ -21,9 +18,7 @@ const Task = () => {
     const taskOne = null;  // 데이터가 배열이라면 첫 번째 항목을 가져옵니다.
 
 
-
-    console.log(taskNewOne)
-
+    console.log(userProcessOneLists)
     console.log(taskStartNewOne)
 
     const todayDate = new Date();
@@ -31,7 +26,6 @@ const Task = () => {
 
     useEffect(() => {
         userProcessOneList();
-        taskNew()
         taskStartNew();
     }, []);
 
@@ -50,12 +44,6 @@ const Task = () => {
         });
     };
 
-    const taskNew = () => {
-        dispatch({
-            type: TASK_NEW_ONE_REQUEST,
-        });
-    };
-
     const taskStartNew = () => {
         dispatch({
             type: TASKSTART_NEW_ONE_REQUEST,
@@ -64,7 +52,6 @@ const Task = () => {
 
     const [selectedProcess, setSelectedProcess] = useState(null);
 
-    console.log(selectedProcess)
 
 
     // 선택 시 데이터 업데이트
@@ -72,7 +59,6 @@ const Task = () => {
         setStartTime(null)
         setEndTime(null)
         const selectedIndex = event.target.value;
-        console.log(selectedIndex)
         setSelectedProcess(userProcessOneLists[selectedIndex]); // 선택한 데이터 저장
     };
 
@@ -99,7 +85,6 @@ const Task = () => {
         setStartTime(getFormattedTime(new Date()));
         setEndTime(null);
         setTotalWorkTime(null);
-        console.log(selectedProcess)
         setIsModalOpen(true);
     };
 
@@ -107,10 +92,7 @@ const Task = () => {
         setStartTime(getFormattedTime(new Date()));
         setEndTime(null);
         setTotalWorkTime(null);
-        console.log(startTime)
-        console.log(selectedProcess.user_process_count)
-        console.log(selectedProcess.process.process_code)
-        console.log(formattedDate)
+
 
         const data = {
             task_count: selectedProcess.user_process_count,
@@ -139,22 +121,18 @@ const Task = () => {
     }
 
     const handleEndConfirm = () => {
-        console.log(endTime)
-        console.log(totalWorkTime)
-        console.log(totalCount)
-
         const data = {
             task_count: totalCount,
             task_end_time: endTime,
             task_end_date: formattedDate,
-            task_start_id: taskStartNewOne.task_start_id
+            task_start_id: taskStartNewOne.task_start_id,
+            hour_average: taskStartNewOne?.process.hour_average
         };
         dispatch({
             type: TASKEND_REGISTER_REQUEST,
             data: data,
         });
         setIsModalOpen(false);
-
     }
 
 
@@ -209,28 +187,37 @@ const Task = () => {
 
     return (
         <div className='task'>
-            <div></div>
+
             <div className="notice">
-                <div className="w-10 h-10 cursor-pointer"><img src={`${process.env.PUBLIC_URL}/icon/star.png`} alt="Map Icon" />
-                </div>
+                <StarIcon className="w-5 h-5" />
                 <p>안녕하세요 <span className='user_name'>{user?.user_name}</span>님! 오늘 하루도 화이팅!</p>
             </div>
 
             <div className="worker_select">
                 {/* 옵션 선택 드롭다운 */}
                 <select className='select_one' onChange={handleChange}>
-                    {!taskStartNewOne?.task_end ? (
-                        <option value="current">{taskStartNewOne?.process.process_name}</option>
-                    ) : (
-                        <>
-                            <option>업무공정을 선택해주세요</option>
-                            {userProcessOneLists?.map((userProcessOneList, index) => (
-                                <option key={index} value={index}>
-                                    {userProcessOneList.process.process_name}
-                                </option>
-                            ))}
-                        </>
-                    )}
+                    {taskStartNewOne ? (
+                        !taskStartNewOne.task_end ? (
+                            <option value="current">{taskStartNewOne?.process.process_name}</option>
+                        ) : (
+                            <>
+                                <option>업무공정을 선택해주세요</option>
+                                {userProcessOneLists?.map((userProcessOneList, index) => (
+                                    <option key={index} value={index}>
+                                        {userProcessOneList.process.process_name}
+                                    </option>
+                                ))}
+                            </>
+                        )
+                    ) : <>
+                        <option>업무공정을 선택해주세요</option>
+                        {userProcessOneLists?.map((userProcessOneList, index) => (
+                            <option key={index} value={index}>
+                                {userProcessOneList.process.process_name}
+                            </option>
+                        ))}
+                    </>}
+
                 </select>
 
                 {/* 선택된 업무 정보 */}
@@ -277,8 +264,6 @@ const Task = () => {
                 <button onClick={handleEnd} disabled={taskStartNewOne?.task_end || !taskStartNewOne}>업무종료</button>
             </div>
 
-            <div>오늘 업무 총평: 참 잘했어요</div>
-            <BottomBar />
 
             {/* 업무 시작 모달 */}
             {isModalOpen && (

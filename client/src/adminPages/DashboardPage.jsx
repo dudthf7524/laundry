@@ -1,20 +1,30 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import StatisticsChart from '../components copy/StatisticsChart';
 import { attendanceRecords, taskRecords } from '../data/mockData';
 import { getCurrentDate } from '../utils/dateUtils';
+import { useDispatch, useSelector } from 'react-redux';
+import { ATTENDANCESTART_TODAY_ADMIN_REQUEST } from '../reducers/attendanceStart';
 
 const DashboardPage = () => {
-  const { currentUser } = useAuth();
   const [todayStats, setTodayStats] = useState({
     totalEmployees: 0,
     workingNow: 0,
     completedTasks: 0,
   });
+  const dispatch = useDispatch();
 
-  // Calculate today's date
+  useEffect(() => {
+    attendanceStartTodayAdminRequest();
+}, []);
+
+  const attendanceStartTodayAdminRequest = async () => {
+    dispatch({
+      type: ATTENDANCESTART_TODAY_ADMIN_REQUEST,
+    });
+  };
+
   const today = getCurrentDate();
+  const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
     // Count employees working today
@@ -41,7 +51,7 @@ const DashboardPage = () => {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">
-          {currentUser ? `안녕하세요, ${currentUser.name}님!` : '대시보드'}
+          {user ? `안녕하세요, ${user.user_name}님!` : '대시보드'}
         </h1>
         <p className="text-gray-600 mt-1">
           {today} 기준 근태 및 업무 통계 현황입니다.
@@ -63,9 +73,7 @@ const DashboardPage = () => {
             </div>
           </div>
           <div className="mt-3">
-            <Link to="/attendance" className="text-blue-600 hover:text-blue-800 text-sm">
-              근태 관리 바로가기 →
-            </Link>
+
           </div>
         </div>
 
@@ -82,8 +90,8 @@ const DashboardPage = () => {
             </div>
           </div>
           <div className="mt-3">
-            <Link to="/attendance" className="text-green-600 hover:text-green-800 text-sm">
-              근태 상세 보기 →
+            <Link to="/admin/attendance" className="text-green-600 hover:text-green-800 text-sm">
+              근태 통계 바로가기 →
             </Link>
           </div>
         </div>
@@ -101,14 +109,15 @@ const DashboardPage = () => {
             </div>
           </div>
           <div className="mt-3">
-            <Link to="/tasks" className="text-purple-600 hover:text-purple-800 text-sm">
+            <Link to="/admin/tasks" className="text-purple-600 hover:text-purple-800 text-sm">
               업무 통계 바로가기 →
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Charts */}
+
+      {/* Charts
       <div className="grid grid-cols-1 gap-6">
         <StatisticsChart
           attendanceData={attendanceRecords.slice(0, 20)}
@@ -121,7 +130,7 @@ const DashboardPage = () => {
           type="task"
           timeFrame="daily"
         />
-      </div>
+      </div> */}
     </div>
   );
 };

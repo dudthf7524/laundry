@@ -1,4 +1,21 @@
 .env
+<<<<<<< HEAD
+=======
+laundrybackup.sql
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+>>>>>>> cys
 .env.local
 ./config/config.json
 /node_modules

@@ -2,6 +2,14 @@ import produce from "../util/produce";
 
 export const initialState = {
 
+    
+    user_check_Loading: false,
+    user_check_done: false,
+    user_check_error: null,
+
+    user_join_Loading: false,
+    user_join_done: false,
+    user_join_error: null,
 
     user_login_Loading: false,
     user_login_done: false,
@@ -25,6 +33,8 @@ export const initialState = {
 
     login: null,
 
+    loginFailure : null,
+
     user: null,
 
     userLists: null,
@@ -32,6 +42,13 @@ export const initialState = {
     userUpdates: null
 
 };
+export const USER_CHECK_REQUEST = "USER_CHECK_REQUEST";
+export const USER_CHECK_SUCCESS = "USER_CHECK_SUCCESS";
+export const USER_CHECK_FAILURE = "USER_CHECK_FAILURE";
+
+export const USER_JOIN_REQUEST = "USER_JOIN_REQUEST";
+export const USER_JOIN_SUCCESS = "USER_JOIN_SUCCESS";
+export const USER_JOIN_FAILURE = "USER_JOIN_FAILURE";
 
 export const USER_LOGIN_REQUEST = "USER_LOGIN_REQUEST";
 export const USER_LOGIN_SUCCESS = "USER_LOGIN_SUCCESS";

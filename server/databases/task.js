@@ -2,7 +2,7 @@ const { task } = require("../models");
 const { process } = require("../models");
 
 const taskRegister = async (data, user_code) => {
-    console.log(data)
+
     try {
         const result = await task.create({
             task_count: data.task_count,

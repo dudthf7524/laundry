@@ -28,6 +28,10 @@ module.exports = (sequelize) => {
             allowNull: false,
             defaultValue: "",
         },
+        hour_average: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+          },
         user_code: {
             type: DataTypes.INTEGER,
             allowNull: false,

@@ -33,6 +33,10 @@ function timeRegisterListAPI(data) {
 function* timeRegister(action) {
     try {
         const result = yield call(timeRegisterListAPI, action.data);
+        if(result.data){
+            alert('시간등록이 완료되었습니다.')
+            window.location.href = "/admin/time"
+        }
         yield put({
             type: TIME_REGISTER_SUCCESS,
             data: result.data,

@@ -3,11 +3,12 @@ import { useAuth } from '../contexts/AuthContext';
 import { employees, permissionLevels } from '../data/mockData';
 import { USER_LIST_REQUEST, USER_UPDATE_REQUEST } from '../reducers/user';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const EmployeesPage = () => {
-  const { currentUser, canEditData } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const navigate = useNavigate();
 
   const [selected, setSelected] = useState({
     user_code: "",
@@ -111,6 +112,10 @@ const EmployeesPage = () => {
     setSelectedEmployee(employee);
   };
 
+  const gotoJoin = () =>{
+    navigate('/join')
+  }
+
   // Get color for permission badge
   const getPermissionColor = (permission) => {
     switch (permission) {
@@ -139,8 +144,8 @@ const EmployeesPage = () => {
 
 
     dispatch({
-        type: USER_UPDATE_REQUEST,
-        data: data,
+      type: USER_UPDATE_REQUEST,
+      data: data,
 
     });
 
@@ -175,7 +180,7 @@ const EmployeesPage = () => {
               />
             </div>
           </div>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          <button onClick={()=>gotoJoin()} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
             + 새 직원 추가
           </button>
 
@@ -193,7 +198,7 @@ const EmployeesPage = () => {
                   }`}
 
               >
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div className="flex flex-row md:flex-row md:items-center md:justify-between">
                   <div className="flex-1">
                     <div className="flex items-center">
                       <div className="bg-gray-200 rounded-full h-10 w-10 flex items-center justify-center text-gray-700 font-bold">
@@ -213,15 +218,17 @@ const EmployeesPage = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-2 md:mt-0 flex items-center">
-                    <>
-                      <button className="text-blue-600 hover:text-blue-800 mr-3"
-                        onClick={() =>
-                          handleChange(userList)
-                        }>
-                        수정
-                      </button>
-                    </>
+                  <div className="flex-2">
+                    <div className="mt-2 md:mt-0 flex items-center">
+                      <>
+                        <button className="text-blue-600 hover:text-blue-800 mr-3"
+                          onClick={() =>
+                            handleChange(userList)
+                          }>
+                          수정
+                        </button>
+                      </>
+                    </div>
                   </div>
                 </div>
               </li>
@@ -301,37 +308,6 @@ const EmployeesPage = () => {
                   </dd>
                 </div>
               </dl>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-3">권한 상세</h3>
-              <div className="text-sm text-gray-700">
-                {permissionLevels[selected.auth_code]?.description}
-              </div>
-
-              <div className="mt-6">
-                <h4 className="text-md font-medium text-gray-900 mb-2">기능 접근 권한</h4>
-                <ul className="space-y-1 text-sm">
-                  <li className="flex items-center">
-                    <span className={permissionLevels[selected.auth_code]?.canEdit ? 'text-green-600' : 'text-red-600'}>
-                      {permissionLevels[selected.auth_code]?.canEdit ? '✓' : '✗'}
-                    </span>
-                    <span className="ml-2">데이터 수정 권한</span>
-                  </li>
-                  <li className="flex items-center">
-                    <span className={permissionLevels[selected.auth_code]?.canView === 'all' ? 'text-green-600' : 'text-red-600'}>
-                      {permissionLevels[selected.auth_code]?.canView === 'all' ? '✓' : '✗'}
-                    </span>
-                    <span className="ml-2">모든 직원 데이터 조회</span>
-                  </li>
-                  <li className="flex items-center">
-                    <span className={permissionLevels[selected.permission]?.canView !== 'self' ? 'text-green-600' : 'text-red-600'}>
-                      {permissionLevels[selected.permission]?.canView !== 'self' ? '✓' : '✗'}
-                    </span>
-                    <span className="ml-2">일부 직원 데이터 조회</span>
-                  </li>
-                </ul>
-              </div>
             </div>
           </div>
           <button onClick={() => userUpdate()} className="mt-5 pb-3 pt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">

@@ -455,7 +455,6 @@ const StatisticsChart = ({
         </LineChart>
       </ResponsiveContainer>
     );
-    
   };
 
   // Render pie chart

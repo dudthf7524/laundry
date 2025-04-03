@@ -70,9 +70,25 @@ const vacationUser = async (user_code) => {
     }
 };
 
+const vacationRegisterAdmin = async (data) => {
+    try {
+        const result = await vacation.create({
+            vacation_date: data.vacation_date,
+            vacation_content: data.vacation_content,
+            vacation_state: "승인",
+            user_code: data.user_code,
+            raw: true
+        });
+        return result;
+    } catch (error) {
+        console.error(error)
+    }
+};
+
 module.exports = {
     vacationRegister,
     vacationList,
     vacationAllow,
-    vacationUser
+    vacationUser,
+    vacationRegisterAdmin,
 };

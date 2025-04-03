@@ -1,48 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TASKSTART_TODAY_REQUEST } from '../reducers/taskStart';
 
 const UserTask = () => {
-
     const dispatch = useDispatch();
 
     useEffect(() => {
-        taskToday()
+        taskToday();
     }, []);
-    const { taskStartToday } = useSelector((state) => state.taskStart);
+
     const taskToday = () => {
         dispatch({
             type: TASKSTART_TODAY_REQUEST,
         });
     };
-    return (
-        <div className="p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">업무 기록</h2>
-            <div className="overflow-x-auto">
-                <table className="w-full table-auto border-collapse border border-gray-300">
-                    <thead>
-                        <tr className="bg-gray-100">
-                            <th className="border p-4 text-left">업무명</th>
-                            <th className="border p-4 text-left">업무 시작 날짜</th>
-                            <th className="border p-4 text-left">업무 시작 시간</th>
-                            <th className="border p-4 text-left">업무 종료 날짜</th>
-                            <th className="border p-4 text-left">업무 종료 시간</th>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {taskStartToday?.map(task => (
-                            <tr key={task.task_start_id} className="border">
-                                <td className="border p-4">{task.process.process_name}</td>
-                                <td className="border p-4">{task.task_start_date}</td>
-                                <td className="border p-4">{task.task_start_time}</td>
-                                <td className="border p-4">{task.task_end.task_end_date}</td>
-                                <td className="border p-4">{task.task_end.task_end_time}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+    const { taskStartToday } = useSelector((state) => state.taskStart);
+
+    return (
+        <div className="flex flex-col items-center w-full h-screen p-[2vw] box-border overflow-y-auto">
+            <h2 className="text-lg font-medium text-gray-900 mb-4">업무 기록</h2>
+            {taskStartToday && taskStartToday.length > 0 ? (
+                taskStartToday.map(task => (
+                    <div key={task.task_start_id} className="p-4 border rounded-lg bg-gray-50 w-full ">
+                        <h3 className="text-md font-semibold mb-2">{task.process.process_name}</h3>
+                        <p><span className="font-medium">업무 시작 날짜:</span> {task.task_start_date}</p>
+                        <p><span className="font-medium">업무 시작 시간:</span> {task.task_start_time}</p>
+                        <p><span className="font-medium">업무 종료 날짜:</span> {task.task_end?.task_end_date || "진행 중"}</p>
+                        <p><span className="font-medium">업무 종료 시간:</span> {task.task_end?.task_end_time || "진행 중"}</p>
+                    </div>
+                ))
+            ) : (
+                <p>오늘 진행중인 업무가 없습니다.</p>
+            )}
         </div>
     );
 };
