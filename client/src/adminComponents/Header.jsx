@@ -1,17 +1,19 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { LOGOUT_REQUEST } from '../reducers/logout';
 
 const Header = () => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser } = useAuth();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
-
+  const { user } = useSelector((state) => state.user);
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
-
+  const navigate = useNavigate();
   const toggleCategory = (category) => {
     setOpenCategory(openCategory === category ? null : category);
   };
@@ -19,11 +21,28 @@ const Header = () => {
 
   const navLinks = [
     {
+      category: '공지',
+      links: [
+        { name: '공지사항', path: '/admin/notice' },
+
+      ],
+
+    },
+    {
       category: '통계',
       links: [
-        { name: '근태관리', path: '/admin/attendance' },
-        { name: '업무통계', path: '/admin/tasks' },
+        { name: '근태', path: '/admin/attendance' },
+        { name: '업무', path: '/admin/tasks' },
       ],
+    },
+    {
+      category: '차트',
+      links: [
+        { name: '총 근무시간', path: '/admin/chart' },
+        { name: '지각', path: '/admin/chart/late' },
+
+      ],
+
     },
     {
       category: '관리',
@@ -44,23 +63,42 @@ const Header = () => {
         { name: '설정', path: '/admin/settings', requiredPermission: ['master'] },
       ],
     },
+
   ];
 
-  const filteredNavLinks = navLinks.map(category => ({
-    ...category,
-    links: category.links.filter(link =>
-      !link.requiredPermission || (currentUser && link.requiredPermission.includes(currentUser.permission))
-    ),
-  }));
+  const filteredNavLinks = navLinks
+    .filter(category => {
+      // "관리" or "설정" 카테고리는 user.user_code가 "A1"일 때만 표시
+      if ((category.category === '관리' || category.category === '설정') && user?.auth_code !== 'A1') {
+        return false;
+      }
+      return true;
+    })
+    .map(category => ({
+      ...category,
+      links: category.links.filter(link =>
+        !link.requiredPermission || (currentUser && link.requiredPermission.includes(currentUser.permission))
+      ),
+    }));
 
   const isActive = (path) => location.pathname === path;
+
+  const dispatch = useDispatch();
+  const logout = () => {
+    dispatch({
+      type: LOGOUT_REQUEST,
+    });
+  }
+  const client = () => {
+    navigate("/attendance")
+  }
 
   return (
     <header className="bg-blue-600 text-white shadow-md relative">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-3">
           {/* 로고 */}
-          <Link to="/" className="text-xl font-bold">
+          <Link to="/admin/dashboard" className="text-xl font-bold">
             직원관리시스템
           </Link>
 
@@ -97,22 +135,28 @@ const Header = () => {
 
           {/* 유저 정보 및 로그아웃 */}
           <div className="hidden md:flex items-center space-x-4">
-            {currentUser ? (
+            {user ? (
               <>
                 <span className="text-sm">
-                  <span className="font-medium">{currentUser.name}</span> ({currentUser.permissionDetails?.name || '일반'})
+                  <span className="font-medium">{user.user_name}</span>
                 </span>
                 <button
+                  onClick={client}
+                  className="bg-blue-700 hover:bg-blue-800 px-3 py-2 rounded text-sm"
+                >
+                  근로자
+                </button>
+                <button
                   onClick={logout}
-                  className="bg-blue-700 hover:bg-blue-800 px-3 py-1 rounded text-sm"
+                  className="bg-blue-700 hover:bg-blue-800 px-3 py-2 rounded text-sm"
                 >
                   로그아웃
                 </button>
               </>
             ) : (
               <Link
-                to="/login"
-                className="bg-blue-700 hover:bg-blue-800 px-3 py-1 rounded text-sm"
+                to="/"
+                className="bg-blue-700 hover:bg-blue-800 px-3 py-2 rounded text-sm"
               >
                 로그인
               </Link>
@@ -165,11 +209,20 @@ const Header = () => {
             ))}
 
             <div className="border-t border-blue-500 mt-2 pt-2">
-              {currentUser ? (
+              {user ? (
                 <>
-                  <div className="px-4 py-1 text-sm">
-                    <span className="font-medium">{currentUser.name}</span> ({currentUser.permissionDetails?.name || '일반'})
+                  <div className="px-4 py-2 text-sm">
+                    <span className="font-medium">{user.user_name}</span>
                   </div>
+                  <button
+                    onClick={() => {
+                      client();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm hover:bg-blue-700"
+                  >
+                    근로자
+                  </button>
                   <button
                     onClick={() => {
                       logout();
@@ -182,7 +235,7 @@ const Header = () => {
                 </>
               ) : (
                 <Link
-                  to="/login"
+                  to="/"
                   className="block px-4 py-2 hover:bg-blue-700"
                   onClick={() => setMobileMenuOpen(false)}
                 >

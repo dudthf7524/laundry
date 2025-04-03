@@ -5,6 +5,7 @@ const authMiddlewareSession = require('../middleware/authMiddlewareSession');
 
 router.post("/register", authMiddlewareSession, async (req, res) => {
     const user_code = req.user.user_code;
+    console.log(req.body)
     try {
         const result = await attendanceStart.attendanceStartRegister(req.body, user_code)
         return res.json(result);
@@ -28,13 +29,8 @@ router.get("/new/one", authMiddlewareSession, async (req, res) => {
 
 
 router.post("/date", async (req, res) => {
-    console.log(req.body)
-
     try {
         const result = await attendanceStart.attendanceStartDate(req.body)
-        console.log("result")
-        console.log(result)
-        console.log("result")
         return res.json(result);
     } catch (error) {
         console.error(error)
@@ -42,13 +38,8 @@ router.post("/date", async (req, res) => {
 });
 
 router.post("/month", async (req, res) => {
-    console.log(req.body)
-
     try {
         const result = await attendanceStart.attendanceStartMonth(req.body)
-        console.log("result")
-        console.log(result)
-        console.log("result")
         return res.json(result);
     } catch (error) {
         console.error(error)
@@ -56,7 +47,6 @@ router.post("/month", async (req, res) => {
 });
 
 router.post("/year", async (req, res) => {
-    console.log(req.body)
     try {
         const result = await attendanceStart.attendanceStartYear(req.body)
         return res.json(result);
@@ -66,11 +56,19 @@ router.post("/year", async (req, res) => {
 });
 
 router.get("/today", authMiddlewareSession, async (req, res) => {
-  
     const user_code = req.user.user_code;
-
     try {
         const result = await attendanceStart.attendanceToday(user_code)
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
+
+router.post("/update", async (req, res) => {
+    console.log(req.body)
+    try {
+        const result = await attendanceStart.attendanceUpdate(req.body)
         return res.json(result);
     } catch (error) {
         console.error(error)

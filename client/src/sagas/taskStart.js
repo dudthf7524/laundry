@@ -13,11 +13,11 @@ import {
     TASKSTART_DATE_REQUEST,
     TASKSTART_DATE_SUCCESS,
     TASKSTART_DATE_FAILURE,
-    
+
     TASKSTART_MONTH_REQUEST,
     TASKSTART_MONTH_SUCCESS,
     TASKSTART_MONTH_FAILURE,
-    
+
     TASKSTART_YEAR_REQUEST,
     TASKSTART_YEAR_SUCCESS,
     TASKSTART_YEAR_FAILURE,
@@ -25,6 +25,10 @@ import {
     TASKSTART_TODAY_REQUEST,
     TASKSTART_TODAY_SUCCESS,
     TASKSTART_TODAY_FAILURE,
+
+    TASKSTART_UPDATE_REQUEST,
+    TASKSTART_UPDATE_SUCCESS,
+    TASKSTART_UPDATE_FAILURE,
 
 } from "../reducers/taskStart";
 
@@ -99,12 +103,12 @@ function taskStartDateAPI(data) {
 function* taskStartDate(action) {
     try {
         const result = yield call(taskStartDateAPI, action.data);
-       
+
         yield put({
             type: TASKSTART_DATE_SUCCESS,
             data: result.data,
         });
-       
+
     } catch (err) {
         console.error(err);
         yield put({
@@ -126,12 +130,12 @@ function taskStartMonthAPI(data) {
 function* taskStartMonth(action) {
     try {
         const result = yield call(taskStartMonthAPI, action.data);
-       
+
         yield put({
             type: TASKSTART_MONTH_SUCCESS,
             data: result.data,
         });
-        
+
     } catch (err) {
         console.error(err);
         yield put({
@@ -153,12 +157,12 @@ function taskStartYearAPI(data) {
 function* taskStartYear(action) {
     try {
         const result = yield call(taskStartYearAPI, action.data);
-       
+
         yield put({
             type: TASKSTART_YEAR_SUCCESS,
             data: result.data,
         });
-        
+
     } catch (err) {
         console.error(err);
         yield put({
@@ -189,7 +193,7 @@ function* taskStartToday() {
             type: TASKSTART_TODAY_SUCCESS,
             data: result.data,
         });
-        
+
     } catch (err) {
         console.error(err);
         yield put({
@@ -199,6 +203,45 @@ function* taskStartToday() {
     }
 }
 
+
+function* watchTaskStartUpdate() {
+    yield takeLatest(TASKSTART_UPDATE_REQUEST, taskStartUpdate);
+}
+
+function taskStartUpdateAPI(data) {
+
+    return axios.post("/taskStart/update", data);
+}
+
+function* taskStartUpdate(action) {
+    try {
+        const result = yield call(taskStartUpdateAPI, action.data);
+        if (result.data) {
+            alert('업무 정보가 수정되었습니다.')
+            window.location.href = "/admin/tasks";
+        }
+        yield put({
+            type: TASKSTART_UPDATE_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: TASKSTART_UPDATE_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
 export default function* taskStartSaga() {
-    yield all([fork(watchTaskStartRegister), fork(watchTaskStartNewOne), fork(watchTaskStartDate), fork(watchTaskStartMonth), fork(watchTaskStartYear), fork(watchTaskStartToday)]);
+    yield all([
+        fork(watchTaskStartRegister),
+        fork(watchTaskStartNewOne),
+        fork(watchTaskStartDate),
+        fork(watchTaskStartMonth),
+        fork(watchTaskStartYear),
+        fork(watchTaskStartToday),
+        fork(watchTaskStartUpdate),
+    ]);
 }

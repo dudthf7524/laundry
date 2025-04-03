@@ -11,6 +11,10 @@ import {
     COMPANYADDRESS_LIST_SUCCESS,
     COMPANYADDRESS_LIST_FAILURE,
 
+    COMPANYADDRESS_DELETE_REQUEST,
+    COMPANYADDRESS_DELETE_SUCCESS,
+    COMPANYADDRESS_DELETE_FAILURE,
+
 } from "../reducers/companyAddress";
 
 function* watchCompanyRegister() {
@@ -25,6 +29,10 @@ function companyRegisterAPI(data) {
 function* companyRegister(action) {
     try {
         const result = yield call(companyRegisterAPI, action.data);
+        if(result.data === -1){
+            alert('이미 근무지가 등록되어 있습니다.')
+            return;
+        }
         if(result){
             alert('근무지가 등록되었습니다.')
             window.location.href = "/admin/company/address"
@@ -70,8 +78,38 @@ function* companyList(action) {
     }
 }
 
+function* watchCompanyDelete() {
+    yield takeLatest(COMPANYADDRESS_DELETE_REQUEST, companyDelete);
+}
+
+function companyDeleteAPI(data) {
+   
+    return axios.post("/companyAddress/delete", data);
+}
+
+function* companyDelete(action) {
+    try {
+        const result = yield call(companyDeleteAPI, action.data);
+       
+        yield put({
+            type: COMPANYADDRESS_DELETE_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) {
+            alert('근무지가 삭제되었습니다.')
+            window.location.href = "/admin/settings"
+         }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: COMPANYADDRESS_DELETE_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
 
 
 export default function* companyAddressSaga() {
-    yield all([fork(watchCompanyRegister), fork(watchCompanyList),]);
+    yield all([fork(watchCompanyRegister), fork(watchCompanyList), fork(watchCompanyDelete),]);
 }

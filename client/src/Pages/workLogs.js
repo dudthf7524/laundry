@@ -17,11 +17,27 @@ const WorkLogs = () => {
     ];
     const reasonInputRef = useRef(null);
     const { vacationUser } = useSelector((state) => state.vacation);
-    console.log(vacationUser)
 
+
+
+
+    var aaa;
+
+    if (vacationUser) {
+        aaa = vacationUser
+            .filter((v) => v.vacation_date === selectedDate)
+            .map((v) => ({
+                vacation_date: v.vacation_date,
+                vacation_state: v.vacation_state,
+                vacation_content: v.vacation_content,  // 상태도 포함
+            })); // 전체 날짜 문자열 저장
+    }
+
+    console.log(aaa)
 
     var vacationDays;
     var vacationAllows;
+
     if (vacationUser) {
         vacationDays = vacationUser
             .filter((v) => v.vacation_state === "신청")
@@ -37,6 +53,7 @@ const WorkLogs = () => {
     const changeMonth = (offset) => {
         setDate((prev) => {
             const newDate = new Date(prev);
+            newDate.setDate(1); // 날짜를 1일로 설정하여 월 변경 시 오류 방지
             newDate.setMonth(newDate.getMonth() + offset);
             return newDate;
         });
@@ -97,9 +114,6 @@ const WorkLogs = () => {
         });
     };
 
-
-
-
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -113,8 +127,6 @@ const WorkLogs = () => {
     };
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(selectedDate)
-        console.log(reason)
 
         const data = {
             vacation_date: selectedDate,
@@ -125,17 +137,14 @@ const WorkLogs = () => {
             type: VACATION_REGISTER_REQUEST,
             data: data
         });
-        // setIsSubmitting(true);
-        // setTimeout(() => {
-        //     alert(`휴가 신청 완료: ${selectedDate} - 사유: ${reason}`);
-        //     setIsSubmitting(false);
-        //     setReason("");
-        // }, 1000);
     };
-    {/* <div className='w-full h-[80%] overflow-y-auto'></div> */ }
+
+
+
+
     return (
-        <div className='w-full flex justify-center items-center overflow-y-auto'>
-            <div className='w-[90%]  h-[80%] overflow-y-auto'>
+        <div className="w-full flex flex-col justify-center items-center overflow-y-auto h-full">
+            <div className='w-[90%] h-full'>
                 <div className="mb-6 p-4 w-full">
                     <h1 className="text-3xl font-bold text-gray-900">휴가 신청</h1>
                     <p className="text-gray-700 mt-1 text-lg">날짜를 선택하고 휴가를 신청하세요</p>
@@ -168,7 +177,8 @@ const WorkLogs = () => {
                         🔴 : 휴가 ⭕ : 휴가 신청
                     </div>
                 </div>
-                {selectedDate && (
+
+                {aaa?.length === 0 ? (
                     <div className="p-4 mt-4 bg-gray-100 rounded-lg shadow w-full">
                         <h2 className="text-xl font-semibold">휴가 신청</h2>
                         <p className="text-gray-800 mt-2 text-lg">선택한 날짜: {selectedDate}</p>
@@ -186,9 +196,22 @@ const WorkLogs = () => {
                             </button>
                         </form>
                     </div>
+
+                ) : (
+                    <div>
+                        {
+                            aaa?.map((aa, index) => {
+                                return (
+                                    <div key={index}>{aa.vacation_date} {aa.vacation_state} {aa.vacation_content}</div>
+
+                                )
+
+                            })
+                        }
+                    </div>
                 )}
             </div>
-            <BottomBar />
+
         </div>
     );
 };

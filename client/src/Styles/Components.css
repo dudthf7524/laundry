@@ -1,10 +1,9 @@
 .bottom-bar {
-    position: absolute;
     bottom: 0;
     width: 100%;
     display: flex;
     justify-content: space-evenly;
-    background-color: #f5f5f5;
+    background-color: white;
     padding: 10px 0;
     border-top: #aaaaaa 1px solid;
 }
@@ -13,7 +12,8 @@
     flex: 1;
     text-align: center;
     align-items: center;
-    text-decoration: none; /* 링크 밑줄 제거 */
+    text-decoration: none;
+    /* 링크 밑줄 제거 */
     padding: 10px;
     font-size: 16px;
     color: #aaaaaa;
@@ -23,7 +23,8 @@
 }
 
 .menu-icon {
-    fill: #aaaaaa; /* SVG 기본 색상 */
+    fill: #aaaaaa;
+    /* SVG 기본 색상 */
     width: 24px;
     height: 24px;
     margin-bottom: 4px;
@@ -31,9 +32,11 @@
 
 /* 활성화된 버튼 스타일 */
 .bottom-button.active {
-    color: #383838; /* 텍스트 색 변경 */
+    color: #383838;
+    /* 텍스트 색 변경 */
 }
 
 .menu-icon.active-icon {
-    fill: #383838; /* SVG 색 변경 */
+    fill: #383838;
+    /* SVG 색 변경 */
 }

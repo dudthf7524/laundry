@@ -1,45 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useDataManager } from '../hooks/useDataManager';
-
-import FilterControls from '../components copy/FilterControls';
-import AttendanceTable from '../components copy/AttendanceTable';
-import StatisticsChart from '../components copy/StatisticsChart';
+import FilterControls from '../adminComponents/FilterControls';
+import AttendanceTable from '../adminComponents/AttendanceTable';
 import { useDispatch, useSelector } from 'react-redux';
-
-
-
-import Chart from './chart';
-import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
+import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCESTART_UPDATE_REQUEST, ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
 
 const AttendancePage = () => {
 
-  const {
-    dateRangeFilter,
-    monthFilter,
-    yearFilter,
-    employeeFilter,
-    roleTypeFilter,
-    sortConfig,
-    filteredAttendanceRecords,
-    attendanceStats,
-    setDateRange,
-    // setMonth,
-    // setYear,
-    setEmployee,
-    setRoleType,
-    setSorting,
-    resetFilters,
-  } = useDataManager();
-
-
-  const [showChart, setShowChart] = useState(false);
-  const [timeFrame, setTimeFrame] = useState('daily');
-
-  const [filterType, setFilterType] = useState('date'); // 'date', 'month', or 'year'
+  const [filterType, setFilterType] = useState('date'); 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [month, setMonth] = useState(null);
   const [year, setYear] = useState(null);
+  const [selected, setSelected] = useState(null); 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [editData, setEditData] = useState({}); 
 
   const vacationDate = async () => {
     const data = {
@@ -74,6 +48,7 @@ const AttendancePage = () => {
   };
 
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (filterType === "date" && startDate && endDate) {
       vacationDate();
@@ -84,16 +59,40 @@ const AttendancePage = () => {
     }
   }, [year, month, startDate, endDate]);
 
-  const handleShowChart = () => {
-    setShowChart(!showChart);
+
+  const handleEditClick = () => {
+    console.log(selected)
+    if (selected) {
+      setEditData({ ...selected });
+      setIsModalOpen(true);
+    } else {
+      alert("수정할 항목을 선택해주세요.");
+    }
   };
 
-  const handleTimeFrameChange = (newTimeFrame) => {
-    setTimeFrame(newTimeFrame);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
+
+  const handleSave = () => {
+    console.log("수정된 데이터:", editData);
+    dispatch({
+      type: ATTENDANCESTART_UPDATE_REQUEST,
+      data: editData,
+    });
+
+    setIsModalOpen(false);
+   
+    
+  };
+
   const { attendanceStartYear } = useSelector((state) => state.attendanceStart);
 
-  const attendanceStartYearSum = attendanceStartYear? attendanceStartYear.length : 0;
+  const attendanceStartYearSum = attendanceStartYear ? attendanceStartYear.length : 0;
 
   const countNullEnd = Array.isArray(attendanceStartYear)
     ? attendanceStartYear.filter(asy => asy.attendance_end === null).length
@@ -103,83 +102,68 @@ const AttendancePage = () => {
     ? attendanceStartYear.filter(asy => asy.attendance_start_state === "지각").length
     : 0;
 
-    return (
+  return (
     <div>
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">근태 관리</h1>
+          <h1 className="text-2xl font-bold text-gray-900">근태</h1>
           <p className="text-gray-600 mt-1">
             직원들의 근태 기록을 조회하고 관리합니다
           </p>
         </div>
-        <div className="mt-4 sm:mt-0">
-          <button
-            onClick={handleShowChart}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            {showChart ? '차트 숨기기' : '차트 보기'}
-          </button>
-        </div>
       </div>
 
       <FilterControls
-      setFilterType = {setFilterType}
-      setStartDate = {setStartDate}
-      setEndDate = {setEndDate}
-      setMonth = {setMonth}
-      setYear = {setYear}
+        setFilterType={setFilterType}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        setMonth={setMonth}
+        setYear={setYear}
+        handleEditClick={handleEditClick}
       />
 
+      <div className="mb-6">
+        <AttendanceTable
+          setSelected={setSelected}
+          selected={selected}
+        />
+      </div>
 
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white w-4/5 p-6 rounded-lg shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">근태 정보 수정</h2>
 
-      {showChart && (
-        <div className="mb-6">
-          <div className="bg-white p-4 rounded-lg shadow">
-            <div className="flex mb-4 space-x-2">
-              <button
-                className={`px-3 py-1 rounded text-sm ${timeFrame === 'daily'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                onClick={() => handleTimeFrameChange('daily')}
-              >
-                일별
-              </button>
-              <button
-                className={`px-3 py-1 rounded text-sm ${timeFrame === 'monthly'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                onClick={() => handleTimeFrameChange('monthly')}
-              >
-                월별
-              </button>
-              <button
-                className={`px-3 py-1 rounded text-sm ${timeFrame === 'yearly'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                onClick={() => handleTimeFrameChange('yearly')}
-              >
-                연도별
-              </button>
-            </div>
+            <label>이름</label>
+            <input type="text" readOnly name="attendance_start_date" value={editData.user_name} onChange={handleInputChange} className="border p-2 w-full mb-2" />
 
-            <StatisticsChart
-              attendanceData={filteredAttendanceRecords}
-              type="attendance"
-              timeFrame={timeFrame}
-            />
+            <label>직무형태</label>
+            <input type="textg" readOnly name="attendance_start_date" value={editData.user_position} onChange={handleInputChange} className="border p-2 w-full mb-2" />
 
-            <Chart/>
+            <label>출근날짜</label>
+            <input type="date" name="attendance_start_date" value={editData.attendance_start_date} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>출근시간</label>
+            <input type="text" name="attendance_start_time" value={editData.attendance_start_time} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>출근상태</label>
+            <input type="text" name="attendance_start_state" value={editData.attendance_start_state} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>퇴근날짜</label>
+            <input type="date" name="attendance_end_date" value={editData.attendance_end_date || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>퇴근시간</label>
+            <input type="text" name="attendance_end_time" value={editData.attendance_end_time || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <button onClick={ ()=> handleSave()} className="w-full bg-blue-500 text-white px-4 py-2 rounded text-center">
+              저장
+            </button>
+            <button onClick={() => setIsModalOpen(false)} className="w-full bg-gray-300 text-black px-4 py-2 rounded text-center mt-2">
+              취소
+            </button>
           </div>
         </div>
       )}
-
-      <div className="mb-6">
-        <AttendanceTable />
-      </div>
-
 
       <div className="bg-white p-4 rounded-lg shadow mb-4">
         <h3 className="text-lg font-medium text-gray-900 mb-3">근태 요약</h3>

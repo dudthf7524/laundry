@@ -24,6 +24,11 @@ module.exports = (sequelize) => {
             allowNull: false,
             defaultValue: "",
         },
+        end_time: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: "",
+        },
         user_code: {
             type: DataTypes.INTEGER,
             allowNull: false,

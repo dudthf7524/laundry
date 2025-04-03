@@ -27,6 +27,14 @@ import {
     ATTENDANCESTART_TODAY_SUCCESS,
     ATTENDANCESTART_TODAY_FAILURE,
 
+    ATTENDANCESTART_TODAY_ADMIN_REQUEST,
+    ATTENDANCESTART_TODAY_ADMIN_SUCCESS,
+    ATTENDANCESTART_TODAY_ADMIN_FAILURE,
+
+    ATTENDANCESTART_UPDATE_REQUEST,
+    ATTENDANCESTART_UPDATE_SUCCESS,
+    ATTENDANCESTART_UPDATE_FAILURE,
+
 } from "../reducers/attendanceStart";
 
 function* watchAttendanceStartRegister() {
@@ -206,7 +214,66 @@ function* attendanceStartToday() {
     }
 }
 
+function* watchAttendanceStartTodayAdmin() {
+    yield takeLatest(ATTENDANCESTART_TODAY_ADMIN_REQUEST, attendanceStartTodayAdmin);
+}
 
+function attendanceStartTodayAdminAPI() {
+
+    return axios.get("/attendanceStart/today");
+}
+
+function* attendanceStartTodayAdmin() {
+    try {
+        const result = yield call(attendanceStartTodayAdminAPI, );
+        if (result.data === "common") {
+            window.location.href = "/";
+            return;
+        }
+        yield put({
+            type: ATTENDANCESTART_TODAY_ADMIN_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: ATTENDANCESTART_TODAY_ADMIN_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
+function* watchAttendanceStartUpdate() {
+    yield takeLatest(ATTENDANCESTART_UPDATE_REQUEST, attendanceStartUpdate);
+}
+
+function attendanceStartUpdateAPI(data) {
+
+    return axios.post("/attendanceStart/update", data);
+}
+
+function* attendanceStartUpdate(action) {
+    try {
+        const result = yield call(attendanceStartUpdateAPI, action.data );
+        if (result.data) {
+           alert('수정이 완료되었습니다.')
+           window.location.href = "/admin/attendance";
+           
+        }
+        yield put({
+            type: ATTENDANCESTART_UPDATE_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: ATTENDANCESTART_UPDATE_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
 
 
 
@@ -217,6 +284,8 @@ export default function* attendanceStartSaga() {
         fork(watchAttendanceStartYear),
         fork(watchAttendanceStartMonth),
         fork(watchAttendanceStartDate),
-        fork(watchAttendanceStartToday)
+        fork(watchAttendanceStartToday),
+        fork(watchAttendanceStartUpdate),
+        fork(watchAttendanceStartTodayAdmin),
     ]);
 }

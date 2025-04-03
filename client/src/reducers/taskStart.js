@@ -26,6 +26,10 @@ export const initialState = {
     taskStart_today_done: false,
     taskStart_today_error: null,
 
+    taskStart_update_Loading: false,
+    taskStart_update_done: false,
+    taskStart_update_error: null,
+
     taskStartNewOne: null,
 
     taskStartFilterData: null,
@@ -56,6 +60,10 @@ export const TASKSTART_YEAR_FAILURE = "TASKSTART_YEAR_FAILURE";
 export const TASKSTART_TODAY_REQUEST = "TASKSTART_TODAY_REQUEST";
 export const TASKSTART_TODAY_SUCCESS = "TASKSTART_TODAY_SUCCESS";
 export const TASKSTART_TODAY_FAILURE = "TASKSTART_TODAY_FAILURE";
+
+export const TASKSTART_UPDATE_REQUEST = "TASKSTART_UPDATE_REQUEST";
+export const TASKSTART_UPDATE_SUCCESS = "TASKSTART_UPDATE_SUCCESS";
+export const TASKSTART_UPDATE_FAILURE = "TASKSTART_UPDATE_FAILURE";
 
 const reducer = (state = initialState, action) => {
     return produce(state, (draft) => {
@@ -142,6 +150,19 @@ const reducer = (state = initialState, action) => {
             case TASKSTART_TODAY_FAILURE:
                 draft.taskStart_today_Loading = false;
                 draft.taskStart_today_error = action.error;
+                break;
+            case TASKSTART_UPDATE_REQUEST:
+                draft.taskStart_update_Loading = true;
+                draft.taskStart_update_error = null;
+                draft.taskStart_update_done = false;
+                break;
+            case TASKSTART_UPDATE_SUCCESS:
+                draft.taskStart_update_Loading = false;
+                draft.taskStart_update_done = true;
+                break;
+            case TASKSTART_UPDATE_FAILURE:
+                draft.taskStart_update_Loading = false;
+                draft.taskStart_update_error = action.error;
                 break;
             default:
                 return state;

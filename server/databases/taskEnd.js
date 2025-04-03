@@ -2,14 +2,13 @@ const { taskEnd } = require("../models");
 const { process } = require("../models");
 
 const taskEndRegister = async (data, user_code) => {
-    console.log(data)
-    console.log(user_code)
     try {
         const result = await taskEnd.create({
             total_count: data.task_count,
             task_end_date: data.task_end_date,
             task_end_time: data.task_end_time,
             user_code: user_code,
+            hour_average :data.hour_average,
             task_start_id: data.task_start_id,
             task_end_state: '정상',
             raw: true

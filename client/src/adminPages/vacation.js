@@ -3,8 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { employees, permissionLevels } from "../data/mockData";
 import { VACATION_ALLOW_REQUEST, VACATION_LIST_REQUEST } from "../reducers/vacation";
+import VacationList from "./vacationList";
+import VacationUser from "./vacationUser";
+import VacationCompany from "./vacationCompany";
 
-const SelectDatePage2 = () => {
+const Vacation = () => {
   const [date, setDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,6 +17,7 @@ const SelectDatePage2 = () => {
 
   const { user } = useSelector((state) => state.user);
   const { vacationLists = [] } = useSelector((state) => state.vacation);
+  const [activeTab, setActiveTab] = useState('vacationList');
 
   console.log(vacationLists)
   useEffect(() => {
@@ -22,6 +26,11 @@ const SelectDatePage2 = () => {
 
   var vacationDays;
   var vacationAllows;
+
+
+
+  console.log(vacationDays)
+  console.log(vacationAllows)
   if (vacationLists) {
     vacationDays = vacationLists
       .filter((v) => v.vacation_state === "신청")
@@ -37,23 +46,27 @@ const SelectDatePage2 = () => {
 
   const changeMonth = (offset) => {
     setDate((prev) => {
-        const newDate = new Date(prev);
-        newDate.setMonth(newDate.getMonth() + offset);
-        return newDate;
+      const newDate = new Date(prev);
+      newDate.setMonth(newDate.getMonth() + offset);
+      return newDate;
     });
-};
-const goToday = () => {
+  };
+  const goToday = () => {
     setDate(new Date());
-};
+  };
   // 신청된 휴가 날짜 목록 추출
 
 
   // 선택한 날짜의 휴가 정보
 
-  
+
   const selectedVacation = Array.isArray(vacationLists)
-  ? vacationLists.find((v) => v.vacation_state === "신청" && v.vacation_date === selectedDate)
-  : null;
+    ? vacationLists.find((v) => v.vacation_state === "신청" && v.vacation_date === selectedDate)
+    : null;
+
+  const selectedVacationComplete = Array.isArray(vacationLists)
+    ? vacationLists.find((v) => v.vacation_state === "승인" && v.vacation_date === selectedDate)
+    : null;
 
   // 날짜 클릭 시
   const handleDateClick = (year, month, day) => {
@@ -125,53 +138,64 @@ const goToday = () => {
         <p className="text-gray-600 mt-1">휴가 정보를 조회하고 관리합니다</p>
       </div>
 
-      {/* 캘린더 */}
-      <div className="bg-white p-4 rounded-lg shadow mb-6">
-        <div className="flex justify-between items-center py-4">
-          <div className="flex justify-center items-center py-4 relative mb-2">
-            <button className="pr-10 nav-btn go-prev text-2xl font-bold" onClick={() => changeMonth(-1)}>
-              &lt;
-            </button>
-            <div className="text-2xl font-semibold cursor-pointer" onClick={goToday}>
-              {`${date.getFullYear()}년 ${date.getMonth() + 1}월`}
-            </div>
-            <button className="pl-10 nav-btn go-next text-2xl font-bold" onClick={() => changeMonth(1)}>
-              &gt;
-            </button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-7 gap-2 text-center text-lg font-semibold">
-          <div className="text-red-500">일</div>
-          <div>월</div>
-          <div>화</div>
-          <div>수</div>
-          <div>목</div>
-          <div>금</div>
-          <div className="text-blue-500">토</div>
-        </div>
-        <div className="grid grid-cols-7 gap-2">
-          {renderCalendar()}
-        </div>
-        <div className="">
-          🔴 : 휴가 ⭕ : 휴가 신청
-        </div>
+    
+      <div className="bg-white shadow overflow-hidden">
+        <nav className="flex border-b border-gray-200">
+          <button
+            className={`px-6 py-4 text-sm font-medium ${activeTab === 'vacationList'
+              ? 'border-b-2 border-blue-500 text-blue-600'
+              : 'text-gray-600 hover:text-gray-800 hover:border-gray-300'
+              }`}
+            onClick={() => setActiveTab('vacationList')}
+          >
+            조회/승인
+          </button>
+          <button
+            className={`px-6 py-4 text-sm font-medium ${activeTab === 'vacationUser'
+              ? 'border-b-2 border-blue-500 text-blue-600'
+              : 'text-gray-600 hover:text-gray-800 hover:border-gray-300'
+              }`}
+            onClick={() => setActiveTab('vacationUser')}
+          >
+            휴가 설정(직원)
+          </button>
+          <button
+            className={`px-6 py-4 text-sm font-medium ${activeTab === 'vacationCompany'
+              ? 'border-b-2 border-blue-500 text-blue-600'
+              : 'text-gray-600 hover:text-gray-800 hover:border-gray-300'
+              }`}
+            onClick={() => setActiveTab('vacationCompany')}
+          >
+            휴무일 설정(회사)
+          </button>
+        </nav>
       </div>
-
       {/* 선택된 날짜 정보 */}
-      {selectedVacation && (
-        <div className="bg-white p-4 rounded-lg shadow mb-6">
-          <h2 className="text-xl font-semibold">휴가 신청 정보</h2>
-          <p className="mt-2">날짜: {selectedVacation?.vacation_date}</p>
-          <p className="mt-1">사유: {selectedVacation?.vacation_content}</p>
-          <div className="mt-4 flex space-x-2">
-            <button onClick={vacationAllow} className="px-4 py-2 bg-green-500 text-white rounded">승인</button>
-            {/* <button className="px-4 py-2 bg-red-500 text-white rounded">거절</button> */}
-          </div>
+
+
+      {activeTab === 'vacationList' && (
+        <div className="space-y-6">
+          <VacationList />
         </div>
+
       )}
+
+      {activeTab === 'vacationUser' && (
+        <div className="space-y-6">
+          <VacationUser />
+        </div>
+
+      )}
+
+      {activeTab === 'vacationCompany' && (
+        <div className="space-y-6">
+          <VacationCompany />
+        </div>
+
+      )}
+
     </div>
   );
 };
 
-export default SelectDatePage2;
+export default Vacation;

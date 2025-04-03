@@ -18,10 +18,15 @@ export const initialState = {
     vacation_user_done: false,
     vacation_user_error: null,
 
+    vacation_register_admin_Loading: false,
+    vacation_register_admin_done: false,
+    vacation_register_admin_error: null,
+
     vacationLists: null,
     vacationUser: null,
 
 };
+
 export const VACATION_REGISTER_REQUEST = "VACATION_REGISTER_REQUEST";
 export const VACATION_REGISTER_SUCCESS = "VACATION_REGISTER_SUCCESS";
 export const VACATION_REGISTER_FAILURE = "VACATION_REGISTER_FAILURE";
@@ -37,6 +42,11 @@ export const VACATION_ALLOW_FAILURE = "VACATION_ALLOW_FAILURE";
 export const VACATION_USER_REQUEST = "VACATION_USER_REQUEST";
 export const VACATION_USER_SUCCESS = "VACATION_USER_SUCCESS";
 export const VACATION_USER_FAILURE = "VACATION_USER_FAILURE";
+
+export const VACATION_REGISTER_ADMIN_REQUEST = "VACATION_REGISTER_ADMIN_REQUEST";
+export const VACATION_REGISTER_ADMIN_SUCCESS = "VACATION_REGISTER_ADMIN_SUCCESS";
+export const VACATION_REGISTER_ADMIN_FAILURE = "VACATION_REGISTER_ADMIN_FAILURE";
+
 
 
 const reducer = (state = initialState, action) => {
@@ -96,6 +106,19 @@ const reducer = (state = initialState, action) => {
             case VACATION_USER_FAILURE:
                 draft.vacation_user_Loading = false;
                 draft.vacation_user_error = action.error;
+                break;
+            case VACATION_REGISTER_ADMIN_REQUEST:
+                draft.vacation_register_admin_Loading = true;
+                draft.vacation_register_admin_error = null;
+                draft.vacation_register_admin_done = false;
+                break;
+            case VACATION_REGISTER_ADMIN_SUCCESS:
+                draft.vacation_register_admin_Loading = false;
+                draft.vacation_register_admin_done = true;
+                break;
+            case VACATION_REGISTER_ADMIN_FAILURE:
+                draft.vacation_register_admin_Loading = false;
+                draft.vacation_register_admin_error = action.error;
                 break;
             default:
                 return state;

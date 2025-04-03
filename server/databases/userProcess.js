@@ -3,23 +3,29 @@ const { userProcess } = require("../models");
 const { process } = require("../models");
 
 const userProcessRegister = async (data) => {
-    
     try {
-        const result = await userProcess.create({
-            user_code: data.user_code,
-            user_process_code: data.user_process_code,
-            user_process_count: data.user_process_count,
-            raw: true
+        const result1 = await userProcess.findOne({
+            attributes: ["user_process_code"],
+            where: { user_code: data.user_code, user_process_code: data.user_process_code },
         });
-        return result;
+
+        if (result1) {
+            return -1;
+        } else {
+            const result = await userProcess.create({
+                user_code: data.user_code,
+                user_process_code: data.user_process_code,
+                user_process_count: data.user_process_count,
+                raw: true
+            });
+            return result;
+        }
     } catch (error) {
         console.error(error)
     }
-
 };
 
 const userProcessList = async () => {
-   
     try {
         const result = await userProcess.findAll({
             attributes: ['user_process_id', 'user_process_count', 'user_code'],
@@ -31,7 +37,7 @@ const userProcessList = async () => {
                 },
             ],
         });
-     
+
         return result;
 
     } catch (error) {
@@ -57,7 +63,6 @@ const userProcessOneList = async (user_code) => {
     } catch (error) {
         console.error(error)
     }
-
 };
 
 const userProcessDelete = async (data) => {
@@ -69,7 +74,6 @@ const userProcessDelete = async (data) => {
     } catch (error) {
         console.error(error)
     }
-
 };
 
 module.exports = {
