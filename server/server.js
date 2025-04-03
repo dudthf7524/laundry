@@ -11,7 +11,7 @@ const passport = require("passport");
 const session = require("express-session");
 
 const app = express();
-const port = 8081;
+const port = 80;
 
 const userRoutes = require('./routes/user');
 const authRoutes = require('./routes/auth');
