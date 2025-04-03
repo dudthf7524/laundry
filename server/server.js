@@ -59,12 +59,26 @@ app.use(cookieParser());
 sequelize
   .sync({ force: false })
   .then(async () => {
-    await authData();
-    await processData();
-    await noticeData();
-    await userData();
     console.log("✅ 데이터베이스 연결 성공");
 
+    // 데이터를 순차적으로 삽입하여 충돌 방지
+    try {
+      await authData();
+      console.log("✅ authData 삽입 완료");
+
+      await processData();
+      console.log("✅ processData 삽입 완료");
+
+      await noticeData();
+      console.log("✅ noticeData 삽입 완료");
+
+      await userData();
+      console.log("✅ userData 삽입 완료");
+    } catch (error) {
+      console.error("❌ 초기 데이터 삽입 실패:", error);
+    }
+
+    // 서버 실행
     app.listen(port, () => {
       console.log(`🚀 http://localhost:${port} 에서 서버 실행중`);
     });
