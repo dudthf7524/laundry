@@ -125,7 +125,7 @@ const attendanceStartMonth = async (data) => {
                 {
                     model: attendanceEnd,
                     required: false,
-                    attributes: ['attendance_end_id', 'attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
+                    attributes: ['attendance_end_id', 'attendance_end_date', 'attendance_end_time', 'attendance_end_state', 'end_time',], // ✅ 명확하게 필드 지정
                 },
                 {
                     model: user,
@@ -139,6 +139,9 @@ const attendanceStartMonth = async (data) => {
                 'attendance_start_date',
                 'attendance_start_time',
                 'attendance_start_state',
+                'start_time',
+                'rest_start_time',
+                'rest_end_time',
                 [
                     Sequelize.literal(`
                         FLOOR((
@@ -182,7 +185,8 @@ const attendanceStartYear = async (data) => {
                 {
                     model: attendanceEnd,
                     required: false,
-                    attributes: ['attendance_end_id', 'attendance_end_date', 'attendance_end_time', 'attendance_end_state'], // ✅ 명확하게 필드 지정
+                    attributes: ['attendance_end_id', 'attendance_end_date', 'attendance_end_time', 'attendance_end_state', 'end_time',
+], // ✅ 명확하게 필드 지정
                 },
                 {
                     model: user,
@@ -196,6 +200,9 @@ const attendanceStartYear = async (data) => {
                 'attendance_start_date',
                 'attendance_start_time',
                 'attendance_start_state',
+                'start_time',
+                'rest_start_time',
+                'rest_end_time',
                 [
                     Sequelize.literal(`
                         FLOOR((

@@ -10,7 +10,7 @@ import {
     Legend,
     ResponsiveContainer,
 } from "recharts";
-import FilterChart from "../components copy/filterChart";
+import FilterChart from "../adminComponents/filterChart";
 import { CHART_DATE_REQUEST, CHART_MONTH_REQUEST, CHART_YEAR_REQUEST } from "../reducers/chart";
 
 

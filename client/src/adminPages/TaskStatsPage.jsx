@@ -1,27 +1,22 @@
 import { useEffect, useState } from 'react';
-import { useDataManager } from '../hooks/useDataManager';
 import FilterTask from '../adminComponents/filterTask';
 import TaskStatsTable from '../adminComponents/TaskStatsTable';
 import { useDispatch, useSelector } from 'react-redux';
-import { TASKSTART_DATE_REQUEST, TASKSTART_MONTH_REQUEST, TASKSTART_YEAR_REQUEST } from '../reducers/taskStart';
+import { TASKSTART_DATE_REQUEST, TASKSTART_MONTH_REQUEST, TASKSTART_UPDATE_REQUEST, TASKSTART_YEAR_REQUEST } from '../reducers/taskStart';
 import { PROCESS_LIST_REQUEST } from '../reducers/process';
 
 const TaskStatsPage = () => {
-  const {
-    sortConfig,
-    setSorting,
-   
-  } = useDataManager();
-
   const { processLists } = useSelector((state) => state.process);
   const [selectedTaskType, setSelectedTaskType] = useState(null);
   const [taskName, setTaskName] = useState(null);
-
-  const [filterType, setFilterType] = useState('date'); // 'date', 'month', or 'year'
+  const [selected, setSelected] = useState(null); 
+  const [filterType, setFilterType] = useState('date'); 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [month, setMonth] = useState(null);
   const [year, setYear] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [editData, setEditData] = useState({}); 
 
   const handleProcessLists = async () => {
     dispatch({
@@ -89,6 +84,35 @@ const TaskStatsPage = () => {
     && taskStartFilterData ? taskStartFilterData.filter(record => String(record.process?.process_code) === String(selectedTaskType))
     : taskStartFilterData;
 
+  const handleEditClick = () => {
+    console.log(selected)
+    if (selected) {
+      setEditData({ ...selected });
+      setIsModalOpen(true);
+    } else {
+      alert("수정할 항목을 선택해주세요.");
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+    const handleSave = () => {
+      console.log("수정된 데이터:", editData);
+      dispatch({
+        type: TASKSTART_UPDATE_REQUEST,
+        data: editData,
+      });
+  
+      setIsModalOpen(false);
+     
+      
+    };
   return (
     <div>
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
@@ -105,6 +129,7 @@ const TaskStatsPage = () => {
         setEndDate={setEndDate}
         setMonth={setMonth}
         setYear={setYear}
+        handleEditClick={handleEditClick}
       />
       <div className="mb-6">
         <div className="bg-white p-4 rounded-lg shadow">
@@ -115,8 +140,8 @@ const TaskStatsPage = () => {
                 key={index}
                 onClick={() => handleTaskTypeSelect(process.process_code, process.process_name)}
                 className={`px-3 py-1 rounded text-sm ${selectedTaskType === process.process_code
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                   }`}
               >
                 {process.process_name}
@@ -135,13 +160,47 @@ const TaskStatsPage = () => {
       </div>
       <div className="mb-6">
         <TaskStatsTable
-          onSort={setSorting}
-          sortConfig={sortConfig}
-
           taskName={taskName}
           filteredByTaskType={filteredByTaskType}
+          setSelected={setSelected}
+          selected={selected}
         />
       </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white w-4/5 p-6 rounded-lg shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">업무 정보 수정</h2>
+
+            <label>이름</label>
+            <input type="text" readOnly name="user_name" value={editData.user_name} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>직무형태</label>
+            <input type="textg" readOnly name="user_position" value={editData.user_position} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>업무 시작 날짜</label>
+            <input type="date" name="task_start_date" value={editData.task_start_date} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>시작시간</label>
+            <input type="text" name="task_start_time" value={editData.task_start_time} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>업무 종료 날짜</label>
+            <input type="date" name="task_end_date" value={editData.task_end_date || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>종료시간</label>
+            <input type="text" name="task_end_time" value={editData.task_end_time || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>개수</label>
+            <input type="number" name="total_count" value={editData.total_count || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <button onClick={ ()=> handleSave()} className="w-full bg-blue-500 text-white px-4 py-2 rounded text-center">
+              저장
+            </button>
+            <button onClick={() => setIsModalOpen(false)} className="w-full bg-gray-300 text-black px-4 py-2 rounded text-center mt-2">
+              취소
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

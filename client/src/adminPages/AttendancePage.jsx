@@ -6,14 +6,14 @@ import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCE
 
 const AttendancePage = () => {
 
-  const [filterType, setFilterType] = useState('date'); // 'date', 'month', or 'year'
+  const [filterType, setFilterType] = useState('date'); 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [month, setMonth] = useState(null);
   const [year, setYear] = useState(null);
-  const [selected, setSelected] = useState(null); // ✅ 선택된 항목 상태
-  const [isModalOpen, setIsModalOpen] = useState(false); // ✅ 모달 열림 상태
-  const [editData, setEditData] = useState({}); // ✅ 수정할 데이터 상태
+  const [selected, setSelected] = useState(null); 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [editData, setEditData] = useState({}); 
 
   const vacationDate = async () => {
     const data = {
@@ -130,7 +130,7 @@ const AttendancePage = () => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white w-4/5 p-6 rounded-lg shadow-lg">
             <h2 className="text-lg font-semibold mb-4">근태 정보 수정</h2>
 

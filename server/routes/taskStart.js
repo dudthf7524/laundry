@@ -71,4 +71,13 @@ router.get("/today", authMiddlewareSession, async (req, res) => {
     }
 });
 
+router.post("/update", authMiddlewareSession, async (req, res) => {
+    try {
+        const result = await taskStart.taskStartUpdate(req.body)
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
+
 module.exports = router;

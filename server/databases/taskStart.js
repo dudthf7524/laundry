@@ -55,7 +55,7 @@ const taskStartDate = async (data) => {
                 {
                     model: taskEnd,
                     required: false,
-                    attributes: ['task_end_date', 'task_end_time', 'total_count', 'hour_average'], // ✅ 명확하게 필드 지정
+                    attributes: ['task_end_id', 'task_end_date', 'task_end_time', 'total_count', 'hour_average'], // ✅ 명확하게 필드 지정
                 },
                 {
                     model: user,
@@ -74,6 +74,7 @@ const taskStartDate = async (data) => {
                     [Op.lte]: data.endDate,   // 2025-06-24 이하
                 },
             }, attributes: [
+                'task_start_id',
                 'task_start_date',
                 'task_start_time',
                 [
@@ -111,13 +112,14 @@ const taskStartDate = async (data) => {
 
 
 const taskStartMonth = async (data) => {
+
     try {
         const results = await taskStart.findAll({
             include: [
                 {
                     model: taskEnd,
                     required: false,
-                    attributes: ['task_end_date', 'task_end_time', 'total_count', 'hour_average'], // ✅ 명확하게 필드 지정
+                    attributes: ['task_end_id', 'task_end_date', 'task_end_time', 'total_count', 'hour_average'], // ✅ 명확하게 필드 지정
                 },
                 {
                     model: user,
@@ -132,6 +134,7 @@ const taskStartMonth = async (data) => {
             ],
             where: Sequelize.literal(`SUBSTRING(task_start_date, 1, 7) = '${data.year}-${data.month}'`),
             attributes: [
+                'task_start_id',
                 'task_start_date',
                 'task_start_time',
                 [
@@ -168,13 +171,14 @@ const taskStartMonth = async (data) => {
 };
 
 const taskStartYear = async (data) => {
+
     try {
         const results = await taskStart.findAll({
             include: [
                 {
                     model: taskEnd,
                     required: false,
-                    attributes: ['task_end_date', 'task_end_time', 'total_count', 'hour_average'], // ✅ 명확하게 필드 지정
+                    attributes: ['task_end_id', 'task_end_date', 'task_end_time', 'total_count', 'hour_average'], // ✅ 명확하게 필드 지정
                 },
                 {
                     model: user,
@@ -189,6 +193,7 @@ const taskStartYear = async (data) => {
             ],
             where: Sequelize.literal(`SUBSTRING(task_start_date, 1, 4) = '${data.year}'`),
             attributes: [
+                'task_start_id',
                 'task_start_date',
                 'task_start_time',
                 [
@@ -259,6 +264,54 @@ const taskStartToday = async (user_code) => {
 };
 
 
+
+const taskStartUpdate = async (data) => {
+
+    console.log(data)
+
+    try {
+        await taskStart.update(
+            {
+                task_start_date: data.task_start_date,
+                task_start_time: data.task_start_time,
+                attendance_start_state: data.attendance_start_state,
+            },
+
+            {
+                where: {
+                    task_start_id: data.task_start_id,
+                },
+            },
+
+        )
+    } catch (error) {
+        console.error(error);
+    }
+
+    try {
+        const result = await taskEnd.update(
+            {
+                task_end_date: data.task_end_date,
+                task_end_time: data.task_end_time,
+                total_count: data.total_count,
+            },
+            {
+                where: {
+                    task_end_id: data.task_end_id,
+                },
+            },
+
+        )
+        return result;
+
+    } catch (error) {
+        console.error(error);
+    }
+
+
+};
+
+
 module.exports = {
     taskStartRegister,
     taskStartNewOne,
@@ -266,4 +319,5 @@ module.exports = {
     taskStartMonth,
     taskStartYear,
     taskStartToday,
+    taskStartUpdate,
 };

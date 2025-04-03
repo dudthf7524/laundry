@@ -8,8 +8,6 @@ const Auth = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
 
-
-    // Handle search input change
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
@@ -20,6 +18,7 @@ const Auth = () => {
     }, []);
 
     const dispatch = useDispatch();
+    
     const userList = async () => {
         dispatch({
             type: USER_LIST_REQUEST,
@@ -31,8 +30,6 @@ const Auth = () => {
             type: AUTH_LIST_REQUEST,
         });
     };
-
-
 
     const { userLists } = useSelector((state) => state.user) || { userLists: [] };
 

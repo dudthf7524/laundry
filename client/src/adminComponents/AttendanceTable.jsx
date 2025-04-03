@@ -6,8 +6,6 @@ import * as XLSX from "xlsx"; // 📌 엑셀 라이브러리 추가
 const AttendanceTable = ({ setSelected, selected }) => {
   const { isFieldHidden } = useAuth();
   const { attendanceStartYear } = useSelector((state) => state.attendanceStart);
-
-  const [expandedRowId, setExpandedRowId] = useState(null);
   const [sortConfig, setSortConfig] = useState({ field: null, direction: 'asc' });
   const { user } = useSelector((state) => state.user);
   const excelImage = `${process.env.PUBLIC_URL}/icon/excel.png`;
@@ -166,7 +164,7 @@ const AttendanceTable = ({ setSelected, selected }) => {
               sortedData.map((asy, index) => (
                 <tr key={index} className="hover:bg-gray-50">
                   {
-                    user?.auth_code === "A1" ? <td className="px-4 py-3 whitespace-nowrap"><input type='checkbox'
+                    user?.auth_code === "A1" ? <td className="px-4 py-3 whitespace-nowrap"><input className='cursor-pointer' type='checkbox'
                       checked={selected?.attendance_start_id === asy.attendance_start_id}
                       onChange={() => handleCheckboxChange(asy)}></input></td> : ''
                   }

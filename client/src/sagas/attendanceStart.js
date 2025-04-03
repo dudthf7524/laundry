@@ -27,6 +27,10 @@ import {
     ATTENDANCESTART_TODAY_SUCCESS,
     ATTENDANCESTART_TODAY_FAILURE,
 
+    ATTENDANCESTART_TODAY_ADMIN_REQUEST,
+    ATTENDANCESTART_TODAY_ADMIN_SUCCESS,
+    ATTENDANCESTART_TODAY_ADMIN_FAILURE,
+
     ATTENDANCESTART_UPDATE_REQUEST,
     ATTENDANCESTART_UPDATE_SUCCESS,
     ATTENDANCESTART_UPDATE_FAILURE,
@@ -210,6 +214,36 @@ function* attendanceStartToday() {
     }
 }
 
+function* watchAttendanceStartTodayAdmin() {
+    yield takeLatest(ATTENDANCESTART_TODAY_ADMIN_REQUEST, attendanceStartTodayAdmin);
+}
+
+function attendanceStartTodayAdminAPI() {
+
+    return axios.get("/attendanceStart/today");
+}
+
+function* attendanceStartTodayAdmin() {
+    try {
+        const result = yield call(attendanceStartTodayAdminAPI, );
+        if (result.data === "common") {
+            window.location.href = "/";
+            return;
+        }
+        yield put({
+            type: ATTENDANCESTART_TODAY_ADMIN_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: ATTENDANCESTART_TODAY_ADMIN_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
 function* watchAttendanceStartUpdate() {
     yield takeLatest(ATTENDANCESTART_UPDATE_REQUEST, attendanceStartUpdate);
 }
@@ -252,5 +286,6 @@ export default function* attendanceStartSaga() {
         fork(watchAttendanceStartDate),
         fork(watchAttendanceStartToday),
         fork(watchAttendanceStartUpdate),
+        fork(watchAttendanceStartTodayAdmin),
     ]);
 }
