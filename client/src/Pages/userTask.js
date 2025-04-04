@@ -1,79 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { TASKSTART_TODAY_REQUEST } from '../reducers/taskStart';
 
-const MyPage = () => {
-    const [userInfo, setUserInfo] = useState({
-        username: '사용자 이름',
-        email: 'user@example.com',
-    });
-    const [form, setForm] = useState({
-        newUsername: '',
-        currentPassword: '',
-        newPassword: '',
-    });
+const UserTask = () => {
+    const dispatch = useDispatch();
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+    useEffect(() => {
+        taskToday();
+    }, []);
+
+    const taskToday = () => {
+        dispatch({
+            type: TASKSTART_TODAY_REQUEST,
+        });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // 여기서 아이디/비번 변경 로직 추가
-        console.log('아이디 및 비밀번호 변경:', form);
-    };
+    const { taskStartToday } = useSelector((state) => state.taskStart);
 
     return (
         <div className="flex flex-col items-center w-full h-screen p-[2vw] box-border overflow-y-auto">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">마이 페이지</h2>
-            <div className="p-4 border rounded-lg bg-gray-50 w-full max-w-md">
-                <h3 className="text-md font-semibold mb-2">사용자 정보</h3>
-                <p><span className="font-medium">이름:</span> {userInfo.username}</p>
-                <p><span className="font-medium">이메일:</span> {userInfo.email}</p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="mt-4 w-full max-w-md p-4 border rounded-lg bg-gray-50">
-                <h3 className="text-md font-semibold mb-2">아이디 및 비밀번호 변경</h3>
-                <label className="block mb-2">
-                    <span className="font-medium">새 아이디</span>
-                    <input 
-                        type="text" 
-                        name="newUsername" 
-                        value={form.newUsername} 
-                        onChange={handleChange} 
-                        className="w-full mt-1 p-2 border rounded-lg"
-                        placeholder="새 아이디 입력"
-                    />
-                </label>
-                <label className="block mb-2">
-                    <span className="font-medium">현재 비밀번호</span>
-                    <input 
-                        type="password" 
-                        name="currentPassword" 
-                        value={form.currentPassword} 
-                        onChange={handleChange} 
-                        className="w-full mt-1 p-2 border rounded-lg"
-                        placeholder="현재 비밀번호 입력"
-                    />
-                </label>
-                <label className="block mb-2">
-                    <span className="font-medium">새 비밀번호</span>
-                    <input 
-                        type="password" 
-                        name="newPassword" 
-                        value={form.newPassword} 
-                        onChange={handleChange} 
-                        className="w-full mt-1 p-2 border rounded-lg"
-                        placeholder="새 비밀번호 입력"
-                    />
-                </label>
-                <button 
-                    type="submit" 
-                    className="w-full mt-4 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                >
-                    변경하기
-                </button>
-            </form>
+            <h2 className="text-lg font-medium text-gray-900 mb-4">업무 기록</h2>
+            {taskStartToday && taskStartToday.length > 0 ? (
+                taskStartToday.map(task => (
+                    <div key={task.task_start_id} className="p-4 border rounded-lg bg-gray-50 w-full ">
+                        <h3 className="text-md font-semibold mb-2">{task.process.process_name}</h3>
+                        <p><span className="font-medium">업무 시작 날짜:</span> {task.task_start_date}</p>
+                        <p><span className="font-medium">업무 시작 시간:</span> {task.task_start_time}</p>
+                        <p><span className="font-medium">업무 종료 날짜:</span> {task.task_end?.task_end_date || "진행 중"}</p>
+                        <p><span className="font-medium">업무 종료 시간:</span> {task.task_end?.task_end_time || "진행 중"}</p>
+                    </div>
+                ))
+            ) : (
+                <p>오늘 진행중인 업무가 없습니다.</p>
+            )}
         </div>
     );
 };
 
-export default MyPage;
+export default UserTask;
