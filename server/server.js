@@ -11,7 +11,7 @@ const passport = require("passport");
 const session = require("express-session");
 
 const app = express();
-const port = 3060;
+const port = 8080;
 
 const userRoutes = require('./routes/user');
 const authRoutes = require('./routes/auth');
@@ -45,7 +45,7 @@ app.use(express.json());
 
 // CORS 설정
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://223.130.140.245:8081', 'http://223.130.140.245:3000'],
+  origin: ['http://localhost:3000', 'https://www.washstation.shop/'],
   credentials: true,
 }));
 
