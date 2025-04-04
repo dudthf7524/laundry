@@ -45,7 +45,7 @@ app.use(express.json());
 
 // CORS 설정
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://223.130.140.245:8081', 'http://223.130.140.245:3000'],
+  origin: ['http://localhost:3000', 'https://www.washstation.shop/'],
   credentials: true,
 }));
 
