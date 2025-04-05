@@ -20,7 +20,7 @@ const Attendance = () => {
     const month = String(currentTime.getMonth() + 1).padStart(2, '0');
     const date = String(currentTime.getDate()).padStart(2, '0');
     // 시간 포맷팅
-    const hours = currentTime.getHours();
+    const hours = String(currentTime.getHours()).padStart(2, '0');
     const minutes = String(currentTime.getMinutes()).padStart(2, '0');
 
     const { noticeLists } = useSelector((state) => state.notice);
@@ -53,10 +53,10 @@ const Attendance = () => {
             attendance_start_date: attendance_start_date,
             attendance_start_time: attendance_start_time,
             attendance_start_state: attendance_start_state,
-            start_time : timeDetail.start_time,
-            rest_start_time : timeDetail.rest_start_time,
-            rest_end_time : timeDetail.rest_end_time,
-            
+            start_time: timeDetail.start_time,
+            rest_start_time: timeDetail.rest_start_time,
+            rest_end_time: timeDetail.rest_end_time,
+
         }
         dispatch({
             type: ATTENDANCESTART_REGISTER_REQUEST,
@@ -82,7 +82,7 @@ const Attendance = () => {
             attendance_end_date: attendance_end_date,
             attendance_end_time: attendance_end_time,
             attendance_end_state: attendance_end_state,
-            end_time : timeDetail.end_time,
+            end_time: timeDetail.end_time,
             user_code: attendanceStartNewOne.user_code,
             attendance_start_id: attendanceStartNewOne.attendance_start_id,
         }
@@ -92,7 +92,7 @@ const Attendance = () => {
             data: data
         });
     };
-  
+
     const { timeDetail } = useSelector((state) => state.time);
 
     const attendanceStartNewOneRequest = () => {
@@ -154,7 +154,7 @@ const Attendance = () => {
 
             <div className="w-10 h-10 cursor-pointer" onClick={openModal}><img src={`${process.env.PUBLIC_URL}/icon/map.png`} alt="Map Icon" />
             </div>
-            내 위치 찾기
+            나의 위치 찾기
             {isModalOpen && (
                 <div className="modal-overlay fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-[9999]">
                     <div className="w-4/5 modal-content bg-white rounded-lg p-6 shadow-lg">

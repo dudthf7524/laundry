@@ -237,6 +237,8 @@ const taskStartToday = async (user_code) => {
     const day = String(today.getDate()).padStart(2, '0'); // 두 자리로 표시
     const formattedDate = `${year}-${month}-${day}`;
 
+    console.log(user_code)
+    console.log(formattedDate)
     try {
         const result = await taskStart.findAll({
             where: {
@@ -256,6 +258,7 @@ const taskStartToday = async (user_code) => {
             ],
             order: [['task_start_id', 'DESC']],
         });
+        console.log(result)
         return result;
     } catch (error) {
         console.error(error);

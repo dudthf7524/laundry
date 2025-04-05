@@ -57,12 +57,16 @@ const VacationList = () => {
 
 
   const selectedVacation = Array.isArray(vacationLists)
-    ? vacationLists.find((v) => v.vacation_state === "신청" && v.vacation_date === selectedDate)
-    : null;
+    ? vacationLists.filter((v) => v.vacation_state === "신청" && v.vacation_date === selectedDate)
+    : [];
 
   const selectedVacationComplete = Array.isArray(vacationLists)
     ? vacationLists.filter((v) => v.vacation_state === "승인" && v.vacation_date === selectedDate)
     : [];
+
+  const selectedCompanyVacation = Array.isArray(conpanyVacationLists)
+    ? conpanyVacationLists.find((v) => v.company_vacation_date === selectedDate)
+    : null;
 
 
   // 날짜 클릭 시
@@ -71,10 +75,10 @@ const VacationList = () => {
     setSelectedDate(formattedDate);
   };
 
-  const vacationAllow = () => {
+  const vacationAllow = (vacation_id) => {
     alert('휴가가 승인 되었습니다.')
     const data = {
-      vacation_id: selectedVacation.vacation_id
+      vacation_id: vacation_id
     }
     dispatch({
       type: VACATION_ALLOW_REQUEST,
@@ -102,9 +106,6 @@ const VacationList = () => {
       const isVacation = vacationDays?.includes(formattedDate); // 문자열 비교
       const vacation_allow = vacationAllows?.includes(formattedDate); // 문자열 비교
       const company_vacation = conpanyVacationLists?.some(v => v.company_vacation_date === formattedDate); // 회사 휴무일 (🟠)
-
-
-
       const isToday = today.getDate() === d && today.getMonth() === viewMonth && today.getFullYear() === viewYear;
       const isSelected = selectedDate === formattedDate;
       const dayOfWeek = (i % 7);
@@ -168,16 +169,47 @@ const VacationList = () => {
       </div>
 
       {/* 선택된 날짜 정보 */}
-      {selectedVacation && (
+      {selectedVacation.length > 0 && (
         <div className="bg-white p-4 rounded-lg shadow mb-6">
-          <h2 className="text-xl font-semibold">휴가 신청 정보</h2>
-          <p className="mt-3">이름: {selectedVacation?.user.user_name}</p>
-          <p className="mt-2">날짜: {selectedVacation?.vacation_date}</p>
-          <p className="mt-1">사유: {selectedVacation?.vacation_content}</p>
-          <div className="mt-4 flex space-x-2">
-            <button onClick={vacationAllow} className="px-4 py-2 bg-green-500 text-white rounded">승인</button>
-            {/* <button className="px-4 py-2 bg-red-500 text-white rounded">거절</button> */}
-          </div>
+          <h2 className="text-xl font-semibold mb-3">휴가 신청 정보</h2>
+          {selectedVacation.map((vacation, index) => (
+            <div key={index} className="mb-3 border-b">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">이름</label>
+                <input
+                  type="text"
+                  name="notice_title"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 mb-3"
+                  value={vacation?.user.user_name}
+                  readOnly
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">날짜</label>
+                <input
+                  type="text"
+                  name="notice_title"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 mb-3"
+                  value={vacation?.vacation_date}
+                  readOnly
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">사유</label>
+                <textarea
+                  name="notice_content"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  rows="6"
+                  value={vacation?.vacation_content}
+                  readOnly
+                ></textarea>
+              </div>
+              <div className="mt-4 flex space-x-2">
+                <button onClick={() => vacationAllow(vacation?.vacation_id)} className="px-4 py-2 bg-green-500 text-white rounded">승인</button>
+                {/* <button className="px-4 py-2 bg-red-500 text-white rounded">거절</button> */}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
@@ -185,14 +217,66 @@ const VacationList = () => {
         <div className="bg-white p-4 rounded-lg shadow mb-6">
           <h2 className="text-xl font-semibold">승인된 휴가 목록</h2>
           {selectedVacationComplete.map((vacation, index) => (
-            <div key={index} className="mb-3 p-3 border-b">
-              <p className="mt-3">이름: {vacation.user.user_name}</p>
-              <p className="mt-2">날짜: {vacation.vacation_date}</p>
-              <p className="mt-1">사유: {vacation.vacation_content}</p>
+            <div key={index} className="mb-3 border-b">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">이름</label>
+                <input
+                  type="text"
+                  name="notice_title"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 mb-3"
+                  value={vacation.user.user_name}
+                  readOnly
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">날짜</label>
+                <input
+                  type="text"
+                  name="notice_title"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 mb-3"
+                  value={vacation.vacation_date}
+                  readOnly
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">사유</label>
+                <textarea
+                  name="notice_content"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  rows="6"
+                  value={vacation.vacation_content}
+                  readOnly
+                ></textarea>
+              </div>
             </div>
           ))}
         </div>
       )}
+
+      {selectedCompanyVacation && (
+        <div className="bg-white p-4 rounded-lg shadow mb-6">
+          <h2 className="text-xl font-semibold mb-3">휴무일 정보</h2>
+          <div className="mb-3">
+            <label className="block text-sm font-medium text-gray-700 mb-2">날짜</label>
+            <input
+              type="text"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 mb-2"
+              value={selectedCompanyVacation.company_vacation_date}
+              readOnly
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">사유</label>
+            <textarea
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              rows="4"
+              value={selectedCompanyVacation.company_vacation_reason}
+              readOnly
+            ></textarea>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

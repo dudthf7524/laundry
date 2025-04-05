@@ -28,7 +28,6 @@ const userLogin = async (user_id, user_password) => {
 
     try {
         const result = await user.findOne({ where: { user_id: user_id }, raw: true })
-        console.log(result)
         if (result) {
             if (result.user_password === user_password) {
                 return result;
@@ -38,11 +37,6 @@ const userLogin = async (user_id, user_password) => {
         } else {
             return -1
         }
-
-
-
-
-
     } catch (error) {
         console.error(error);
     }
@@ -118,7 +112,6 @@ const userUpdateAuth = async (data) => {
 };
 
 const userCheckId = async (data) => {
-    console.log(data)
     try {
         const result = await user.findOne({ where: { user_id: data.user_id } })
         if (result) {
@@ -174,6 +167,29 @@ const userChangeId = async (data, user_code) => {
     }
 };
 
+const userChangePassword = async (data, user_code) => {
+    try {
+        const result = await user.update(
+            {
+                user_password: data.new_user_password, // 변경할 값
+            },
+            {
+                where: {
+                    user_code: user_code, // 특정 work_time_id를 가진 행 업데이트
+                },
+            },
+        )
+        if (result) {
+            return 1;
+        } else {
+            return 0;
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 const userInformation = async (user_code) => {
     try {
         const result = await user.findOne({
@@ -199,5 +215,6 @@ module.exports = {
     userCheckId,
     userCheckPassword,
     userChangeId,
+    userChangePassword,
     userInformation,
 };

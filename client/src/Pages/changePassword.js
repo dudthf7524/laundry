@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { USER_LOGIN_REQUEST, USER_AUTH_REQUEST, USER_CHECK_ID_REQUEST, USER_CHECK_PASSWORD_REQUEST } from "../reducers/user";
+import { USER_LOGIN_REQUEST, USER_AUTH_REQUEST, USER_CHECK_ID_REQUEST, USER_CHECK_PASSWORD_REQUEST, USER_CHANGE_PASSWORD_REQUEST } from "../reducers/user";
+import { LOGOUT_REQUEST } from '../reducers/logout';
 
 const ChangePassword = () => {
-    const { userCheckId, userCheckPassword } = useSelector((state) => state.user);
+    const { userCheckPassword, userChangePassword } = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
     const [userPassword, setUserPassword] = useState({ user_password: '' });
@@ -39,9 +40,21 @@ const ChangePassword = () => {
             data: data
         });
     }
+    const changePassword = () => {
+        if (formData.new_user_password === formData.new_user_password_check) {
+            const data = {
+                new_user_password: formData.new_user_password
+            };
+            dispatch({
+                type: USER_CHANGE_PASSWORD_REQUEST,
+                data: data
+            });
+        } else {
+            alert('비밀번호가 서로 다릅니다.')
+            return;
+        }
 
-    console.log(userCheckPassword)
-
+    };
     useEffect(() => {
         if (userCheckPassword === 0) {
             setIsAvailable(false);
@@ -51,6 +64,14 @@ const ChangePassword = () => {
             setCheckIdState(true)
         }
     }, [userCheckPassword]);
+
+    useEffect(() => {
+        if (userChangePassword === 1) {
+            dispatch({
+                type: LOGOUT_REQUEST,
+            });
+        }
+    }, [userChangePassword]);
 
     return (
         <div className="w-[80%] flex flex-col items-center justify-center">
@@ -84,19 +105,6 @@ const ChangePassword = () => {
                     </p>
                 ) : (<></>)}
 
-                {/* 새로운 아이디 입력 필드 */}
-                {/* {isAvailable ? (
-                    <button
-                        type="submit"
-                        // onClick={changeId}
-                        className="w-full mt-4 p-3 bg-[#00b7ff] text-white rounded-md hover:bg-[#0065b3] transition"
-                    >
-                        아이디 변경하기
-                    </button>
-                ) : (<></>)
-                } */}
-
-                {/* 새로운 아이디 입력 필드 */}
                 {isAvailable && (
                     <>
                         <input
@@ -104,23 +112,24 @@ const ChangePassword = () => {
                             name="new_user_password"
                             placeholder="새로운 비밀번호 입력"
                             value={formData.new_user_password}
-                            onChange={handleChange}                            className="w-full mt-3 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                            onChange={handleChange} className="w-full mt-3 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
                         />
                         <input
                             type="text"
                             name="new_user_password_check"
                             placeholder="비밀번호 확인"
                             value={formData.new_user_password_check}
-                            onChange={handleChange}                            className="w-full mt-2 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                            onChange={handleChange} className="w-full mt-2 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
                         />
                     </>
                 )}
 
                 <button
                     type="submit"
+                    onClick={changePassword}
                     className="w-full mt-4 p-3 bg-[#00b7ff] text-white rounded-md hover:bg-[#0065b3] transition"
                 >
-                   비밀번호 변경하기
+                    비밀번호 변경하기
                 </button>
             </div>
         </div>

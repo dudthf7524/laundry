@@ -76,7 +76,7 @@ const AttendanceTable = ({ setSelected, selected }) => {
         출근날짜: asy.attendance_start_date,
         지정출근시간: asy.start_time,
         지정퇴근시간: asy.attendance_end.end_time,
-        휴게시간: asy.rest_start_time+"~"+asy.rest_end_time,
+        휴게시간: asy.rest_start_time + "~" + asy.rest_end_time,
         살제출근시간: asy.attendance_start_time,
         출근상태: asy.attendance_start_state,
         퇴근날짜: asy.attendance_end?.attendance_end_date || "-",
@@ -179,7 +179,11 @@ const AttendanceTable = ({ setSelected, selected }) => {
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end?.attendance_end_date}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end?.attendance_end_time}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end?.attendance_end_state}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{asy.sum_hour}시간 {asy.sum_minute}분</td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {(asy.sum_hour < 0 || asy.sum_minute < 0)
+                      ? "0시간 0분"
+                      : `${asy.sum_hour}시간 ${asy.sum_minute}분`}
+                  </td>
                 </tr>
               ))
             ) : (

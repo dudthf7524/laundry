@@ -27,12 +27,7 @@ router.post('/login', async (req, res, next) => {
         if (user === "0") return res.status(401).json(user);
 
         req.login(user, (err) => {
-            console.log("user")
             if (err) return next(err);
-
-            // 세션 상태 확인
-
-
             return res.status(200).json({});
         });
     })(req, res, next);
@@ -60,23 +55,6 @@ router.post("/update", async (req, res) => {
     }
 });
 
-// router.post("/check", async (req, res) => {
-//     const { user_id } = req.body;
-
-//     try {
-//         const result = await user.userCheck(user_id);
-//         if (result) {
-//             return res.status(400).json({ message: 'Username is already taken' });
-//         } else {
-//             res.status(200).json({ message: 'Username is available' });
-//         }
-//     } catch (error) {
-//         console.error(error)
-
-//     }
-
-// });
-
 router.post("/update/auth", async (req, res) => {
     try {
         const result = await user.userUpdateAuth(req.body);
@@ -99,7 +77,7 @@ router.post("/check/id", async (req, res) => {
     }
 });
 
-router.post("/check/password",authMiddlewareSession,  async (req, res) => {
+router.post("/check/password", authMiddlewareSession, async (req, res) => {
     const user_code = req.user.user_code;
     const data = req.body;
     try {
@@ -116,6 +94,20 @@ router.post("/change/id", authMiddlewareSession, async (req, res) => {
     const user_code = req.user.user_code;
     try {
         const result = await user.userChangeId(data, user_code);
+        res.json(result);
+    } catch (error) {
+        console.error(error)
+
+    }
+});
+
+router.post("/change/password", authMiddlewareSession, async (req, res) => {
+
+    const data = req.body;
+    const user_code = req.user.user_code;
+
+    try {
+        const result = await user.userChangePassword(data, user_code);
         res.json(result);
     } catch (error) {
         console.error(error)

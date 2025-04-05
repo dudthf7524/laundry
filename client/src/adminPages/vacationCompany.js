@@ -56,7 +56,7 @@ const VacationCompany = () => {
                         onChange={handleChange}
                         name="company_vacation_reason"
                         value={formData.notice_title}
-                        className="w-full p-3 border rounded mt-2 text-lg"
+                        className="w-full p-3 border rounded mt-2 text-lg mb-5"
                     />
                     <button
                         type="submit"

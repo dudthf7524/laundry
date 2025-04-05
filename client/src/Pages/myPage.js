@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { USER_INFORMATION_REQUEST } from '../reducers/user';
+import { LOGOUT_REQUEST } from '../reducers/logout';
 
 const MyPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-   
+
     const changeId = () => {
         navigate('/change/id');
     }
@@ -19,6 +20,13 @@ const MyPage = () => {
             type: USER_INFORMATION_REQUEST,
         });
     };
+
+    const logout = () => {
+        dispatch({
+            type: LOGOUT_REQUEST,
+        });
+    }
+
     useEffect(() => {
         userInformations();
 
@@ -50,7 +58,7 @@ const MyPage = () => {
                     type="text"
                     name="notice_title"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-center"
-                    value={userInformation?.user_nickname || '' }
+                    value={userInformation?.user_nickname || ''}
                     readOnly
                     placeholder="공지사항 제목을 입력하세요"
                 />
@@ -86,10 +94,8 @@ const MyPage = () => {
 
 
             <div className="flex flex-col w-full gap-5">
-                {/* 아이디 변경 */}
                 <div>
                     <button
-
                         onClick={changeId}
                         className="w-full p-3 bg-white text-black border rounded-lg transition hover:bg-black hover:text-white"
                     >
@@ -103,6 +109,15 @@ const MyPage = () => {
                         className="w-full p-3 bg-white text-black border rounded-lg transition hover:bg-black hover:text-white"
                     >
                         비밀번호 변경
+                    </button>
+                </div>
+                <div>
+                    <button
+
+                        onClick={logout}
+                        className="w-full p-3 bg-white text-black border rounded-lg transition hover:bg-black hover:text-white"
+                    >
+                        로그아웃
                     </button>
                 </div>
 

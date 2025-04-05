@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import UserAttendance from './userAttendance';
 import UserTask from './userTask';
 import MyPage from './myPage';
-import { useSelector } from 'react-redux';
 
 const Profile = () => {
-    const [activeTab, setActiveTab] = useState('my');
+    const [activeTab, setActiveTab] = useState('attendance');
 
 
     return (
@@ -36,14 +35,13 @@ const Profile = () => {
                         }`}
                     onClick={() => setActiveTab('my')}
                 >
-                    내 정보
+                    MY PAGE
                 </button>
             </nav>
 
             {/* Task Settings Tab */}
             {activeTab === 'attendance' && (
                 <UserAttendance />
-
             )}
 
             {activeTab === 'task' && (

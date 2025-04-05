@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { attendanceRecords, taskRecords } from '../data/mockData';
-import { getCurrentDate } from '../utils/dateUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import { ATTENDANCESTART_TODAY_ADMIN_REQUEST } from '../reducers/attendanceStart';
+import { TODAY_ATTENDANCE_REQUEST, TODAY_TASK_REQUEST } from '../reducers/today';
+import { format } from 'date-fns';
 
 const DashboardPage = () => {
   const [todayStats, setTodayStats] = useState({
@@ -15,7 +16,7 @@ const DashboardPage = () => {
 
   useEffect(() => {
     attendanceStartTodayAdminRequest();
-}, []);
+  }, []);
 
   const attendanceStartTodayAdminRequest = async () => {
     dispatch({
@@ -23,8 +24,42 @@ const DashboardPage = () => {
     });
   };
 
-  const today = getCurrentDate();
+  const today = format(new Date(), 'yyyy-MM-dd');
   const { user } = useSelector((state) => state.user);
+
+  const { today_attendance, today_task } = useSelector((state) => state.today);
+
+  console.log(today_task)
+
+  const today_attendance_sum = today_attendance ? today_attendance.length : 0;
+  const today_task_sum = today_task ? today_task.length : 0;
+
+  const countNullEndAttendance = Array.isArray(today_attendance)
+    ? today_attendance.filter(today => today.attendance_end === null).length
+    : 0;
+
+  const countNullEndTask = Array.isArray(today_task)
+    ? today_task.filter(today => today.task_end === null).length
+    : 0;
+
+
+  useEffect(() => {
+    todayAttendance();
+    todayTask();
+  }, [dispatch]);
+
+  const todayAttendance = async () => {
+    dispatch({
+      type: TODAY_ATTENDANCE_REQUEST,
+    });
+  };
+
+  const todayTask = async () => {
+    dispatch({
+      type: TODAY_TASK_REQUEST,
+    });
+  };
+
 
   useEffect(() => {
     // Count employees working today
@@ -47,6 +82,7 @@ const DashboardPage = () => {
     });
   }, [today]);
 
+
   return (
     <div>
       <div className="mb-6">
@@ -59,7 +95,7 @@ const DashboardPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 gap-6 mb-6">
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex items-center">
             <div className="bg-blue-100 p-3 rounded-full">
@@ -69,30 +105,8 @@ const DashboardPage = () => {
             </div>
             <div className="ml-4">
               <h2 className="text-gray-600 text-sm font-medium">금일 전체 근로자</h2>
-              <p className="text-2xl font-bold text-gray-900">{todayStats.totalEmployees}명</p>
+              <p className="text-2xl font-bold text-gray-900">{today_attendance_sum}명</p>
             </div>
-          </div>
-          <div className="mt-3">
-
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow">
-          <div className="flex items-center">
-            <div className="bg-green-100 p-3 rounded-full">
-              <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div className="ml-4">
-              <h2 className="text-gray-600 text-sm font-medium">현재 근무중</h2>
-              <p className="text-2xl font-bold text-gray-900">{todayStats.workingNow}명</p>
-            </div>
-          </div>
-          <div className="mt-3">
-            <Link to="/admin/attendance" className="text-green-600 hover:text-green-800 text-sm">
-              근태 통계 바로가기 →
-            </Link>
           </div>
         </div>
 
@@ -105,20 +119,52 @@ const DashboardPage = () => {
             </div>
             <div className="ml-4">
               <h2 className="text-gray-600 text-sm font-medium">금일 완료된 업무</h2>
-              <p className="text-2xl font-bold text-gray-900">{todayStats.completedTasks}건</p>
+              <p className="text-2xl font-bold text-gray-900">{today_task_sum - countNullEndTask}건</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="flex items-center">
+            <div className="bg-green-100 p-3 rounded-full">
+              <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="ml-4">
+              <h2 className="text-gray-600 text-sm font-medium">현재 근무중</h2>
+              <p className="text-2xl font-bold text-gray-900">{countNullEndAttendance}명</p>
             </div>
           </div>
           <div className="mt-3">
-            <Link to="/admin/tasks" className="text-purple-600 hover:text-purple-800 text-sm">
+            <Link to="/admin/attendance" className="text-green-600 hover:text-green-800 text-sm">
+              근태 통계 바로가기 →
+            </Link>
+          </div>
+        </div>
+
+
+
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="flex items-center">
+            <div className="bg-red-100 p-3 rounded-full">
+              <svg className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v10a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <div className="ml-4">
+              <h2 className="text-gray-600 text-sm font-medium">현재 진행중인 업무</h2>
+              <p className="text-2xl font-bold text-gray-900">{countNullEndTask}건</p>
+            </div>
+          </div>
+          <div className="mt-3">
+            <Link to="/admin/tasks" className="text-red-600 hover:text-red-800 text-sm">
               업무 통계 바로가기 →
             </Link>
           </div>
         </div>
       </div>
-
-
-      {/* Charts
-      <div className="grid grid-cols-1 gap-6">
+      {/* <div className="grid grid-cols-1 gap-6">
         <StatisticsChart
           attendanceData={attendanceRecords.slice(0, 20)}
           type="attendance"
@@ -130,7 +176,7 @@ const DashboardPage = () => {
           type="task"
           timeFrame="daily"
         />
-      </div> */}
+      </div>  */}
     </div>
   );
 };

@@ -66,8 +66,6 @@ function* userLogin(action) {
     try {
         const result = yield call(userLoginAPI, action.data);
 
-
-        console.log(result.data)
         if (result.data === -1) {
             yield put({
                 type: USER_LOGIN_FAILURE,
@@ -307,7 +305,7 @@ function* userChnageId(action) {
 
 
 function* watchUserChnagePassword() {
-    yield takeLatest(USER_CHANGE_ID_REQUEST, userChnagePassword);
+    yield takeLatest(USER_CHANGE_PASSWORD_REQUEST, userChnagePassword);
 }
 
 function userChnagePasswordAPI(data) {
@@ -322,17 +320,17 @@ function* userChnagePassword(action) {
             alert('로그인 후 이용해주세요')
             window.location.href = "/";
         } else if (result.data) {
-            alert('아이디가 변경되었습니다 재 로그인 후 이용해주세요')
+            alert('비밀번호가 변경되었습니다 재 로그인 후 이용해주세요')
             window.location.href = "/";
         }
         yield put({
-            type: USER_CHANGE_ID_SUCCESS,
+            type: USER_CHANGE_PASSWORD_SUCCESS,
             data: result.data,
         });
     } catch (err) {
         console.error(err);
         yield put({
-            type: USER_CHANGE_ID_FAILURE,
+            type: USER_CHANGE_PASSWORD_FAILURE,
             error: err.response.data,
         });
     }
