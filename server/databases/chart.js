@@ -66,7 +66,7 @@ const chartDate = async (data) => {
                     [Op.lte]: data.endDate,   // 2025-06-24 이하
                 },
             },
-            group: ["attendance_start_date", "User.user_code"],
+            group: ["attendance_start_date", "User.user_code", "User.user_name"],
             order: [
                 ["attendance_start_date", "ASC"],
                 [Sequelize.col("User.user_name"), "ASC"],
@@ -83,9 +83,6 @@ const chartDate = async (data) => {
 
 
 const chartMonth = async (data) => {
-
-
-
     try {
         const attendanceData = await attendanceStart.findAll({
             attributes: [
@@ -130,7 +127,7 @@ const chartMonth = async (data) => {
                     ),
                 ],
             },
-            group: ["date", "User.user_code"],
+            group: ["date", "User.user_code", "User.user_name"],
             order: [
                 ["date", "ASC"],
                 [Sequelize.col("User.user_name"), "ASC"],
@@ -146,9 +143,6 @@ const chartMonth = async (data) => {
 };
 
 const chartYear = async (data) => {
-
-
-
     try {
         const attendanceData = await attendanceStart.findAll({
             attributes: [
@@ -193,7 +187,7 @@ const chartYear = async (data) => {
                     ),
                 ],
             },
-            group: ["date", "User.user_code"],
+            group: ["date", "User.user_code", "User.user_name"],
             order: [
                 ["date", "ASC"],
                 [Sequelize.col("User.user_name"), "ASC"],

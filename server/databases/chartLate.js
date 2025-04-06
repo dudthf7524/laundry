@@ -6,8 +6,8 @@ const chartLateDate = async (data) => {
         const result = await attendanceStart.findAll({
             attributes: [
                 [Sequelize.col("attendance_start_date"), "date"],
-                [col("User.user_name"), "user_name"],
-                [col("User.user_code"), "user_code"],
+                [Sequelize.col("user.user_name"), "user_name"],
+                [Sequelize.col("user.user_code"), "user_code"],
                 [fn("COUNT", literal("CASE WHEN attendance_start_state = '지각' THEN 1 END")), "late_count"]
             ],
             include: [
@@ -22,10 +22,10 @@ const chartLateDate = async (data) => {
                     [Op.between]: [data.startDate, data.endDate]
                 }
             },
-            group: ["date", "User.user_code"],
+            group: ["date", "user.user_code"],
             order: [
                 ["date", "ASC"],
-                [col("User.user_name"), "ASC"]
+                [col("user.user_name"), "ASC"]
             ],
         });
 
@@ -61,10 +61,10 @@ const chartLateMonth = async (data) => {
                     ),
                 ],
             },
-            group: ["date", "user_code"],
+            group: ["date", "user.user_code"],
             order: [
                 [literal("date"), "ASC"],
-                ["user_name", "ASC"]
+                [col("user.user_name"), "ASC"]
             ],
         });
         return result;
@@ -98,10 +98,10 @@ const chartLateYear = async (data) => {
                     ),
                 ],
             },
-            group: ["date", "user_code"],
+            group: ["date", "user.user_code"],
             order: [
                 [literal("date"), "ASC"],
-                ["user_name", "ASC"]
+                [col("user.user_name"), "ASC"]
             ],
         });
         return result;
