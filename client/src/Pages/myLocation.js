@@ -22,13 +22,10 @@ const MyLocation = ({ setIsWithinRadius, closeModal }) => {
     }, [dispatch]);
 
     const { companyAddressLists } = useSelector((state) => state.companyAddress);
-    console.log(companyAddressLists)
+    
     const companyAddress = companyAddressLists ? companyAddressLists : null;
 
-    console.log(companyAddress)
-    console.log(companyAddress.location_latitude)
-    console.log(companyAddress.location_hardness)
-    console.log(companyAddress.radius)
+   
 
     const getDistance = (lat1, lon1, lat2, lon2) => {
         const R = 6371000;
