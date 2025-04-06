@@ -99,12 +99,15 @@ function vacationAllowAPI(data) {
 function* vacationAllow(action) {
     try {
         const result = yield call(vacationAllowAPI, action.data);
-    
+        if (result.data) {
+            alert('휴가 승인이 완료되었습니다.')
+            window.location.href = "/admin/vacation"
+        }
         yield put({
             type: VACATION_ALLOW_SUCCESS,
             data: result.data,
         });
-        if (result.data) {}
+        
     } catch (err) {
         console.error(err);
         yield put({

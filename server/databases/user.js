@@ -3,14 +3,6 @@ const { user } = require("../models");
 const { auth } = require("../models");
 
 
-const userCheck = async (user_id) => {
-    try {
-        const result = await user.findOne({ where: { user_id } })
-    } catch (error) {
-        console.error(error);
-    }
-
-};
 
 const userJoin = async (data) => {
 
@@ -33,24 +25,18 @@ const userJoin = async (data) => {
 };
 
 const userLogin = async (user_id, user_password) => {
-   
+
     try {
         const result = await user.findOne({ where: { user_id: user_id }, raw: true })
-        console.log(result)
-        if(result){
-            if(result.user_password === user_password){
+        if (result) {
+            if (result.user_password === user_password) {
                 return result;
-            }else{
+            } else {
                 return 0;
             }
-        }else{
+        } else {
             return -1
         }
-
-        
-        
-
-
     } catch (error) {
         console.error(error);
     }
@@ -68,9 +54,9 @@ const userList = async () => {
                     required: true,
                 },
             ],
-           
+
         })
-   
+
         return result;
 
 
@@ -83,12 +69,12 @@ const userUpdate = async (data) => {
     try {
         const result = await user.update(
             {
-                user_name: data.user_name, 
-                user_nickname: data.user_nickname, 
-                user_position: data.user_position, 
-                user_hire_date: data.user_hire_date, 
+                user_name: data.user_name,
+                user_nickname: data.user_nickname,
+                user_position: data.user_position,
+                user_hire_date: data.user_hire_date,
             },
-            
+
             {
                 where: {
                     user_code: data.user_code,
@@ -104,7 +90,7 @@ const userUpdate = async (data) => {
 };
 
 const userUpdateAuth = async (data) => {
-  
+
     try {
         const result = await user.update(
             {
@@ -117,7 +103,7 @@ const userUpdateAuth = async (data) => {
             },
 
         )
-        
+
         return result;
 
     } catch (error) {
@@ -125,12 +111,110 @@ const userUpdateAuth = async (data) => {
     }
 };
 
+const userCheckId = async (data) => {
+    try {
+        const result = await user.findOne({ where: { user_id: data.user_id } })
+        if (result) {
+            return 1;
+        } else {
+            return 0;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+
+};
+
+const userCheckPassword = async (data, user_code) => {
+    try {
+        const result = await user.findOne({ 
+            where: { user_code: user_code },
+            attributes: ['user_password',],
+            raw: true,
+        })
+
+        if (result.user_password === data.user_password) {
+            return 1;
+        } else {
+            return 0;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+
+};
+
+const userChangeId = async (data, user_code) => {
+    try {
+        const result = await user.update(
+            {
+                user_id: data.user_id, // 변경할 값
+            },
+            {
+                where: {
+                    user_code: user_code, // 특정 work_time_id를 가진 행 업데이트
+                },
+            },
+        )
+        if (result) {
+            return 1;
+        } else {
+            return 0;
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const userChangePassword = async (data, user_code) => {
+    try {
+        const result = await user.update(
+            {
+                user_password: data.new_user_password, // 변경할 값
+            },
+            {
+                where: {
+                    user_code: user_code, // 특정 work_time_id를 가진 행 업데이트
+                },
+            },
+        )
+        if (result) {
+            return 1;
+        } else {
+            return 0;
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const userInformation = async (user_code) => {
+    try {
+        const result = await user.findOne({
+            where: { user_code: user_code },
+            attributes: ['user_name', 'user_nickname', 'user_position', 'user_hire_date'], // 원하는 컬럼만 지정
+            raw: true,
+        });
+        return result
+    } catch (error) {
+        console.error(error);
+    }
+
+};
+
+
+
 module.exports = {
-    userCheck,
     userJoin,
     userLogin,
     userList,
     userUpdate,
     userUpdateAuth,
-
+    userCheckId,
+    userCheckPassword,
+    userChangeId,
+    userChangePassword,
+    userInformation,
 };

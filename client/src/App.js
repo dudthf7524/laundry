@@ -8,7 +8,7 @@ import Attendance from './Pages/attendance';
 import Task from './Pages/task';
 import WorkLogs from './Pages/workLogs';
 import Profile from './Pages/profile';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { USER_AUTH_REQUEST } from "./reducers/user";
 import MainLayout from './layouts/MainLayout';
 import DashboardPage from './adminPages/DashboardPage';
@@ -26,8 +26,10 @@ import ChartLate from './adminPages/chartLate';
 import BottomBar from './components/BottomBar';
 import Notice from './adminPages/notice';
 import LoginSuccess from './Pages/loginSuccess';
+import ChangeId from './Pages/changeId';
+import ChangePassword from './Pages/changePassword';
+import NotFound from './Pages/notFound'; // 추가
 
-// import { AuthProvider } from './adminContext/adminContext';
 
 function App() {
 
@@ -39,8 +41,13 @@ function App() {
       type: USER_AUTH_REQUEST,
     });
   }, []);
-
-  const showBottomBar = location.pathname !== '/' && location.pathname !== '/join' && location.pathname !== '/login/sucess';
+  
+  const showBottomBar =
+    location.pathname !== '/' &&
+    location.pathname !== '/join' &&
+    location.pathname !== '/login/sucess' &&
+    location.pathname !== '/change/id' &&
+    location.pathname !== '/change/password';
 
   return (
     <>
@@ -60,7 +67,6 @@ function App() {
             <Route path="chart" element={<Chart />} />
             <Route path="chart/late" element={<ChartLate />} />
             <Route path="notice" element={<Notice />} />
-
           </Route>
         </Routes>
       ) : (
@@ -73,6 +79,9 @@ function App() {
             <Route path="/workLogs" element={<WorkLogs />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/login/sucess" element={<LoginSuccess />} />
+            <Route path="/change/id" element={<ChangeId />} />
+            <Route path="/change/password" element={<ChangePassword />} />
+            <Route path="*" element={<NotFound  />} /> {/* ⭐ 이 줄 추가 */}
           </Routes>
           {showBottomBar && <BottomBar />}
         </div>

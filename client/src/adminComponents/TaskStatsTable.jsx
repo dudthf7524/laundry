@@ -25,7 +25,7 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
 
   const handleCheckboxChange = (data) => {
     if (!data.task_end) {
-      alert('퇴근에 대한 데이터가 존재하지 않습니다. 근무자에게 요청해주세요!!')
+      alert('업무완료에 대한 데이터가 존재하지 않습니다. 근무자에게 요청해주세요!!')
       return;
     }
     setSelected({

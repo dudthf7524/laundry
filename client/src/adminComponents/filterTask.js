@@ -3,6 +3,8 @@ import { employees } from '../data/mockData';
 
 const FilterTask = ({
   setFilterType,
+  startDate,
+  endDate,
   setStartDate, 
   setEndDate,
   setMonth,
@@ -97,6 +99,7 @@ const FilterTask = ({
               type="date"
               id="startDate"
               name="startDate"
+              value={startDate}
               onChange={handleStartDateChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
@@ -109,6 +112,7 @@ const FilterTask = ({
               type="date"
               id="endDate"
               name="endDate"
+              value={endDate}
               onChange={handleEndDateChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             />

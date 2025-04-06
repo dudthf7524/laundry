@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { USER_PROCESS_ONE_LIST_REQUEST } from '../reducers/userProcess';
 import { TASKSTART_NEW_ONE_REQUEST, TASKSTART_REGISTER_REQUEST } from '../reducers/taskStart';
 import { TASKEND_REGISTER_REQUEST } from '../reducers/taskEnd';
+import { format } from 'date-fns';
 
 
 const Task = () => {
@@ -12,17 +13,11 @@ const Task = () => {
     const { user } = useSelector((state) => state.user);
 
     const { userProcessOneLists } = useSelector((state) => state.userProcess);
-    const { taskNewOne } = useSelector((state) => state.task);
     const { taskStartNewOne } = useSelector((state) => state.taskStart);
 
     const taskOne = null;  // 데이터가 배열이라면 첫 번째 항목을 가져옵니다.
-
-
-    console.log(userProcessOneLists)
-    console.log(taskStartNewOne)
-
-    const todayDate = new Date();
-    const formattedDate = todayDate.toISOString().split("T")[0];
+    const today = format(new Date(), 'yyyy-MM-dd');
+    const formattedDate = today;
 
     useEffect(() => {
         userProcessOneList();
@@ -143,18 +138,11 @@ const Task = () => {
 
     // 업무 종료 버튼 클릭 시
     const handleEnd = () => {
-        // if (!selectedProcess) {
-        //     alert('업무공정을 선택해주세요');
-        //     return;
-        // } else if (!startTime) {
-        //     alert('업무시작을 클릭해주세요');
-        //     return;
-        // }
+     
 
         const now = new Date();
         setEndTime(getFormattedTime(now));
 
-        // 업무 시간 계산
         const [startH, startM] = taskStartNewOne.task_start_time.split(":").map(Number);
         const startDate = new Date();
         startDate.setHours(startH, startM, 0, 0);
@@ -242,12 +230,6 @@ const Task = () => {
                 </div>
                 <div className="work_time_box">
                     <div className="work_time_title">&nbsp;</div>
-                    <div className="work_time_title">총 업무시간</div>
-                    <div className="work_time_content">{totalWorkTime || "0시간"}</div>
-                    <div className="work_time_title">&nbsp;</div>
-                </div>
-                <div className="work_time_box">
-                    <div className="work_time_title">&nbsp;</div>
                     <div className="work_time_title">업무 종료 날짜</div>
                     <div className="work_time_content">{taskStartNewOne?.task_end?.task_end_date || "미정"}</div>
                     <div className="work_time_title">&nbsp;</div>
@@ -280,21 +262,70 @@ const Task = () => {
             {isEndModalOpen && (
                 <div className="modal">
                     <div className="modal_content">
-                        <p>업무를 종료하시겠습니까?</p>
-                        <p>총 수량: <input type="number" value={totalCount} onChange={(e) => setTotalCount(e.target.value)} /> 벌</p>
-                        <p>총 업무 시간: {totalWorkTime}</p>
-
+                        <h1 className="text-2xl font-bold text-gray-900 mb-1">업무종료</h1>
+                        <p className="text-gray-600 mb-5">
+                            업무를 종료하시겠습니까?
+                        </p>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">총 수량</label>
+                            <input
+                                type="number"
+                                name="notice_title"
+                                className="mb-2 w-full text-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                onChange={(e) => setTotalCount(e.target.value)}
+                                value={totalCount}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">총 업무 시간</label>
+                            <input
+                                type="text"
+                                name="notice_title"
+                                className="mb-2 w-full text-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                readOnly
+                                value={totalWorkTime || ''}
+                            />
+                        </div>
                         {totalCount > 0 && (
                             <>
-                                <p>시간당 작업량: {hourlyRate} 벌</p>
-                                <p>분당 작업량: {minuteRate} 벌</p>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">시간당 작업량</label>
+                                    <input
+                                        type="text"
+                                        name="notice_title"
+                                        className="mb-2 w-full text-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                        value={hourlyRate || ''}
+                                        readOnly
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">분당 작업량</label>
+                                    <input
+                                        type="text"
+                                        name="notice_title"
+                                        className="mb-2 w-full text-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                        value={minuteRate || ''}
+                                        readOnly
+                                    />
+                                </div>
                             </>
                         )}
 
                         {!totalCount ? null : taskStartNewOne.process.hour_average > hourlyRate ? (
-                            <p>분발하세요</p>
+                            <>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">업무 상태</label>
+                                <div className="mb-2 w-full text-center px-4 py-2 border border-gray-300 rounded-md text-red-500 font-bold">
+                                    분발하세요
+                                </div>
+                            </>
                         ) : (
-                            <p>잘하네요</p>
+                            <>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">업무 상태</label>
+                                <div className="mb-2 w-full text-center px-4 py-2 border border-gray-300 rounded-md text-green-600 font-bold">
+                                    잘하고 있어요
+                                </div>
+                            </>
                         )}
 
                         <button onClick={handleEndConfirm}>업무종료</button>

@@ -112,8 +112,8 @@ const EmployeesPage = () => {
     setSelectedEmployee(employee);
   };
 
-  const gotoJoin = () =>{
-    navigate('/join')
+  const gotoJoin = () => {
+    window.location.href = "/join"
   }
 
   // Get color for permission badge
@@ -180,7 +180,7 @@ const EmployeesPage = () => {
               />
             </div>
           </div>
-          <button onClick={()=>gotoJoin()} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          <button onClick={() => gotoJoin()} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
             + 새 직원 추가
           </button>
 

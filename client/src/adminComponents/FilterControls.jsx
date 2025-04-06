@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 
 const FilterControls = ({
   setFilterType,
+  startDate,
+  endDate,
   setStartDate,
   setEndDate,
   setMonth,
@@ -57,6 +59,7 @@ const FilterControls = ({
     setMonth(null)
     setYear(null)
   };
+  
 
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">
@@ -100,7 +103,7 @@ const FilterControls = ({
               type="date"
               id="startDate"
               name="startDate"
-              // value={dateRangeFilter.startDate || ''}
+              value={startDate || ''}
               onChange={handleStartDateChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
@@ -113,7 +116,7 @@ const FilterControls = ({
               type="date"
               id="endDate"
               name="endDate"
-              // value={dateRangeFilter.endDate || ''}
+              value={endDate || ''}
               onChange={handleEndDateChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
