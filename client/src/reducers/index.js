@@ -16,6 +16,7 @@ import notice from "./notice";
 import companyVacation from "./companyVacation";
 import logout from "./logout";
 import chartLate from "./chartLate";
+import today from "./today";
 
 const rootReducer = combineReducers({
   user,
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   companyVacation,
   logout,
   chartLate,
+  today,
 });
 
 export default rootReducer;

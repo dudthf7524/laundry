@@ -32,6 +32,7 @@ const noticeRoutes = require('./routes/notice');
 const CompanyVacationRoutes = require('./routes/companyVacation');
 const logoutRoutes = require('./routes/logout');
 const chartLateRoutes = require('./routes/chartLate');
+const todayRoutes = require('./routes/today');
 
 
 
@@ -129,6 +130,8 @@ app.use('/notice', noticeRoutes);
 app.use('/company/vacation', CompanyVacationRoutes);
 app.use('/logout', logoutRoutes);
 app.use('/chartLate', chartLateRoutes);
+app.use('/today', todayRoutes);
+
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));

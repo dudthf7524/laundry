@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from '../Api';
 import '../css/login.css';
 import { useDispatch } from 'react-redux';
 import { USER_LOGIN_REQUEST } from "../reducers/user";
@@ -8,7 +6,6 @@ import { USER_AUTH_REQUEST } from "../reducers/user";
 import { useSelector } from "react-redux";
 
 const Login = () => {
-    const navigate = useNavigate();
     const { user } = useSelector((state) => state.user);
     const { login } = useSelector((state) => state.user);
     const { user_login_error } = useSelector((state) => state.user);
@@ -30,34 +27,6 @@ const Login = () => {
         });
     };
 
-    const handleLogins = async (e) => {
-        e.preventDefault();
-        setError(null); // 에러 초기화
-        try {
-            const response = await axios.post('/user/login', credentials);
-            console.log(response.data.check)
-            // 로그인 성공 시 처리 (예: 토큰 저장 및 페이지 이동)
-            if (response.data.check === 1) {
-                // 예: localStorage에 토큰 저장
-                localStorage.setItem('token', response.data.token);
-                window.location.href = "/";
-            } else if (response.data.check === 0) {
-                setError('비밀번호가 일치하자 않습니다.');
-            } else if (response.data.check === -1) {
-                setError('아이디가 일치하지 않습니다.');
-            } else {
-                setError(response.data.message || '로그인에 실패했습니다.');
-            }
-        } catch (err) {
-            setError(err.response?.data?.message || '서버 오류가 발생했습니다.');
-        }
-    };
-
-    const handleSignupClick = () => {
-        navigate('/join');
-    };
-
-
     useEffect(() => {
         userAuth();
     }, []);
@@ -74,13 +43,13 @@ const Login = () => {
     const dispatch = useDispatch();
 
     const handleLogin = (e) => {
-if(credentials.user_id === ""){
-    alert("아이디를 입력해주세요")
-    return;
-}else if(credentials.user_password === ""){
-    alert('비밀번호를 입력해주세요')
-    return;
-}
+        if (credentials.user_id === "") {
+            alert("아이디를 입력해주세요")
+            return;
+        } else if (credentials.user_password === "") {
+            alert('비밀번호를 입력해주세요')
+            return;
+        }
 
         e.preventDefault();
 
@@ -99,27 +68,14 @@ if(credentials.user_id === ""){
             console.log("일치하지 않는 비밀번호");
             setError('비밀번호가 일치하지 않습니다.');
         }
-    }, [user_login_error]); // user_login_error 값이 변경될 때마다 실행
-
-    // useEffect(() => {
-    //     if (user?.auth_code === "A1") {
-    //         window.location.href="/admin/dashboard"
-    //     } else if (user_login_error === 0) {
-    //         console.log("일치하지 않는 비밀번호");
-    //         setError('비밀번호가 일치하지 않습니다.');
-    //     }
-    // }, [user]); // user_login_error 값이 변경될 때마다 실행
-
+    }, [user_login_error]); 
 
     return (
         <div className="login">
             <h1>laundry</h1>
-
-
             {
-                user? (
-                   <div>{user.user_name}님 환영합니다!</div>
-
+                user ? (
+                    <div>{user.user_name}님 환영합니다!</div>
                 ) : (
                     <>
                         <h2>로그인</h2>

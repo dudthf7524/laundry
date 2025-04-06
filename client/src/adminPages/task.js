@@ -115,13 +115,13 @@ const Time = () => {
     }, []);
 
 
-    const processList = (e) => {
+    const processList = () => {
         dispatch({
             type: PROCESS_LIST_REQUEST,
         });
     }
 
-    const userProcessList = (e) => {
+    const userProcessList = () => {
         dispatch({
             type: USER_PROCESS_LIST_REQUEST,
         });

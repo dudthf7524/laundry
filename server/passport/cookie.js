@@ -6,7 +6,6 @@ const { user } = require("../models");
 module.exports = async () => {
   try {
     await passport.serializeUser((user, done) => {
-      console.log(user)
 
       process.nextTick(() => {
         done(null, { user_id:user.user_id });
@@ -14,7 +13,6 @@ module.exports = async () => {
     });
 
     await passport.deserializeUser(async (data, done) => {
-      console.log(data)
       try {
         const user_r = await user.findOne({
           where: { user_id: data.user_id },
@@ -23,10 +21,8 @@ module.exports = async () => {
         });
 
         if (!user_r) {
-          console.log("user not found!");
           return done(null, false); // 사용자를 찾지 못했을 때, false 반환 (세션 종료)
         }
-        console.log(user_r)
         done(null, user_r);
       } catch (error) {
         console.error(error);

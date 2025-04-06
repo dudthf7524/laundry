@@ -1,14 +1,65 @@
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSelector } from 'react-redux';
 import * as XLSX from "xlsx"; // 📌 엑셀 라이브러리 추가
 
-const AttendanceTable = ({ setSelected, selected }) => {
+const AttendanceTable = ({ setSelected, selected, setSortedData }) => {
   const { isFieldHidden } = useAuth();
   const { attendanceStartYear } = useSelector((state) => state.attendanceStart);
   const [sortConfig, setSortConfig] = useState({ field: null, direction: 'asc' });
   const { user } = useSelector((state) => state.user);
   const excelImage = `${process.env.PUBLIC_URL}/icon/excel.png`;
+  const [searchName, setSearchName] = useState(''); // ✅ 검색할 이름
+
+  const filteredData = useMemo(() => {
+    if (!searchName.trim()) return attendanceStartYear || [];
+
+    return attendanceStartYear?.filter((item) =>
+      item.user.user_name.includes(searchName.trim())
+    ) || [];
+  }, [searchName, attendanceStartYear]);
+
+  const totalWorkTime = useMemo(() => {
+    if (!filteredData.length) return { totalHours: 0, totalMinutes: 0 };
+
+    const totalMinutes = filteredData.reduce((acc, item) => {
+      const hours = parseInt(item.sum_hour.replace('시', ''), 10) || 0;
+      const minutes = parseInt(item.sum_minute.replace('분', ''), 10) || 0;
+      return acc + (hours * 60 + minutes);
+    }, 0);
+
+    return {
+      totalHours: Math.floor(totalMinutes / 60),
+      totalMinutes: totalMinutes % 60,
+    };
+  }, [filteredData]);
+
+
+
+  const sortedData = useMemo(() => {
+    if (!filteredData.length) return [];
+
+    return [...filteredData].sort((a, b) => {
+      if (!sortConfig.field) return 0;
+
+      const valueA = a.user[sortConfig.field] || a[sortConfig.field];
+      const valueB = b.user[sortConfig.field] || b[sortConfig.field];
+
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        return sortConfig.direction === 'asc'
+          ? valueA.localeCompare(valueB, 'ko-KR')
+          : valueB.localeCompare(valueA, 'ko-KR');
+      }
+      return sortConfig.direction === 'asc' ? valueA - valueB : valueB - valueA;
+    });
+  }, [filteredData, sortConfig]);
+
+  useEffect(() => {
+    if (setSortedData) {
+      setSortedData(sortedData);
+    }
+  }, [sortedData, setSortedData]);
+  console.log(sortedData)
 
   // 정렬 처리 함수
   const handleSort = (field) => {
@@ -37,31 +88,31 @@ const AttendanceTable = ({ setSelected, selected }) => {
   };
 
 
-  var sortedData;
-  // 정렬된 데이터 반환
-  if (attendanceStartYear) {
-    sortedData = [...attendanceStartYear].sort((a, b) => {
-      if (!sortConfig.field) return 0;
+  // var sortedData;
+  // // 정렬된 데이터 반환
+  // if (attendanceStartYear) {
+  //   sortedData = [...attendanceStartYear].sort((a, b) => {
+  //     if (!sortConfig.field) return 0;
 
-      let valueA = a.user[sortConfig.field] || a[sortConfig.field];
-      let valueB = b.user[sortConfig.field] || b[sortConfig.field];
+  //     let valueA = a.user[sortConfig.field] || a[sortConfig.field];
+  //     let valueB = b.user[sortConfig.field] || b[sortConfig.field];
 
-      // 출근 날짜 정렬 시 날짜 변환 후 비교
-      if (sortConfig.field === "attendance_start_date") {
-        valueA = new Date(valueA);
-        valueB = new Date(valueB);
-      }
+  //     // 출근 날짜 정렬 시 날짜 변환 후 비교
+  //     if (sortConfig.field === "attendance_start_date") {
+  //       valueA = new Date(valueA);
+  //       valueB = new Date(valueB);
+  //     }
 
-      if (typeof valueA === "string" && typeof valueB === "string") {
-        return sortConfig.direction === "asc"
-          ? valueA.localeCompare(valueB, "ko-KR")
-          : valueB.localeCompare(valueA, "ko-KR");
-      }
+  //     if (typeof valueA === "string" && typeof valueB === "string") {
+  //       return sortConfig.direction === "asc"
+  //         ? valueA.localeCompare(valueB, "ko-KR")
+  //         : valueB.localeCompare(valueA, "ko-KR");
+  //     }
 
-      return sortConfig.direction === "asc" ? valueA - valueB : valueB - valueA;
-    });
-  }
-  console.log(sortedData)
+  //     return sortConfig.direction === "asc" ? valueA - valueB : valueB - valueA;
+  //   });
+  // }
+
   const exportToExcel = () => {
     if (!sortedData) {
       alert("엑셀로 내보낼 데이터가 없습니다.");
@@ -76,7 +127,7 @@ const AttendanceTable = ({ setSelected, selected }) => {
         출근날짜: asy.attendance_start_date,
         지정출근시간: asy.start_time,
         지정퇴근시간: asy.attendance_end.end_time,
-        휴게시간: asy.rest_start_time+"~"+asy.rest_end_time,
+        휴게시간: asy.rest_start_time + "~" + asy.rest_end_time,
         살제출근시간: asy.attendance_start_time,
         출근상태: asy.attendance_start_state,
         퇴근날짜: asy.attendance_end?.attendance_end_date || "-",
@@ -110,7 +161,23 @@ const AttendanceTable = ({ setSelected, selected }) => {
 
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div className="p-4">
+        {/* ✅ 이름 검색 필드 추가 */}
+        <input
+          type="text"
+          placeholder="이름을 입력하세요"
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+          className="p-2 border rounded w-full mb-4"
+        />
 
+        {/* ✅ 검색한 사용자의 총 근무시간 표시 */}
+        {searchName && (
+          <div className="p-4 bg-gray-100 text-lg font-semibold">
+            "{searchName}"님의 총 근무시간: {totalWorkTime.totalHours}시간 {totalWorkTime.totalMinutes}분
+          </div>
+        )}
+      </div>
       <div className="overflow-auto max-h-[500px]">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50 sticky top-0 z-10">
@@ -179,7 +246,11 @@ const AttendanceTable = ({ setSelected, selected }) => {
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end?.attendance_end_date}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end?.attendance_end_time}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end?.attendance_end_state}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{asy.sum_hour}시간 {asy.sum_minute}분</td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {(asy.sum_hour < 0 || asy.sum_minute < 0)
+                      ? "0시간 0분"
+                      : `${asy.sum_hour}시간 ${asy.sum_minute}분`}
+                  </td>
                 </tr>
               ))
             ) : (

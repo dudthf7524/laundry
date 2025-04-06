@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { employees, permissionLevels } from "../data/mockData";
 import { VACATION_ALLOW_REQUEST, VACATION_LIST_REQUEST } from "../reducers/vacation";
 import VacationList from "./vacationList";
 import VacationUser from "./vacationUser";
@@ -10,12 +8,7 @@ import VacationCompany from "./vacationCompany";
 const Vacation = () => {
   const [date, setDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const { user } = useSelector((state) => state.user);
   const { vacationLists = [] } = useSelector((state) => state.vacation);
   const [activeTab, setActiveTab] = useState('vacationList');
 

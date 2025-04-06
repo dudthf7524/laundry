@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../Api'; // 작성한 axios 인스턴스 사용
 import '../css/join.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { USER_CHECK_ID_REQUEST } from '../reducers/user';
 const Join = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [formData, setFormData] = useState({
         user_id: '',
         user_name: '',
@@ -17,7 +20,8 @@ const Join = () => {
     const [success, setSuccess] = useState(null);
     const [isUsernameChecked, setIsUsernameChecked] = useState(false);
     const [isUsernameValid, setIsUsernameValid] = useState(false); // 아이디 입력 여부 상태
-
+    const [checkIdState, setCheckIdState] = useState(false);
+    const [isAvailable, setIsAvailable] = useState(false);
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -38,8 +42,7 @@ const Join = () => {
         try {
             const response = await axios.post('/user/check', { user_id: formData.user_id });
             if (response.data.success || response.data.message === 'Username is available') {
-                alert('사용 가능한 아이디입니다.');
-                setIsUsernameChecked(true);
+
             } else {
                 setError(response.data.message || '이미 사용 중인 아이디입니다.');
                 setIsUsernameChecked(false);
@@ -51,12 +54,40 @@ const Join = () => {
     };
 
     const handleJoin = async (e) => {
-       
+
         e.preventDefault();
         setError(null);
         setSuccess(null);
 
-        console.log(formData)
+        if (!formData.user_id) {
+            alert('아이디를 입력해주세요')
+            return;
+        }
+        if (!formData.user_name) {
+            alert('이름을 입력해주세요')
+            return;
+        }
+        if (!formData.user_nickname) {
+            alert('닉네임을 입력해주세요')
+            return;
+        }
+        if (!formData.user_position) {
+            alert('직급을 입력해주세요')
+            return;
+        }
+        if (!formData.user_password) {
+            alert('비밀번호를 입력해주세요')
+            return;
+        }
+        if (!formData.user_confirmPassword) {
+            alert('비밀번호 확인을 입력해주세요')
+            return;
+        }
+        if (!formData.user_hire_date) {
+            alert('입사입을 입력해주세요')
+            return;
+        }
+
         if (!isUsernameChecked) {
             setError('아이디 중복 확인을 해주세요.');
             return;
@@ -70,7 +101,7 @@ const Join = () => {
         try {
             const response = await axios.post('/user/join', formData);
             if (response.data) {
-                setSuccess('회원가입에 성공했습니다. 로그인 페이지로 이동합니다.');
+                setSuccess('직원등록 완료 직원 관리 페이지로 이동');
                 setTimeout(() => navigate('/admin/employees'), 2000); // 2초 후 로그인 페이지로 이동
             } else {
                 setError(response.data.message || '회원가입에 실패했습니다.');
@@ -79,7 +110,34 @@ const Join = () => {
             setError(err.response?.data?.message || '서버 오류가 발생했습니다.');
         }
     };
-    
+
+    const { userCheckId, } = useSelector((state) => state.user);
+    console.log(userCheckId)
+
+    const checkId = () => {
+        const data = {
+            user_id: formData.user_id
+        }
+        dispatch({
+            type: USER_CHECK_ID_REQUEST,
+            data: data
+        });
+    }
+
+    useEffect(() => {
+        if (userCheckId === 0) {
+            setIsAvailable(true);
+            setCheckIdState(true)
+            setIsUsernameChecked(true);
+        } else if (userCheckId === 1) {
+            setIsAvailable(false);
+            setCheckIdState(true)
+            setIsUsernameChecked(false);
+        }
+    }, [userCheckId]);
+
+
+
     return (
 
         <div className="join">
@@ -95,13 +153,20 @@ const Join = () => {
                         onChange={handleInputChange}
                     />
                     <button
+                        type="button"
                         className={`${isUsernameValid ? 'active' : 'disabled'}`}
-                        onClick={handleCheckDuplicate}
+                        onClick={checkId}
                         disabled={!isUsernameValid} // 비활성화 상태
                     >
                         중복확인
                     </button>
                 </div>
+                {checkIdState ? (
+                    <p className={`mt-2 text-sm ${isAvailable ? "text-green-500" : "text-red-500"}`}>
+                        {isAvailable ? "사용 가능한 아이디입니다." : "이미 사용 중인 아이디입니다."}
+                    </p>
+                ) : (<></>)
+                }
                 <input
                     type="text"
                     name="user_name"
@@ -116,7 +181,7 @@ const Join = () => {
                     value={formData.user_nickname}
                     onChange={handleInputChange}
                 />
-                 <input
+                <input
                     type="text"
                     name="user_position"
                     placeholder="직급"
@@ -148,7 +213,7 @@ const Join = () => {
             </form>
             {error && <p className="error-message">{error}</p>}
             {success && <p className="success-message">{success}</p>}
-          
+
             {/* <div className="ocean">
                 <div className="wave"></div>
                 <div className="wave"></div>

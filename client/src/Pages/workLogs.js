@@ -4,27 +4,23 @@ import BottomBar from '../components/BottomBar';
 import { VACATION_REGISTER_REQUEST, VACATION_USER_REQUEST } from '../reducers/vacation';
 import { useDispatch, useSelector } from 'react-redux';
 import { select } from 'redux-saga/effects';
+import { COMPANY_VACATION_LIST_REQUEST } from '../reducers/companyVacation';
 
 const WorkLogs = () => {
     const [date, setDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(null);
     const [reason, setReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const vacationDates = [
-        new Date(2025, 2, 19),
-        new Date(2025, 12, 20),
-        new Date(2025, 2, 21)
-    ];
     const reasonInputRef = useRef(null);
     const { vacationUser } = useSelector((state) => state.vacation);
 
 
 
 
-    var aaa;
+    var userVaction;
 
     if (vacationUser) {
-        aaa = vacationUser
+        userVaction = vacationUser
             .filter((v) => v.vacation_date === selectedDate)
             .map((v) => ({
                 vacation_date: v.vacation_date,
@@ -33,7 +29,7 @@ const WorkLogs = () => {
             })); // 전체 날짜 문자열 저장
     }
 
-    console.log(aaa)
+
 
     var vacationDays;
     var vacationAllows;
@@ -66,9 +62,6 @@ const WorkLogs = () => {
         const viewYear = date.getFullYear();
         const viewMonth = date.getMonth();
         const today = new Date();
-        const todayDate = today.getDate();
-        const todayMonth = today.getMonth();
-        const todayYear = today.getFullYear();
 
         const thisLast = new Date(viewYear, viewMonth + 1, 0);
         const TLDate = thisLast.getDate();
@@ -83,13 +76,14 @@ const WorkLogs = () => {
             }
 
             const dayOfWeek = new Date(viewYear, viewMonth, d).getDay();
-            const isToday = (d === todayDate) && (viewMonth === todayMonth) && (viewYear === todayYear);
+            const isToday = today.getDate() === d && today.getMonth() === viewMonth && today.getFullYear() === viewYear;
             const formattedDate = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-
             const isVacation = vacationDays?.includes(formattedDate); // 문자열 비교
             const vacation_allow = vacationAllows?.includes(formattedDate); // 문자열 비교
-
             const isSelected = selectedDate === `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            const bgColor = isSelected ? "bg-blue-300" : isToday ? "bg-yellow-300" : "";
+            const company_vacation = conpanyVacationLists?.some(v => v.company_vacation_date === formattedDate); // 회사 휴무일 (🟠)
+
             const handleDateClick = () => {
                 const formattedDate = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 setSelectedDate(formattedDate);
@@ -103,26 +97,41 @@ const WorkLogs = () => {
                     key={i}
                     className={`flex items-center justify-center p-4 text-center cursor-pointer flex-col  text-lg 
                         ${isSelected ? "bg-blue-500 text-white font-bold" : "text-gray-900"} 
-                        hover:bg-blue-200 transition`}
+                        hover:bg-blue-200 transition ${bgColor}`}
                     onClick={handleDateClick}
                 >
                     <div className={`day-number h-8 ${isSelected ? "text-white font-bold" : ""}  ${dayOfWeek === 0 ? "text-red-500" : dayOfWeek === 6 ? "text-blue-500" : "text-gray-900"}`}>
                         {d}
                     </div>
-                    <div className="text-xl text-red-500 font-bold h-8">{isVacation ? "⭕" : ""} {vacation_allow ? "🔴" : ""}</div>                </div>
+                    <div className="text-xl text-red-500 font-bold h-8">
+                        {isVacation ? "⭕" : ""}
+                        {vacation_allow ? "🔴" : ""}
+                        {company_vacation ? "🟠" : ""}
+                    </div>
+                </div>
             );
         });
     };
 
     const dispatch = useDispatch();
+    const { conpanyVacationLists = [] } = useSelector((state) => state.companyVacation);
+    const selectedCompanyVacation = Array.isArray(conpanyVacationLists)
+        ? conpanyVacationLists.find((v) => v.company_vacation_date === selectedDate)
+        : null;
 
     useEffect(() => {
         handleVacationUser();
+        handleVacationCompany();
     }, []);
 
     const handleVacationUser = () => {
         dispatch({
             type: VACATION_USER_REQUEST,
+        });
+    };
+    const handleVacationCompany = () => {
+        dispatch({
+            type: COMPANY_VACATION_LIST_REQUEST,
         });
     };
     const handleSubmit = (e) => {
@@ -174,14 +183,23 @@ const WorkLogs = () => {
                         {renderCalendar()}
                     </div>
                     <div className="">
-                        🔴 : 휴가 ⭕ : 휴가 신청
+                        🔴 : 휴가 ⭕ : 휴가 신청 🟠 : 휴무일
                     </div>
                 </div>
 
-                {aaa?.length === 0 ? (
-                    <div className="p-4 mt-4 bg-gray-100 rounded-lg shadow w-full">
-                        <h2 className="text-xl font-semibold">휴가 신청</h2>
-                        <p className="text-gray-800 mt-2 text-lg">선택한 날짜: {selectedDate}</p>
+                {selectedDate && !selectedCompanyVacation && userVaction?.length === 0 ? (
+                    <div className="p-4 mt-4 bg-white rounded-lg shadow w-full">
+                        <h2 className="text-xl font-semibold mb-3">휴가 신청</h2>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-3">선택한 날짜</label>
+                            <input
+                                type="text"
+                                name="notice_title"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 mb-3"
+                                value={selectedDate}
+                                readOnly
+                            />
+                        </div>
                         <form onSubmit={handleSubmit} className="mt-4">
                             <label className="block text-gray-700 text-lg">사유 입력</label>
                             <textarea
@@ -200,14 +218,70 @@ const WorkLogs = () => {
                 ) : (
                     <div>
                         {
-                            aaa?.map((aa, index) => {
+                            userVaction?.map((uv, index) => {
                                 return (
-                                    <div key={index}>{aa.vacation_date} {aa.vacation_state} {aa.vacation_content}</div>
+                                    <div key={index} className="p-4 mt-4 bg-white rounded-lg shadow w-full">
+                                        <h2 className="text-xl font-semibold mb-3">휴가</h2>
 
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-3">날짜</label>
+                                            <input
+                                                type="text"
+                                                name="notice_title"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 mb-3"
+                                                value={uv.vacation_date}
+                                                readOnly
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-3">상태</label>
+                                            <input
+                                                type="text"
+                                                name="notice_title"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 mb-3"
+                                                value={uv.vacation_state}
+                                                readOnly
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">사유</label>
+                                            <textarea
+                                                name="notice_content"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                                rows="6"
+                                                value={uv.vacation_content}
+                                                readOnly
+                                            ></textarea>
+                                        </div>
+                                    </div>
                                 )
-
                             })
                         }
+                    </div>
+                )}
+
+                {selectedCompanyVacation && (
+                    <div className="bg-white p-4 rounded-lg shadow mb-6">
+                        <h2 className="text-xl font-semibold mb-3">휴무일 정보</h2>
+                        <div className="mb-3">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">날짜</label>
+                            <input
+                                type="text"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 mb-2"
+                                value={selectedCompanyVacation.company_vacation_date}
+                                readOnly
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">사유</label>
+                            <textarea
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                rows="4"
+                                value={selectedCompanyVacation.company_vacation_reason}
+                                readOnly
+                            ></textarea>
+                        </div>
                     </div>
                 )}
             </div>

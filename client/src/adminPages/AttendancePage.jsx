@@ -3,17 +3,19 @@ import FilterControls from '../adminComponents/FilterControls';
 import AttendanceTable from '../adminComponents/AttendanceTable';
 import { useDispatch, useSelector } from 'react-redux';
 import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCESTART_UPDATE_REQUEST, ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
+import { format } from 'date-fns';
 
 const AttendancePage = () => {
-
+  const today = format(new Date(), 'yyyy-MM-dd');
   const [filterType, setFilterType] = useState('date'); 
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState(today);
+  const [endDate, setEndDate] = useState(today);
   const [month, setMonth] = useState(null);
   const [year, setYear] = useState(null);
   const [selected, setSelected] = useState(null); 
   const [isModalOpen, setIsModalOpen] = useState(false); 
   const [editData, setEditData] = useState({}); 
+  const [sortedData, setSortedData] = useState({}); 
 
   const vacationDate = async () => {
     const data = {
@@ -61,7 +63,6 @@ const AttendancePage = () => {
 
 
   const handleEditClick = () => {
-    console.log(selected)
     if (selected) {
       setEditData({ ...selected });
       setIsModalOpen(true);
@@ -90,16 +91,14 @@ const AttendancePage = () => {
     
   };
 
-  const { attendanceStartYear } = useSelector((state) => state.attendanceStart);
+  console.log(sortedData)
 
-  const attendanceStartYearSum = attendanceStartYear ? attendanceStartYear.length : 0;
-
-  const countNullEnd = Array.isArray(attendanceStartYear)
-    ? attendanceStartYear.filter(asy => asy.attendance_end === null).length
+  const attendanceStartYearSum = sortedData ? sortedData.length : 0;
+  const countNullEnd = Array.isArray(sortedData)
+    ? sortedData.filter(asy => asy.attendance_end === null).length
     : 0;
-
-  const countLate = Array.isArray(attendanceStartYear)
-    ? attendanceStartYear.filter(asy => asy.attendance_start_state === "지각").length
+  const countLate = Array.isArray(sortedData)
+    ? sortedData.filter(asy => asy.attendance_start_state === "지각").length
     : 0;
 
   return (
@@ -115,6 +114,8 @@ const AttendancePage = () => {
 
       <FilterControls
         setFilterType={setFilterType}
+        startDate={startDate}
+        endDate={endDate}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         setMonth={setMonth}
@@ -126,6 +127,8 @@ const AttendancePage = () => {
         <AttendanceTable
           setSelected={setSelected}
           selected={selected}
+          setSortedData={setSortedData}
+          
         />
       </div>
 
