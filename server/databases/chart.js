@@ -2,14 +2,12 @@ const { attendanceStart, attendanceEnd, user } = require("../models");
 const { Op, Sequelize } = require("sequelize");
 
 const chartDate = async (data) => {
-
-
     try {
         const attendanceData = await attendanceStart.findAll({
             attributes: [
                 [Sequelize.col("attendance_start_date"), "date"],
-                [Sequelize.col("User.user_name"), "user_name"],
-                [Sequelize.col("User.user_code"), "user_code"],
+                [Sequelize.col("user.user_name"), "user_name"],
+                [Sequelize.col("user.user_code"), "user_code"],
 
                 // ⬇️ sum_hour: 08 → 8로 표시 (LPAD 제거)
                 [
@@ -66,10 +64,10 @@ const chartDate = async (data) => {
                     [Op.lte]: data.endDate,   // 2025-06-24 이하
                 },
             },
-            group: ["attendance_start_date", "User.user_code", "User.user_name"],
+            group: ["attendance_start_date", "user.user_code", "user.user_name"],
             order: [
                 ["attendance_start_date", "ASC"],
-                [Sequelize.col("User.user_name"), "ASC"],
+                [Sequelize.col("user.user_name"), "ASC"],
             ],
         });
 
@@ -87,8 +85,8 @@ const chartMonth = async (data) => {
         const attendanceData = await attendanceStart.findAll({
             attributes: [
                 [Sequelize.fn("DATE_FORMAT", Sequelize.col("attendance_start_date"), "%Y-%m"), "date"],  // YYYY-MM 형식
-                [Sequelize.col("User.user_name"), "user_name"],
-                [Sequelize.col("User.user_code"), "user_code"],
+                [Sequelize.col("user.user_name"), "user_name"],
+                [Sequelize.col("user.user_code"), "user_code"],
                 [
                     Sequelize.literal(`
                         FLOOR(SUM(TIMESTAMPDIFF(SECOND, 
@@ -127,10 +125,10 @@ const chartMonth = async (data) => {
                     ),
                 ],
             },
-            group: ["date", "User.user_code", "User.user_name"],
+            group: ["date", "user.user_code", "user.user_name"],
             order: [
                 ["date", "ASC"],
-                [Sequelize.col("User.user_name"), "ASC"],
+                [Sequelize.col("user.user_name"), "ASC"],
             ],
         });
 
@@ -147,8 +145,8 @@ const chartYear = async (data) => {
         const attendanceData = await attendanceStart.findAll({
             attributes: [
                 [Sequelize.fn("DATE_FORMAT", Sequelize.col("attendance_start_date"), "%Y"), "date"],  // YYYY-MM 형식
-                [Sequelize.col("User.user_name"), "user_name"],
-                [Sequelize.col("User.user_code"), "user_code"],
+                [Sequelize.col("user.user_name"), "user_name"],
+                [Sequelize.col("user.user_code"), "user_code"],
                 [
                     Sequelize.literal(`
                         FLOOR(SUM(TIMESTAMPDIFF(SECOND, 
@@ -187,10 +185,10 @@ const chartYear = async (data) => {
                     ),
                 ],
             },
-            group: ["date", "User.user_code", "User.user_name"],
+            group: ["date", "user.user_code", "user.user_name"],
             order: [
                 ["date", "ASC"],
-                [Sequelize.col("User.user_name"), "ASC"],
+                [Sequelize.col("user.user_name"), "ASC"],
             ],
         });
 
