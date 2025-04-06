@@ -22,7 +22,13 @@ const MyLocation = ({ setIsWithinRadius, closeModal }) => {
     }, [dispatch]);
 
     const { companyAddressLists } = useSelector((state) => state.companyAddress);
-    const companyAddress = companyAddressLists && companyAddressLists.length > 0 ? companyAddressLists[0] : null;
+    console.log(companyAddressLists)
+    const companyAddress = companyAddressLists ? companyAddressLists : null;
+
+    console.log(companyAddress)
+    console.log(companyAddress.location_latitude)
+    console.log(companyAddress.location_hardness)
+    console.log(companyAddress.radius)
 
     const getDistance = (lat1, lon1, lat2, lon2) => {
         const R = 6371000;
@@ -80,12 +86,19 @@ const MyLocation = ({ setIsWithinRadius, closeModal }) => {
                 <div className="w-full mb-4">
                     <GoogleMap mapContainerStyle={containerStyle} center={location} zoom={15}>
                         {/* 내 위치 */}
-                        <Marker position={location} />
-
+                        <Marker position={location} icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png" />
+                        <Circle
+                            center={location}
+                            radius={radius}
+                            options={{
+                                fillColor: "#6495ED55",       // 연파랑 (투명도 포함)
+                                strokeColor: "#6495ED",       // 파랑 테두리
+                                strokeWeight: 2
+                            }}
+                        />
                         {/* 근무지 위치와 반경 (데이터가 있을 때만 렌더링) */}
                         {companyAddress &&
-                            companyAddress.location_latitude &&
-                            companyAddress.location_hardness && (
+                            (
                                 <>
                                     <Marker
                                         position={{
@@ -100,9 +113,9 @@ const MyLocation = ({ setIsWithinRadius, closeModal }) => {
                                         }}
                                         radius={parseInt(companyAddress.radius)}
                                         options={{
-                                            fillColor: "#6495ED55",
-                                            strokeColor: "#6495ED",
-                                            strokeWeight: 1,
+                                            fillColor: "#FF6347AA",      // 채우기 색 (예: Tomato 색)
+                                            strokeColor: "#FF4500",      // 테두리 색 (예: OrangeRed)
+                                            strokeWeight: 2              // 테두리 두께
                                         }}
                                     />
                                 </>
