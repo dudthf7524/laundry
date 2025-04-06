@@ -7,15 +7,28 @@ import { format } from 'date-fns';
 
 const AttendancePage = () => {
   const today = format(new Date(), 'yyyy-MM-dd');
-  const [filterType, setFilterType] = useState('date'); 
+  const [filterType, setFilterType] = useState('date');
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(today);
   const [month, setMonth] = useState(null);
   const [year, setYear] = useState(null);
-  const [selected, setSelected] = useState(null); 
-  const [isModalOpen, setIsModalOpen] = useState(false); 
-  const [editData, setEditData] = useState({}); 
-  const [sortedData, setSortedData] = useState({}); 
+  const [selected, setSelected] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editData, setEditData] = useState({});
+  const [sortedData, setSortedData] = useState({});
+
+  const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
+  const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
+
+  const handleTimeChange = (field, value, type) => {
+    const [hour, minute] = (editData[field] || "00:00").split(":");
+    const newTime = type === 'hour' ? `${value}:${minute}` : `${hour}:${value}`;
+
+    setEditData((prev) => ({
+      ...prev,
+      [field]: newTime,
+    }));
+  };
 
   const vacationDate = async () => {
     const data = {
@@ -87,8 +100,8 @@ const AttendancePage = () => {
     });
 
     setIsModalOpen(false);
-   
-    
+
+
   };
 
   console.log(sortedData)
@@ -128,7 +141,7 @@ const AttendancePage = () => {
           setSelected={setSelected}
           selected={selected}
           setSortedData={setSortedData}
-          
+
         />
       </div>
 
@@ -146,8 +159,30 @@ const AttendancePage = () => {
             <label>출근날짜</label>
             <input type="date" name="attendance_start_date" value={editData.attendance_start_date} onChange={handleInputChange} className="border p-2 w-full mb-2" />
 
+            {/* <label>출근시간</label>
+            <input type="text" name="attendance_start_time" value={editData.attendance_start_time} onChange={handleInputChange} className="border p-2 w-full mb-2" /> */}
             <label>출근시간</label>
-            <input type="text" name="attendance_start_time" value={editData.attendance_start_time} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+            <div className="flex gap-2 mb-2">
+              <select
+                value={editData.attendance_start_time?.split(":")[0] || "00"}
+                onChange={(e) => handleTimeChange("attendance_start_time", e.target.value, "hour")}
+                className="w-full border p-2"
+              >
+                {hours.map((h) => (
+                  <option key={h} value={h}>{h}</option>
+                ))}
+              </select>
+              :
+              <select
+                value={editData.attendance_start_time?.split(":")[1] || "00"}
+                onChange={(e) => handleTimeChange("attendance_start_time", e.target.value, "minute")}
+                className="w-full border p-2"
+              >
+                {minutes.map((m) => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            </div>
 
             <label>출근상태</label>
             <input type="text" name="attendance_start_state" value={editData.attendance_start_state} onChange={handleInputChange} className="border p-2 w-full mb-2" />
@@ -155,10 +190,33 @@ const AttendancePage = () => {
             <label>퇴근날짜</label>
             <input type="date" name="attendance_end_date" value={editData.attendance_end_date || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
 
-            <label>퇴근시간</label>
-            <input type="text" name="attendance_end_time" value={editData.attendance_end_time || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+            {/* <label>퇴근시간</label>
+            <input type="text" name="attendance_end_time" value={editData.attendance_end_time || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" /> */}
 
-            <button onClick={ ()=> handleSave()} className="w-full bg-blue-500 text-white px-4 py-2 rounded text-center">
+            <label>퇴근시간</label>
+            <div className="flex gap-2 mb-2">
+              <select
+                value={editData.attendance_end_time?.split(":")[0] || "00"}
+                onChange={(e) => handleTimeChange("attendance_end_time", e.target.value, "hour")}
+                className="w-full border p-2"
+              >
+                {hours.map((h) => (
+                  <option key={h} value={h}>{h}</option>
+                ))}
+              </select>
+              :
+              <select
+                value={editData.attendance_end_time?.split(":")[1] || "00"}
+                onChange={(e) => handleTimeChange("attendance_end_time", e.target.value, "minute")}
+                className="w-full border p-2"
+              >
+                {minutes.map((m) => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            </div>
+
+            <button onClick={() => handleSave()} className="w-full bg-blue-500 text-white px-4 py-2 rounded text-center">
               저장
             </button>
             <button onClick={() => setIsModalOpen(false)} className="w-full bg-gray-300 text-black px-4 py-2 rounded text-center mt-2">

@@ -20,6 +20,18 @@ const TaskStatsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState({});
 
+  const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
+  const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
+
+  const handleTimeChange = (field, value, type) => {
+    const [hour, minute] = (editData[field] || "00:00").split(":");
+    const newTime = type === 'hour' ? `${value}:${minute}` : `${hour}:${value}`;
+
+    setEditData((prev) => ({
+      ...prev,
+      [field]: newTime,
+    }));
+  };
 
   console.log(processLists)
 
@@ -179,27 +191,95 @@ const TaskStatsPage = () => {
             <h2 className="text-lg font-semibold mb-4">업무 정보 수정</h2>
 
             <label>이름</label>
-            <input type="text" readOnly name="user_name" value={editData.user_name} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+            <input type="text" readOnly value={editData.user_name} className="border p-2 w-full mb-2" />
 
             <label>직무형태</label>
-            <input type="textg" readOnly name="user_position" value={editData.user_position} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+            <input type="text" readOnly value={editData.user_position} className="border p-2 w-full mb-2" />
 
             <label>업무 시작 날짜</label>
             <input type="date" name="task_start_date" value={editData.task_start_date} onChange={handleInputChange} className="border p-2 w-full mb-2" />
 
-            <label>시작시간</label>
-            <input type="text" name="task_start_time" value={editData.task_start_time} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+            <label>시작 시간</label>
+            <div className="flex gap-2 mb-2">
+              <select
+                value={editData.task_start_time?.split(':')[0] || '00'}
+                onChange={(e) =>
+                  setEditData((prev) => ({
+                    ...prev,
+                    task_start_time: `${e.target.value}:${prev.task_start_time?.split(':')[1] || '00'}`,
+                  }))
+                }
+                className="border p-2 w-1/2"
+              >
+                {[...Array(24)].map((_, i) => (
+                  <option key={i} value={String(i).padStart(2, '0')}>
+                    {String(i).padStart(2, '0')}
+                  </option>
+                ))}
+              </select>
+              :
+              <select
+                value={editData.task_start_time?.split(':')[1] || '00'}
+                onChange={(e) =>
+                  setEditData((prev) => ({
+                    ...prev,
+                    task_start_time: `${prev.task_start_time?.split(':')[0] || '00'}:${e.target.value}`,
+                  }))
+                }
+                className="border p-2 w-1/2"
+              >
+                {[...Array(60)].map((_, i) => (
+                  <option key={i} value={String(i).padStart(2, '0')}>
+                    {String(i).padStart(2, '0')}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <label>업무 종료 날짜</label>
             <input type="date" name="task_end_date" value={editData.task_end_date || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
 
-            <label>종료시간</label>
-            <input type="text" name="task_end_time" value={editData.task_end_time || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+            <label>종료 시간</label>
+            <div className="flex gap-2 mb-2">
+              <select
+                value={editData.task_end_time?.split(':')[0] || '00'}
+                onChange={(e) =>
+                  setEditData((prev) => ({
+                    ...prev,
+                    task_end_time: `${e.target.value}:${prev.task_end_time?.split(':')[1] || '00'}`,
+                  }))
+                }
+                className="border p-2 w-1/2"
+              >
+                {[...Array(24)].map((_, i) => (
+                  <option key={i} value={String(i).padStart(2, '0')}>
+                    {String(i).padStart(2, '0')}
+                  </option>
+                ))}
+              </select>
+              :
+              <select
+                value={editData.task_end_time?.split(':')[1] || '00'}
+                onChange={(e) =>
+                  setEditData((prev) => ({
+                    ...prev,
+                    task_end_time: `${prev.task_end_time?.split(':')[0] || '00'}:${e.target.value}`,
+                  }))
+                }
+                className="border p-2 w-1/2"
+              >
+                {[...Array(60)].map((_, i) => (
+                  <option key={i} value={String(i).padStart(2, '0')}>
+                    {String(i).padStart(2, '0')}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <label>개수</label>
             <input type="number" name="total_count" value={editData.total_count || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
 
-            <button onClick={() => handleSave()} className="w-full bg-blue-500 text-white px-4 py-2 rounded text-center">
+            <button onClick={handleSave} className="w-full bg-blue-500 text-white px-4 py-2 rounded text-center">
               저장
             </button>
             <button onClick={() => setIsModalOpen(false)} className="w-full bg-gray-300 text-black px-4 py-2 rounded text-center mt-2">
