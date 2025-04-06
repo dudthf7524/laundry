@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../css/attendance.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { TIME_DETAIL_REQUEST } from '../reducers/time';
-import { ATTENDANCESTART_NEW_ONE_REQUEST, ATTENDANCESTART_REGISTER_REQUEST } from '../reducers/attendanceStart';
+import { ATTENDANCESTART_NEW_ONE_REQUEST, ATTENDANCESTART_REGISTER_REQUEST, ATTENDANCESTART_TODAY_REQUEST } from '../reducers/attendanceStart';
 import { ATTENDANCEEND_TIME_REQUEST } from '../reducers/attendanceEnd';
 import MyLocation from './myLocation';
 import { NOTICE_LIST_REQUEST } from '../reducers/notice';
@@ -34,10 +34,10 @@ const Attendance = () => {
             alert('지정된 출근/퇴근 시간이 존재하지 않습니다.\n관리자에게 문의 해주세요.');
             return;
         }
-        // if (!isWithinRadius) {
-        //     alert('근무지 반경 외부입니다. 출근할 수 없습니다.');
-        //     return;
-        // }
+        if (!isWithinRadius) {
+            alert('근무지 반경 외부입니다. 출근할 수 없습니다.');
+            return;
+        }
 
         const attendance_start_date = year + "-" + month + "-" + date;
         const attendance_start_time = hours + ":" + minutes;
@@ -69,10 +69,10 @@ const Attendance = () => {
             alert('지정된 출근/퇴근 시간이 존재하지 않습니다.\n관리자에게 문의 해주세요.');
             return;
         }
-        // if (!isWithinRadius) {
-        //     alert('근무지 반경 외부입니다. 퇴근할 수 없습니다.');
-        //     return;
-        // }
+        if (!isWithinRadius) {
+            alert('근무지 반경 외부입니다. 퇴근할 수 없습니다.');
+            return;
+        }
         const attendance_end_date = year + "-" + month + "-" + date;
         const attendance_end_time = hours + ":" + minutes;
 
@@ -83,8 +83,8 @@ const Attendance = () => {
             attendance_end_time: attendance_end_time,
             attendance_end_state: attendance_end_state,
             end_time: timeDetail.end_time,
-            user_code: attendanceStartNewOne.user_code,
-            attendance_start_id: attendanceStartNewOne.attendance_start_id,
+            user_code: attendanceStartToday.user_code,
+            attendance_start_id: attendanceStartToday.attendance_start_id,
         }
 
         dispatch({
@@ -95,16 +95,26 @@ const Attendance = () => {
 
     const { timeDetail } = useSelector((state) => state.time);
 
-    const attendanceStartNewOneRequest = () => {
+    // const attendanceStartNewOneRequest = () => {
 
+    //     dispatch({
+    //         type: ATTENDANCESTART_NEW_ONE_REQUEST,
+    //     });
+
+    // };
+    // const { attendanceStartNewOne } = useSelector((state) => state.attendanceStart);
+
+    useEffect(() => {
+        attendanceToday();
+    }, []);
+
+    const attendanceToday = () => {
         dispatch({
-            type: ATTENDANCESTART_NEW_ONE_REQUEST,
+            type: ATTENDANCESTART_TODAY_REQUEST,
         });
-
     };
-    const { attendanceStartNewOne } = useSelector((state) => state.attendanceStart);
 
-
+    const { attendanceStartToday } = useSelector((state) => state.attendanceStart);
 
 
     const timeDetailLoding = () => {
@@ -118,7 +128,7 @@ const Attendance = () => {
 
     useEffect(() => {
         timeDetailLoding();
-        attendanceStartNewOneRequest();
+        // attendanceStartNewOneRequest();
     }, []);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -183,14 +193,15 @@ const Attendance = () => {
                     </div>
                 </div>
             )}
+            
 
             <div className="work_time_container">
                 <div className="work_time_box">
                     <div className="work_time_title">&nbsp;</div>
                     <div className="work_time_title">출근날짜</div>
-                    <div className="work_time_content">{attendanceStartNewOne?.attendance_start_date || '출근날짜 미정'}</div>
+                    <div className="work_time_content">{attendanceStartToday?.attendance_start_date || '출근날짜 미정'}</div>
                     <div className="work_time_title">출근시간</div>
-                    <div className="work_time_content">{attendanceStartNewOne?.attendance_start_time || '출근시간 미정'}</div>
+                    <div className="work_time_content">{attendanceStartToday?.attendance_start_time || '출근시간 미정'}</div>
                     <div className="work_time_title">&nbsp;</div>
                 </div>
                 <div className="work_time_box">
@@ -204,20 +215,20 @@ const Attendance = () => {
                 <div className="work_time_box">
                     <div className="work_time_title">&nbsp;</div>
                     <div className="work_time_title">퇴근날짜</div>
-                    <div className="work_time_content">{attendanceStartNewOne?.attendance_end?.attendance_end_date || '퇴근날짜 미정'}</div>
+                    <div className="work_time_content">{attendanceStartToday?.attendance_end?.attendance_end_date || '퇴근날짜 미정'}</div>
                     <div className="work_time_title">퇴근시간</div>
-                    <div className="work_time_content">{attendanceStartNewOne?.attendance_end?.attendance_end_time || '퇴근시간 미정'}</div>
+                    <div className="work_time_content">{attendanceStartToday?.attendance_end?.attendance_end_time || '퇴근시간 미정'}</div>
                     <div className="work_time_title">&nbsp;</div>
                 </div>
             </div>
 
             <div className="work_time_buttons">
-                <button disabled={!attendanceStartNewOne?.attendance_end && attendanceStartNewOne} onClick={() => {
+                <button disabled={!attendanceStartToday?.attendance_end && attendanceStartToday} onClick={() => {
                     attendance();
                 }}>
                     출근
                 </button>
-                <button disabled={attendanceStartNewOne?.attendance_end || !attendanceStartNewOne} onClick={() => {
+                <button disabled={attendanceStartToday?.attendance_end || !attendanceStartToday} onClick={() => {
                     leaveWork();
                 }}>
                     퇴근

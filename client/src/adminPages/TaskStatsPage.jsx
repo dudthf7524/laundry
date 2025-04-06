@@ -4,26 +4,24 @@ import TaskStatsTable from '../adminComponents/TaskStatsTable';
 import { useDispatch, useSelector } from 'react-redux';
 import { TASKSTART_DATE_REQUEST, TASKSTART_MONTH_REQUEST, TASKSTART_UPDATE_REQUEST, TASKSTART_YEAR_REQUEST } from '../reducers/taskStart';
 import { PROCESS_LIST_REQUEST } from '../reducers/process';
+import { format } from 'date-fns';
 
 const TaskStatsPage = () => {
+  const today = format(new Date(), 'yyyy-MM-dd');
   const { processLists } = useSelector((state) => state.process);
   const [selectedTaskType, setSelectedTaskType] = useState(null);
   const [taskName, setTaskName] = useState(null);
-  const [selected, setSelected] = useState(null); 
-  const [filterType, setFilterType] = useState('date'); 
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [filterType, setFilterType] = useState('date');
+  const [startDate, setStartDate] = useState(today);
+  const [endDate, setEndDate] = useState(today);
   const [month, setMonth] = useState(null);
   const [year, setYear] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); 
-  const [editData, setEditData] = useState({}); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editData, setEditData] = useState({});
 
-  const handleProcessLists = async () => {
-    dispatch({
-      type: PROCESS_LIST_REQUEST,
 
-    });
-  };
+  console.log(processLists)
 
   const handleDate = async () => {
     const data = {
@@ -67,11 +65,18 @@ const TaskStatsPage = () => {
       handleMonth();
     } else if (filterType === "year" && year) {
       handleYear();
-    } else {
-      handleProcessLists();
     }
   }, [year, month, startDate, endDate]);
 
+  useEffect(() => {
+    handleProcessLists();
+  }, []);
+
+  const handleProcessLists = async () => {
+    dispatch({
+      type: PROCESS_LIST_REQUEST,
+    });
+  };
 
   const handleTaskTypeSelect = (type, process_name) => {
     setSelectedTaskType(type === selectedTaskType ? null : type);
@@ -102,17 +107,17 @@ const TaskStatsPage = () => {
     }));
   };
 
-    const handleSave = () => {
-      console.log("수정된 데이터:", editData);
-      dispatch({
-        type: TASKSTART_UPDATE_REQUEST,
-        data: editData,
-      });
-  
-      setIsModalOpen(false);
-     
-      
-    };
+  const handleSave = () => {
+    console.log("수정된 데이터:", editData);
+    dispatch({
+      type: TASKSTART_UPDATE_REQUEST,
+      data: editData,
+    });
+
+    setIsModalOpen(false);
+
+
+  };
   return (
     <div>
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
@@ -125,6 +130,8 @@ const TaskStatsPage = () => {
       </div>
       <FilterTask
         setFilterType={setFilterType}
+        startDate={startDate}
+        endDate={endDate}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         setMonth={setMonth}
@@ -192,7 +199,7 @@ const TaskStatsPage = () => {
             <label>개수</label>
             <input type="number" name="total_count" value={editData.total_count || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
 
-            <button onClick={ ()=> handleSave()} className="w-full bg-blue-500 text-white px-4 py-2 rounded text-center">
+            <button onClick={() => handleSave()} className="w-full bg-blue-500 text-white px-4 py-2 rounded text-center">
               저장
             </button>
             <button onClick={() => setIsModalOpen(false)} className="w-full bg-gray-300 text-black px-4 py-2 rounded text-center mt-2">

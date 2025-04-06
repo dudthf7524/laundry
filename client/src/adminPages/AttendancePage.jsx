@@ -15,6 +15,7 @@ const AttendancePage = () => {
   const [selected, setSelected] = useState(null); 
   const [isModalOpen, setIsModalOpen] = useState(false); 
   const [editData, setEditData] = useState({}); 
+  const [sortedData, setSortedData] = useState({}); 
 
   const vacationDate = async () => {
     const data = {
@@ -62,7 +63,6 @@ const AttendancePage = () => {
 
 
   const handleEditClick = () => {
-    console.log(selected)
     if (selected) {
       setEditData({ ...selected });
       setIsModalOpen(true);
@@ -91,18 +91,14 @@ const AttendancePage = () => {
     
   };
 
-  
+  console.log(sortedData)
 
-  const { attendanceStartYear } = useSelector((state) => state.attendanceStart);
-
-  const attendanceStartYearSum = attendanceStartYear ? attendanceStartYear.length : 0;
-
-  const countNullEnd = Array.isArray(attendanceStartYear)
-    ? attendanceStartYear.filter(asy => asy.attendance_end === null).length
+  const attendanceStartYearSum = sortedData ? sortedData.length : 0;
+  const countNullEnd = Array.isArray(sortedData)
+    ? sortedData.filter(asy => asy.attendance_end === null).length
     : 0;
-
-  const countLate = Array.isArray(attendanceStartYear)
-    ? attendanceStartYear.filter(asy => asy.attendance_start_state === "지각").length
+  const countLate = Array.isArray(sortedData)
+    ? sortedData.filter(asy => asy.attendance_start_state === "지각").length
     : 0;
 
   return (
@@ -131,6 +127,8 @@ const AttendancePage = () => {
         <AttendanceTable
           setSelected={setSelected}
           selected={selected}
+          setSortedData={setSortedData}
+          
         />
       </div>
 

@@ -64,7 +64,7 @@ const Join = () => {
             return;
         }
         if (!formData.user_name) {
-            alert('이름을을 입력해주세요')
+            alert('이름을 입력해주세요')
             return;
         }
         if (!formData.user_nickname) {
@@ -72,7 +72,7 @@ const Join = () => {
             return;
         }
         if (!formData.user_position) {
-            alert('직급을을 입력해주세요')
+            alert('직급을 입력해주세요')
             return;
         }
         if (!formData.user_password) {
@@ -153,6 +153,7 @@ const Join = () => {
                         onChange={handleInputChange}
                     />
                     <button
+                        type="button"
                         className={`${isUsernameValid ? 'active' : 'disabled'}`}
                         onClick={checkId}
                         disabled={!isUsernameValid} // 비활성화 상태
