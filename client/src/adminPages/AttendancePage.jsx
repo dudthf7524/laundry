@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import FilterControls from '../adminComponents/FilterControls';
 import AttendanceTable from '../adminComponents/AttendanceTable';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCESTART_UPDATE_REQUEST, ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
 import { format } from 'date-fns';
 
@@ -93,7 +93,6 @@ const AttendancePage = () => {
   };
 
   const handleSave = () => {
-    console.log("수정된 데이터:", editData);
     dispatch({
       type: ATTENDANCESTART_UPDATE_REQUEST,
       data: editData,
@@ -103,8 +102,6 @@ const AttendancePage = () => {
 
 
   };
-
-  console.log(sortedData)
 
   const attendanceStartYearSum = sortedData ? sortedData.length : 0;
   const countNullEnd = Array.isArray(sortedData)

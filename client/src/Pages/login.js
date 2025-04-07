@@ -4,15 +4,15 @@ import { useDispatch } from 'react-redux';
 import { USER_LOGIN_REQUEST } from "../reducers/user";
 import { USER_AUTH_REQUEST } from "../reducers/user";
 import { useSelector } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const { user } = useSelector((state) => state.user);
     const { login } = useSelector((state) => state.user);
     const { user_login_error } = useSelector((state) => state.user);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    console.log(user)
-    console.log(login)
-    console.log(user_login_error)
     const [credentials, setCredentials] = useState({
         user_id: '',
         user_password: ''
@@ -39,8 +39,12 @@ const Login = () => {
         });
     };
 
+    const goClient = () =>{
+        navigate('/attendance')
+    }
 
-    const dispatch = useDispatch();
+
+   
 
     const handleLogin = (e) => {
         if (credentials.user_id === "") {
@@ -62,20 +66,28 @@ const Login = () => {
 
     useEffect(() => {
         if (user_login_error === -1) {
-            console.log("일치하지 않는 아이디");
             setError('아이디가 일치하지 않습니다.');
         } else if (user_login_error === 0) {
-            console.log("일치하지 않는 비밀번호");
             setError('비밀번호가 일치하지 않습니다.');
         }
-    }, [user_login_error]); 
+    }, [user_login_error]);
 
     return (
         <div className="login">
             <h1>laundry</h1>
             {
                 user ? (
-                    <div>{user.user_name}님 환영합니다!</div>
+                    <div>
+                        {user.user_name}님 환영합니다!
+                        <div></div>
+                        <button
+                            type="submit"
+                            onClick={goClient}
+                            className="w-full mt-4 p-3 bg-[#00b7ff] text-white rounded-md hover:bg-[#0065b3] transition"
+                        >
+                            근로자 페이지
+                        </button>
+                    </div>
                 ) : (
                     <>
                         <h2>로그인</h2>

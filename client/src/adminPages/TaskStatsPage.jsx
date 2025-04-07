@@ -33,7 +33,6 @@ const TaskStatsPage = () => {
     }));
   };
 
-  console.log(processLists)
 
   const handleDate = async () => {
     const data = {
@@ -102,7 +101,6 @@ const TaskStatsPage = () => {
     : taskStartFilterData;
 
   const handleEditClick = () => {
-    console.log(selected)
     if (selected) {
       setEditData({ ...selected });
       setIsModalOpen(true);
@@ -120,7 +118,6 @@ const TaskStatsPage = () => {
   };
 
   const handleSave = () => {
-    console.log("수정된 데이터:", editData);
     dispatch({
       type: TASKSTART_UPDATE_REQUEST,
       data: editData,
