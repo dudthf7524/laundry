@@ -144,8 +144,8 @@ const Chart = () => {
         });
     };
     const { chartDates } = useSelector((state) => state.chart);
-    console.log(chartDates)
 
+    
     const chartMonth = async () => {
         const data = {
             startDate: startYear + "-" + startMonth,
@@ -172,18 +172,10 @@ const Chart = () => {
 
     useEffect(() => {
         if (filterType === "date" && startDate && endDate) {
-            console.log("선택한 시작일", startDate)
-            console.log("선택한 시작일", endDate)
             chartDate();
         } else if (filterType === "month" && startYear && endYear && startMonth && endMonth) {
-            console.log("선택한 시작일", startYear)
-            console.log("선택한 시작일", endYear)
-            console.log("선택한 시작일", startMonth)
-            console.log("선택한 시작일", endMonth)
             chartMonth();
         } else if (filterType === "year" && startYear && endYear) {
-            console.log("선택한 시작일", startYear)
-            console.log("선택한 시작일", endYear)
             chartYear();
         }
     }, [year, month, startDate, endDate, startYear, endYear, startMonth, endMonth]);

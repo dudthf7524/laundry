@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { employees, permissionLevels } from '../data/mockData';
-import { USER_AUTH_UPDATE_REQUEST, USER_LIST_REQUEST } from '../reducers/user';
+import { USER_LIST_REQUEST } from '../reducers/user';
 import { AUTH_LIST_REQUEST } from "../reducers/auth";
 import { useDispatch, useSelector } from 'react-redux';
 import { TIME_LIST_REQUEST, TIME_REGISTER_REQUEST, TIME_UPDATE_REQUEST } from '../reducers/time';

@@ -2,14 +2,12 @@ const { attendanceStart, attendanceEnd, user } = require("../models");
 const { Op, Sequelize } = require("sequelize");
 
 const chartDate = async (data) => {
-
-
     try {
         const attendanceData = await attendanceStart.findAll({
             attributes: [
                 [Sequelize.col("attendance_start_date"), "date"],
-                [Sequelize.col("User.user_name"), "user_name"],
-                [Sequelize.col("User.user_code"), "user_code"],
+                [Sequelize.col("user.user_name"), "user_name"],
+                [Sequelize.col("user.user_code"), "user_code"],
 
                 // ⬇️ sum_hour: 08 → 8로 표시 (LPAD 제거)
                 [
@@ -66,10 +64,10 @@ const chartDate = async (data) => {
                     [Op.lte]: data.endDate,   // 2025-06-24 이하
                 },
             },
-            group: ["attendance_start_date", "User.user_code"],
+            group: ["attendance_start_date", "user.user_code", "user.user_name"],
             order: [
                 ["attendance_start_date", "ASC"],
-                [Sequelize.col("User.user_name"), "ASC"],
+                [Sequelize.col("user.user_name"), "ASC"],
             ],
         });
 
@@ -83,28 +81,41 @@ const chartDate = async (data) => {
 
 
 const chartMonth = async (data) => {
-
-
-
     try {
         const attendanceData = await attendanceStart.findAll({
             attributes: [
-                [Sequelize.fn("DATE_FORMAT", Sequelize.col("attendance_start_date"), "%Y-%m"), "date"],  // YYYY-MM 형식
-                [Sequelize.col("User.user_name"), "user_name"],
-                [Sequelize.col("User.user_code"), "user_code"],
+                [Sequelize.fn("DATE_FORMAT", Sequelize.col("attendance_start_date"), "%Y-%m"), "date"],
+                [Sequelize.col("user.user_name"), "user_name"],
+                [Sequelize.col("user.user_code"), "user_code"],
                 [
                     Sequelize.literal(`
-                        FLOOR(SUM(TIMESTAMPDIFF(SECOND, 
-                          CONCAT(attendance_start_date, ' ', attendance_start_time), 
-                          CONCAT(attendance_end.attendance_end_date, ' ', attendance_end.attendance_end_time))) / 3600)
+                        FLOOR(SUM(
+                            TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                CONCAT(attendance_end.attendance_end_date, ' ', attendance_end.attendance_end_time)
+                            )
+                            - TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                CONCAT(attendance_start_date, ' ', rest_end_time)
+                            )
+                        ) / 3600)
                     `),
                     "sum_hour",
                 ],
                 [
                     Sequelize.literal(`
-                        FLOOR((SUM(TIMESTAMPDIFF(SECOND, 
-                          CONCAT(attendance_start_date, ' ', attendance_start_time), 
-                          CONCAT(attendance_end.attendance_end_date, ' ', attendance_end.attendance_end_time))) % 3600) / 60)
+                        FLOOR((
+                            SUM(
+                                TIMESTAMPDIFF(SECOND, 
+                                    CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                    CONCAT(attendance_end.attendance_end_date, ' ', attendance_end.attendance_end_time)
+                                )
+                                - TIMESTAMPDIFF(SECOND, 
+                                    CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                    CONCAT(attendance_start_date, ' ', rest_end_time)
+                                )
+                            ) % 3600
+                        ) / 60)
                     `),
                     "sum_minute",
                 ],
@@ -130,10 +141,10 @@ const chartMonth = async (data) => {
                     ),
                 ],
             },
-            group: ["date", "User.user_code"],
+            group: ["date", "user.user_code", "user.user_name"],
             order: [
                 ["date", "ASC"],
-                [Sequelize.col("User.user_name"), "ASC"],
+                [Sequelize.col("user.user_name"), "ASC"],
             ],
         });
 
@@ -142,32 +153,44 @@ const chartMonth = async (data) => {
         console.error("Error fetching attendance summary:", error);
         throw error;
     }
-
 };
 
 const chartYear = async (data) => {
-
-
-
     try {
         const attendanceData = await attendanceStart.findAll({
             attributes: [
-                [Sequelize.fn("DATE_FORMAT", Sequelize.col("attendance_start_date"), "%Y"), "date"],  // YYYY-MM 형식
-                [Sequelize.col("User.user_name"), "user_name"],
-                [Sequelize.col("User.user_code"), "user_code"],
+                [Sequelize.fn("DATE_FORMAT", Sequelize.col("attendance_start_date"), "%Y"), "date"],
+                [Sequelize.col("user.user_name"), "user_name"],
+                [Sequelize.col("user.user_code"), "user_code"],
                 [
                     Sequelize.literal(`
-                        FLOOR(SUM(TIMESTAMPDIFF(SECOND, 
-                          CONCAT(attendance_start_date, ' ', attendance_start_time), 
-                          CONCAT(attendance_end.attendance_end_date, ' ', attendance_end.attendance_end_time))) / 3600)
+                        FLOOR(SUM(
+                            TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                CONCAT(attendance_end.attendance_end_date, ' ', attendance_end.attendance_end_time)
+                            )
+                            - TIMESTAMPDIFF(SECOND, 
+                                CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                CONCAT(attendance_start_date, ' ', rest_end_time)
+                            )
+                        ) / 3600)
                     `),
                     "sum_hour",
                 ],
                 [
                     Sequelize.literal(`
-                        FLOOR((SUM(TIMESTAMPDIFF(SECOND, 
-                          CONCAT(attendance_start_date, ' ', attendance_start_time), 
-                          CONCAT(attendance_end.attendance_end_date, ' ', attendance_end.attendance_end_time))) % 3600) / 60)
+                        FLOOR((
+                            SUM(
+                                TIMESTAMPDIFF(SECOND, 
+                                    CONCAT(attendance_start_date, ' ', attendance_start_time), 
+                                    CONCAT(attendance_end.attendance_end_date, ' ', attendance_end.attendance_end_time)
+                                )
+                                - TIMESTAMPDIFF(SECOND, 
+                                    CONCAT(attendance_start_date, ' ', rest_start_time), 
+                                    CONCAT(attendance_start_date, ' ', rest_end_time)
+                                )
+                            ) % 3600
+                        ) / 60)
                     `),
                     "sum_minute",
                 ],
@@ -193,10 +216,10 @@ const chartYear = async (data) => {
                     ),
                 ],
             },
-            group: ["date", "User.user_code"],
+            group: ["date", "user.user_code", "user.user_name"],
             order: [
                 ["date", "ASC"],
-                [Sequelize.col("User.user_name"), "ASC"],
+                [Sequelize.col("user.user_name"), "ASC"],
             ],
         });
 
@@ -205,7 +228,6 @@ const chartYear = async (data) => {
         console.error("Error fetching attendance summary:", error);
         throw error;
     }
-
 };
 
 module.exports = {

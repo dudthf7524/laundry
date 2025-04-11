@@ -32,7 +32,6 @@ const TaskSetting = () => {
         }
     };
 
-    console.log(process)
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;

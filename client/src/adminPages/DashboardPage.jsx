@@ -29,7 +29,6 @@ const DashboardPage = () => {
 
   const { today_attendance, today_task } = useSelector((state) => state.today);
 
-  console.log(today_task)
 
   const today_attendance_sum = today_attendance ? today_attendance.length : 0;
   const today_task_sum = today_task ? today_task.length : 0;

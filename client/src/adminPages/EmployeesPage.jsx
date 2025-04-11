@@ -79,7 +79,6 @@ const EmployeesPage = () => {
 
   const { userUpdates } = useSelector((state) => state.user) || { userUpdates: [] };
 
-  console.log("수정된 데이터" + userUpdates);
 
   const filteredUserLists = userLists?.filter(employee => {
     const lowerCaseSearch = searchTerm.toLowerCase();

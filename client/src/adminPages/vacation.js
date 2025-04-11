@@ -12,7 +12,6 @@ const Vacation = () => {
   const { vacationLists = [] } = useSelector((state) => state.vacation);
   const [activeTab, setActiveTab] = useState('vacationList');
 
-  console.log(vacationLists)
   useEffect(() => {
     dispatch({ type: VACATION_LIST_REQUEST });
   }, [dispatch]);
@@ -21,9 +20,6 @@ const Vacation = () => {
   var vacationAllows;
 
 
-
-  console.log(vacationDays)
-  console.log(vacationAllows)
   if (vacationLists) {
     vacationDays = vacationLists
       .filter((v) => v.vacation_state === "신청")
@@ -70,7 +66,6 @@ const Vacation = () => {
   const vacationAllow = () => {
     alert('휴가가 승인 되었습니다.')
 
-    console.log(selectedVacation.vacation_id)
     const data = {
       vacation_id: selectedVacation.vacation_id
     }

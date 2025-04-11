@@ -8,7 +8,6 @@ const Notice = () => {
     const navigate = useNavigate();
 
     const { user } = useSelector((state) => state.user);
-    console.log(user)
 
     useEffect(() => {
         if (user?.auth_code === 'A4') {

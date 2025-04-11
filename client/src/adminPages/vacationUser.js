@@ -45,8 +45,6 @@ const VacationCompany = () => {
         })
     };
     
-    console.log(formData)
-
     return (
         <div>
             {/* 캘린더 */}

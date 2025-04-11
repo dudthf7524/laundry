@@ -19,6 +19,8 @@ const Task = () => {
     const today = format(new Date(), 'yyyy-MM-dd');
     const formattedDate = today;
 
+    console.log(userProcessOneLists)
+
     useEffect(() => {
         userProcessOneList();
         taskStartNew();
@@ -47,13 +49,15 @@ const Task = () => {
 
     const [selectedProcess, setSelectedProcess] = useState(null);
 
-
+    console.log(selectedProcess)
 
     // 선택 시 데이터 업데이트
     const handleChange = (event) => {
         setStartTime(null)
         setEndTime(null)
         const selectedIndex = event.target.value;
+        console.log(selectedIndex)
+
         setSelectedProcess(userProcessOneLists[selectedIndex]); // 선택한 데이터 저장
     };
 
@@ -138,7 +142,7 @@ const Task = () => {
 
     // 업무 종료 버튼 클릭 시
     const handleEnd = () => {
-     
+
 
         const now = new Date();
         setEndTime(getFormattedTime(now));
@@ -209,10 +213,22 @@ const Task = () => {
                 </select>
 
                 {/* 선택된 업무 정보 */}
-                {(taskStartNewOne || selectedProcess) && (
+                {!taskStartNewOne ? (
+                    <></>
+                ) : (
+                    !taskStartNewOne.task_end && (
+                        <div className='select_two'>
+                            <div>총 {taskStartNewOne.task_count}벌</div>
+                            <div>평균 {taskStartNewOne.process?.hour_average}벌 / 시간 당</div>
+                        </div>
+                    )
+                )}
+
+                {/* 선택된 업무 정보 */}
+                {selectedProcess && (
                     <div className='select_two'>
-                        <div>총 {taskStartNewOne?.task_count || selectedProcess?.user_process_count}벌</div>
-                        <div>평균 {taskStartNewOne?.process.hour_average || selectedProcess?.process.hour_average}벌 / 시간 당</div>
+                        <div>총 {selectedProcess?.user_process_count}벌</div>
+                        <div>평균 {selectedProcess?.process?.hour_average}벌 / 시간 당</div>
                     </div>
                 )}
             </div>
