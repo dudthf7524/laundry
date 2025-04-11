@@ -273,9 +273,6 @@ const attendanceToday = async (user_code) => {
 };
 
 const attendanceUpdate = async (data) => {
-
-    console.log(data)
-
     try {
         await attendanceStart.update(
             {

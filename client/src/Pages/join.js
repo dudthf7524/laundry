@@ -112,7 +112,6 @@ const Join = () => {
     };
 
     const { userCheckId, } = useSelector((state) => state.user);
-    console.log(userCheckId)
 
     const checkId = () => {
         const data = {

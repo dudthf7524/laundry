@@ -157,7 +157,6 @@ const Time = () => {
                 setUserProcessIs(false)
             }
 
-            console.log(userProcess)
 
         }
     }, [selected.user_code, userProcessLists]);
@@ -167,7 +166,6 @@ const Time = () => {
             const data = {
                 user_process_id: task.user_process_id
             };
-            console.log(data)
             dispatch({
                 type: USER_PROCESS_DELETE_REQUEST,
                 data: data,

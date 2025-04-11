@@ -14,8 +14,8 @@ const getFormattedDate = () => {
 
 const userss = [
     {
-        user_id: "a",
-        user_password: "a",
+        user_id: "kyungjunworld",
+        user_password: "tpqkf053!!",
         user_name: "김경준",
         user_nickname: "boss",
         auth_code: "A1",

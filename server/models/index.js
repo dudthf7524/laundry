@@ -11,7 +11,7 @@ const sequelize = new Sequelize(
   {
     host: config.host,
     dialect: config.dialect, // 'mysql', 'postgres', 'sqlite', 'mssql' 중 하나
-    logging: console.log, // 실행되는 SQL 쿼리를 콘솔에 출력
+    logging: false, // 실행되는 SQL 쿼리를 콘솔에 출력
   }
 );
 

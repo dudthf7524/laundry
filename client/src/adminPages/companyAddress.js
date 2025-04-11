@@ -48,11 +48,6 @@ const CompanyAddress = () => {
   };
   const dispatch = useDispatch();
   const handleSave = () => {
-    console.log("📍 근무지 설정 완료!");
-    console.log("주소:", address);
-    console.log("위도:", location.lat);
-    console.log("경도:", location.lng);
-    console.log("근무 반경:", radius, "m");
     if (!address) {
       alert('근무지를 검색해주세요')
       return;
@@ -76,15 +71,12 @@ const CompanyAddress = () => {
   }, [dispatch]);
 
   const { companyAddressLists } = useSelector((state) => state.companyAddress);
-  console.log(companyAddressLists)
-  
   const handleDelete = (company_address_id) => {
     if (window.confirm(`업무를 삭제하시겠습니까?`)) {
 
       const data = {
         company_address_id: company_address_id
       };
-      console.log(data)
       dispatch({
         type: COMPANYADDRESS_DELETE_REQUEST,
         data: data,
