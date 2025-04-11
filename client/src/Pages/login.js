@@ -10,6 +10,10 @@ const Login = () => {
     const { user } = useSelector((state) => state.user);
     const { login } = useSelector((state) => state.user);
     const { user_login_error } = useSelector((state) => state.user);
+
+    const logoImg = process.env.PUBLIC_URL + '/logo/logo.png';
+
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -39,12 +43,12 @@ const Login = () => {
         });
     };
 
-    const goClient = () =>{
+    const goClient = () => {
         navigate('/attendance')
     }
 
 
-   
+
 
     const handleLogin = (e) => {
         if (credentials.user_id === "") {
@@ -74,7 +78,11 @@ const Login = () => {
 
     return (
         <div className="login">
-            <h1>laundry</h1>
+            <img
+                src={logoImg}
+                alt="로고"
+                className="w-full max-w-[300px] h-auto"
+            />
             {
                 user ? (
                     <div>
@@ -90,7 +98,6 @@ const Login = () => {
                     </div>
                 ) : (
                     <>
-                        <h2>로그인</h2>
                         <form onSubmit={handleLogin}>
                             <input
                                 type="text"
