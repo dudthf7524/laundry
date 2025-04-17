@@ -4,7 +4,9 @@ const { attendanceEnd } = require("../models");
 const { user } = require("../models");
 
 const attendanceStartRegister = async (data, user_code) => {
+
     try {
+       
         const result = await attendanceStart.create({
             attendance_start_date: data.attendance_start_date,
             attendance_start_time: data.attendance_start_time,
@@ -186,7 +188,7 @@ const attendanceStartYear = async (data) => {
                     model: attendanceEnd,
                     required: false,
                     attributes: ['attendance_end_id', 'attendance_end_date', 'attendance_end_time', 'attendance_end_state', 'end_time',
-], // ✅ 명확하게 필드 지정
+                    ], // ✅ 명확하게 필드 지정
                 },
                 {
                     model: user,
@@ -314,6 +316,31 @@ const attendanceUpdate = async (data) => {
 
 };
 
+const attendanceSearch = async (user_code, searchDate) => {
+
+    try {
+        const result = await attendanceStart.findOne({
+            where: {
+                user_code: user_code,
+                attendance_start_date: searchDate,
+            },
+            include: [
+                {
+                    model: attendanceEnd,
+                    required: false, // 퇴근 데이터가 없어도 출근 데이터만 가져오기
+
+                }
+            ],
+            order: [['attendance_start_id', 'DESC']],
+
+        });
+
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+
+};
 
 module.exports = {
     attendanceStartRegister,
@@ -323,4 +350,5 @@ module.exports = {
     attendanceStartDate,
     attendanceToday,
     attendanceUpdate,
+    attendanceSearch,
 };

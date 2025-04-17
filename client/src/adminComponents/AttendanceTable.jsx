@@ -59,7 +59,6 @@ const AttendanceTable = ({ setSelected, selected, setSortedData }) => {
       setSortedData(sortedData);
     }
   }, [sortedData, setSortedData]);
-  console.log(sortedData)
 
   // 정렬 처리 함수
   const handleSort = (field) => {

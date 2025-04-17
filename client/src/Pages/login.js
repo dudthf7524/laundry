@@ -46,6 +46,9 @@ const Login = () => {
     const goClient = () => {
         navigate('/attendance')
     }
+    const goAdmin = () => {
+        navigate('/admin/dashboard')
+    }
 
 
 
@@ -84,17 +87,46 @@ const Login = () => {
                 className="w-full max-w-[300px] h-auto"
             />
             {
-                user ? (
-                    <div>
-                        {user.user_name}님 환영합니다!
-                        <div></div>
-                        <button
-                            type="submit"
-                            onClick={goClient}
-                            className="w-full mt-4 p-3 bg-[#00b7ff] text-white rounded-md hover:bg-[#0065b3] transition"
-                        >
-                            근로자 페이지
-                        </button>
+                user?.auth_code === "A1" || user?.auth_code === "A2" || user?.auth_code === "A3" ? (
+                    <div className='w-full'>
+                        <div className="welcome-message text-xl font-semibold text-gray-800 mt-6 text-center animate-fade-in">
+                            👋 {user.user_name}님, 환영합니다!
+                        </div>
+
+                        <div className='w-full'>
+                            <button
+                                type="submit"
+                                onClick={goAdmin}
+                                className="w-full mt-4 p-3 bg-[#00b7ff] text-white rounded-md hover:bg-[#0065b3] transition"
+                            >
+                                관리자 페이지
+                            </button>
+                        </div>
+                        <div className='w-full'>
+                            <button
+                                type="submit"
+                                onClick={goClient}
+                                className="w-full mt-4 p-3 bg-[#00b7ff] text-white rounded-md hover:bg-[#0065b3] transition"
+                            >
+                                근로자 페이지
+                            </button>
+                        </div>
+
+                    </div>
+                ) : user?.auth_code === "A4" ? (
+                    <div className='w-full'>
+                        <div className="welcome-message text-xl font-semibold text-gray-800 mt-6 text-center animate-fade-in">
+                            👋 {user.user_name}님, 환영합니다!
+                        </div>
+                        <div className='w-full'>
+                            <button
+                                type="submit"
+                                onClick={goClient}
+                                className="w-full mt-4 p-3 bg-[#00b7ff] text-white rounded-md hover:bg-[#0065b3] transition"
+                            >
+                                근로자 페이지
+                            </button>
+                        </div>
                     </div>
                 ) : (
                     <>

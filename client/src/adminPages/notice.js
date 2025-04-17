@@ -99,7 +99,7 @@ const Notice = () => {
                         </div>
                     </form>
                 ) : (
-                    <form onSubmit={handleUpdate} className="space-y-4">
+                    <form className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">제목</label>
                             <input

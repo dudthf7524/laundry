@@ -142,8 +142,6 @@ const Task = () => {
 
     // 업무 종료 버튼 클릭 시
     const handleEnd = () => {
-
-
         const now = new Date();
         setEndTime(getFormattedTime(now));
 
@@ -332,14 +330,18 @@ const Task = () => {
                             <>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">업무 상태</label>
                                 <div className="mb-2 w-full text-center px-4 py-2 border border-gray-300 rounded-md text-red-500 font-bold">
-                                    분발하세요
+                                    평균치 보다 조금 부족하군요!
+                                    다음에는 속도를 더 내주세요!
+                                    업무를 종료하시겠습니까?
                                 </div>
                             </>
                         ) : (
                             <>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">업무 상태</label>
                                 <div className="mb-2 w-full text-center px-4 py-2 border border-gray-300 rounded-md text-green-600 font-bold">
-                                    잘하고 있어요
+                                    “열심히 하고 계시군
+                                    요! 다음에도 화이팅 해주세요!
+                                    업무를 종료하시겠습니까?
                                 </div>
                             </>
                         )}

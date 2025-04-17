@@ -112,7 +112,6 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
 
-// API 라우트 설정
 app.use('/user', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/time', timeRoutes);

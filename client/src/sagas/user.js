@@ -47,6 +47,10 @@ import {
     USER_INFORMATION_SUCCESS,
     USER_INFORMATION_FAILURE,
 
+    USER_DELETE_REQUEST,
+    USER_DELETE_SUCCESS,
+    USER_DELETE_FAILURE,
+
 } from "../reducers/user";
 
 
@@ -366,6 +370,42 @@ function* userInformation(action) {
     }
 }
 
+function* watchUserDelete() {
+    yield takeLatest(USER_DELETE_REQUEST, userDelete);
+}
+
+function userDeleteAPI(data) {
+
+    return axios.post("/user/delete", data);
+}
+
+function* userDelete(action) {
+    try {
+        const result = yield call(userDeleteAPI, action.data);
+        if (result.data === "common") {
+            alert('로그인 후 이용해주세요')
+            window.location.href = "/";
+        }
+
+
+
+        if (result.data) {
+            yield put({
+                type: USER_DELETE_SUCCESS,
+                data: result.data,
+            });
+            alert('직원 삭제 완료')
+            window.location.href = "/admin/employees";
+        }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: USER_DELETE_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
 export default function* userSaga() {
     yield all([
         fork(watchUserLogin),
@@ -378,6 +418,6 @@ export default function* userSaga() {
         fork(watchUserChnageId),
         fork(watchUserChnagePassword),
         fork(watchUserInformation),
-
+        fork(watchUserDelete),
     ]);
 }

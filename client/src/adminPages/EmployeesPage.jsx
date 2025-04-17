@@ -1,16 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { employees, permissionLevels } from '../data/mockData';
-import { USER_LIST_REQUEST, USER_UPDATE_REQUEST } from '../reducers/user';
+import { permissionLevels } from '../data/mockData';
+import { USER_DELETE_REQUEST, USER_LIST_REQUEST, USER_UPDATE_REQUEST } from '../reducers/user';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 const EmployeesPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const navigate = useNavigate();
 
   const [selected, setSelected] = useState({
+    user_id: "",
     user_code: "",
     user_name: "",
     user_nickname: "",
@@ -21,6 +18,7 @@ const EmployeesPage = () => {
   });
 
   const [selectUpdate, setSelectUpdate] = useState({
+    user_id: "",
     user_code: "",
     user_name: "",
     user_nickname: "",
@@ -50,6 +48,7 @@ const EmployeesPage = () => {
   const handleChange = (userList) => {
     setSelected(prev => ({
       ...prev,
+      user_id: userList.user_id,
       user_code: userList.user_code,
       user_name: userList.user_name,
       user_nickname: userList.user_nickname,
@@ -63,6 +62,7 @@ const EmployeesPage = () => {
 
     setSelectUpdate(prev => ({
       ...prev,
+      user_id: userList.user_id,
       user_code: userList.user_code,
       user_name: userList.user_name,
       user_nickname: userList.user_nickname,
@@ -76,9 +76,6 @@ const EmployeesPage = () => {
   };
 
   const { userLists } = useSelector((state) => state.user) || { userLists: [] };
-
-  const { userUpdates } = useSelector((state) => state.user) || { userUpdates: [] };
-
 
   const filteredUserLists = userLists?.filter(employee => {
     const lowerCaseSearch = searchTerm.toLowerCase();
@@ -106,11 +103,6 @@ const EmployeesPage = () => {
     return years;
   };
 
-  // Handle selecting an employee to view/edit details
-  const handleEmployeeSelect = (employee) => {
-    setSelectedEmployee(employee);
-  };
-
   const gotoJoin = () => {
     window.location.href = "/join"
   }
@@ -130,6 +122,7 @@ const EmployeesPage = () => {
         return 'bg-gray-100 text-gray-800';
     }
   };
+
   const userUpdate = () => {
     const updatedUser = { ...selected };
 
@@ -149,6 +142,22 @@ const EmployeesPage = () => {
     });
 
   }
+
+  const handleDeleteUser = (user_code, user_name) => {
+    if (window.confirm(` ${user_name} 을(를) 삭제하시겠습니까?`)) {
+      const data = {
+        user_code: user_code
+      };
+
+      dispatch({
+        type: USER_DELETE_REQUEST,
+        data: data,
+
+      });
+    }
+
+  }
+
   return (
     <div>
       <div className="mb-6">
@@ -229,6 +238,19 @@ const EmployeesPage = () => {
                       </>
                     </div>
                   </div>
+                  <div className="flex-2">
+                    <div className="mt-2 md:mt-0 flex items-center">
+                      <>
+                        <button className="text-red-600 hover:text-red-800 mr-3"
+                          onClick={() =>
+                            handleDeleteUser(userList.user_code, userList.user_name)
+                          }>
+                          삭제
+                        </button>
+                      </>
+                    </div>
+                  </div>
+
                 </div>
               </li>
             ))
@@ -251,6 +273,18 @@ const EmployeesPage = () => {
             <div>
               <h3 className="text-lg font-medium text-gray-900 mb-3">기본 정보</h3>
               <dl className="space-y-2">
+                <div className="flex flex-col sm:flex-row">
+                  <dt className="text-sm font-medium text-gray-500 sm:w-40">아이디</dt>
+                  <dd className="mt-1 sm:mt-0 text-sm text-gray-900">
+                    <input
+                      type="text"
+                      value={selectUpdate.user_id}
+                      onChange={(e) => setSelectUpdate({ ...selectUpdate, user_name: e.target.value })}
+                      className="border border-gray-300 rounded-md p-1 w-full"
+                      readOnly
+                    />
+                  </dd>
+                </div>
                 <div className="flex flex-col sm:flex-row">
                   <dt className="text-sm font-medium text-gray-500 sm:w-40">이름</dt>
                   <dd className="mt-1 sm:mt-0 text-sm text-gray-900">
