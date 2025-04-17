@@ -21,13 +21,17 @@ const AttendanceTable = ({ setSelected, selected, setSortedData }) => {
 
   const totalWorkTime = useMemo(() => {
     if (!filteredData.length) return { totalHours: 0, totalMinutes: 0 };
-
+  
     const totalMinutes = filteredData.reduce((acc, item) => {
-      const hours = parseInt(item.sum_hour.replace('시', ''), 10) || 0;
-      const minutes = parseInt(item.sum_minute.replace('분', ''), 10) || 0;
+      const rawHour = item.sum_hour || '0시';
+      const rawMinute = item.sum_minute || '0분';
+  
+      const hours = parseInt(rawHour.replace('시', ''), 10) || 0;
+      const minutes = parseInt(rawMinute.replace('분', ''), 10) || 0;
+  
       return acc + (hours * 60 + minutes);
     }, 0);
-
+  
     return {
       totalHours: Math.floor(totalMinutes / 60),
       totalMinutes: totalMinutes % 60,
