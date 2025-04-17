@@ -4,11 +4,31 @@ import { useSelector } from 'react-redux';
 const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected }) => {
   var { taskStartFilterData } = useSelector((state) => state.taskStart);
   const [sortConfig, setSortConfig] = useState({ field: null, direction: 'asc' });
+  const [searchName, setSearchName] = useState('');
+  const baseData = taskName ? filteredByTaskType : taskStartFilterData;
 
+  // 이름 검색까지 같이 적용
+  const filteredByName = (baseData || []).filter((item) =>
+    item.user.user_name.includes(searchName)
+  );
+  
+  const getTotalWorkTime = (dataArray) => {
+    let totalMinutes = 0;
+    dataArray.forEach((item) => {
+      const hour = parseInt(item.sum_hour || 0);
+      const min = parseInt(item.sum_minute || 0);
+      totalMinutes += hour * 60 + min;
+    });
 
-  if (taskName) {
-    taskStartFilterData = filteredByTaskType;
-  }
+    const totalHour = Math.floor(totalMinutes / 60);
+    const remainMin = totalMinutes % 60;
+
+    return `${totalHour}시간 ${remainMin}분`;
+  };
+
+  // if (taskName) {
+  //   taskStartFilterData = filteredByTaskType;
+  // }
   const handleSort = (field) => {
     setSortConfig((prev) => ({
       field,
@@ -55,15 +75,22 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
   //   }
   // };
 
-  const sortedData = [...(taskStartFilterData || [])].sort((a, b) => {
-    const aValue = a.task_start_date;
-    const bValue = b.task_start_date;
-
+  const sortedData = [...(filteredByName || [])].sort((a, b) => {
     if (sortConfig.field === 'date') {
       return sortConfig.direction === 'asc'
-        ? new Date(aValue) - new Date(bValue)
-        : new Date(bValue) - new Date(aValue);
+        ? new Date(a.task_start_date) - new Date(b.task_start_date)
+        : new Date(b.task_start_date) - new Date(a.task_start_date);
     }
+
+    if (sortConfig.field === 'name') {
+      const aName = a.user.user_name + a.user.user_position;
+      const bName = b.user.user_name + b.user.user_position;
+
+      return sortConfig.direction === 'asc'
+        ? aName.localeCompare(bName)
+        : bName.localeCompare(aName);
+    }
+
     return 0;
   });
 
@@ -88,11 +115,26 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
 
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-      <div className="px-4 py-5 border-b border-gray-200 sm:px-6">
+      <div className="p-4">
+      <input
+          type="text"
+          placeholder="이름으로 검색"
+          className="p-2 border rounded w-full "
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+        />
+        {searchName && (
+          <span className="text-sm text-blue-600">
+            총 업무 시간: <strong>{getTotalWorkTime(filteredByName)}</strong>
+          </span>
+        )}
+      </div>
+
+      <div className="px-4 border-b border-gray-200 sm:px-6">
         <h3 className="text-lg leading-6 font-medium text-gray-900">
           {taskName ? `${taskName} 업무 통계` : '전체 업무 통계'}
         </h3>
-        <p className="mt-1 max-w-2xl text-sm text-gray-500">
+        <p className="mt-2 mb-2 max-w-2xl text-sm text-gray-500">
           각 직원별 업무 수행 현황
         </p>
       </div>
@@ -110,8 +152,8 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
               <th className={getSortableHeaderClass('date')} onClick={() => handleSort('date')}>
                 업무 시작 날짜 {getSortIcon('date')}
               </th>
-              <th className={getSortableHeaderClass('name')} onClick={() => handleSort('employeeId')}>
-                이름(직급)
+              <th className={getSortableHeaderClass('name')} onClick={() => handleSort('name')}>
+                이름(직급) {getSortIcon('name')}
               </th>
               <th className={getSortableHeaderClass('taskType')} onClick={() => handleSort('taskType')}>
                 업무유형

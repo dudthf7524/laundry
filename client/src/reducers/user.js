@@ -46,6 +46,10 @@ export const initialState = {
     user_information_done: false,
     user_information_error: null,
 
+    user_delete_Loading: false,
+    user_delete_done: false,
+    user_delete_error: null,
+
     login: null,
 
     loginFailure: null,
@@ -57,8 +61,8 @@ export const initialState = {
     userUpdates: null,
 
     userCheckId: null,
-    
-    userCheckPassword : null,
+
+    userCheckPassword: null,
 
     userChangeId: null,
 
@@ -112,6 +116,10 @@ export const USER_CHANGE_PASSWORD_FAILURE = "USER_CHANGE_PASSWORD_FAILURE";
 export const USER_INFORMATION_REQUEST = "USER_INFORMATION_REQUEST";
 export const USER_INFORMATION_SUCCESS = "USER_INFORMATION_SUCCESS";
 export const USER_INFORMATION_FAILURE = "USER_INFORMATION_FAILURE";
+
+export const USER_DELETE_REQUEST = "USER_DELETE_REQUEST";
+export const USER_DELETE_SUCCESS = "USER_DELETE_SUCCESS";
+export const USER_DELETE_FAILURE = "USER_DELETE_FAILURE";
 
 const reducer = (state = initialState, action) => {
     return produce(state, (draft) => {
@@ -254,6 +262,19 @@ const reducer = (state = initialState, action) => {
             case USER_INFORMATION_FAILURE:
                 draft.user_information_Loading = false;
                 draft.user_information_error = action.error;
+                break;
+            case USER_DELETE_REQUEST:
+                draft.user_delete_Loading = true;
+                draft.user_delete_error = null;
+                draft.user_delete_done = false;
+                break;
+            case USER_DELETE_SUCCESS:
+                draft.user_delete_Loading = false;
+                draft.user_delete_done = true;
+                break;
+            case USER_DELETE_FAILURE:
+                draft.user_delete_Loading = false;
+                draft.user_delete_error = action.error;
                 break;
             default:
                 return state;

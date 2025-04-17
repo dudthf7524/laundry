@@ -13,17 +13,17 @@ module.exports = (sequelize) => {
             allowNull: false,
         },
         location_latitude: {
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT, 
             allowNull: false,
         },
         location_hardness: {
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT,
             allowNull: false,
         },
         radius: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
-        },
+        }
     }, {
         tableName: 'company_address',
         timestamps: false,

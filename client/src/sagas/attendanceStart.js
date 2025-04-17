@@ -35,6 +35,10 @@ import {
     ATTENDANCESTART_UPDATE_SUCCESS,
     ATTENDANCESTART_UPDATE_FAILURE,
 
+    ATTENDANCESTART_SEARCH_REQUEST,
+    ATTENDANCESTART_SEARCH_SUCCESS,
+    ATTENDANCESTART_SEARCH_FAILURE,
+
 } from "../reducers/attendanceStart";
 
 function* watchAttendanceStartRegister() {
@@ -188,14 +192,14 @@ function* watchAttendanceStartToday() {
     yield takeLatest(ATTENDANCESTART_TODAY_REQUEST, attendanceStartToday);
 }
 
-function attendanceStartTodayAPI() {
+function attendanceStartTodayAPI(data) {
 
-    return axios.get("/attendanceStart/today");
+    return axios.get("/attendanceStart/today", data);
 }
 
-function* attendanceStartToday() {
+function* attendanceStartToday(action) {
     try {
-        const result = yield call(attendanceStartTodayAPI, );
+        const result = yield call(attendanceStartTodayAPI, action.data);
         if (result.data === "common") {
             window.location.href = "/";
             return;
@@ -225,7 +229,7 @@ function attendanceStartTodayAdminAPI() {
 
 function* attendanceStartTodayAdmin() {
     try {
-        const result = yield call(attendanceStartTodayAdminAPI, );
+        const result = yield call(attendanceStartTodayAdminAPI,);
         if (result.data === "common") {
             window.location.href = "/";
             return;
@@ -255,11 +259,11 @@ function attendanceStartUpdateAPI(data) {
 
 function* attendanceStartUpdate(action) {
     try {
-        const result = yield call(attendanceStartUpdateAPI, action.data );
+        const result = yield call(attendanceStartUpdateAPI, action.data);
         if (result.data) {
-           alert('수정이 완료되었습니다.')
-           window.location.href = "/admin/attendance";
-           
+            alert('수정이 완료되었습니다.')
+            window.location.href = "/admin/attendance";
+
         }
         yield put({
             type: ATTENDANCESTART_UPDATE_SUCCESS,
@@ -270,6 +274,33 @@ function* attendanceStartUpdate(action) {
         console.error(err);
         yield put({
             type: ATTENDANCESTART_UPDATE_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
+
+function* watchAttendanceStartSearch() {
+    yield takeLatest(ATTENDANCESTART_SEARCH_REQUEST, attendanceStartSearch);
+}
+
+function attendanceStartSearchAPI(data) {
+
+    return axios.post("/attendanceStart/search", data);
+}
+
+function* attendanceStartSearch(action) {
+    try {
+        const result = yield call(attendanceStartSearchAPI, action.data);
+        yield put({
+            type: ATTENDANCESTART_SEARCH_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: ATTENDANCESTART_SEARCH_FAILURE,
             error: err.response.data,
         });
     }
@@ -287,5 +318,7 @@ export default function* attendanceStartSaga() {
         fork(watchAttendanceStartToday),
         fork(watchAttendanceStartUpdate),
         fork(watchAttendanceStartTodayAdmin),
+        fork(watchAttendanceStartSearch),
+
     ]);
 }

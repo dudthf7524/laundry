@@ -38,6 +38,11 @@ export const initialState = {
     attendanceStartYear: null,
     attendanceStartToday: null,
     attendanceStartUpdate: null,
+    attendanceStartSearch: null,
+
+    attendanceStart_search_Loading: false,
+    attendanceStart_search_one_done: false,
+    attendanceStart_search_one_error: null,
 
 };
 
@@ -73,6 +78,10 @@ export const ATTENDANCESTART_TODAY_ADMIN_FAILURE = "ATTENDANCESTART_TODAY_ADMIN_
 export const ATTENDANCESTART_UPDATE_REQUEST = "ATTENDANCESTART_UPDATE_REQUEST";
 export const ATTENDANCESTART_UPDATE_SUCCESS = "ATTENDANCESTART_UPDATE_SUCCESS";
 export const ATTENDANCESTART_UPDATE_FAILURE = "ATTENDANCESTART_UPDATE_FAILURE";
+
+export const ATTENDANCESTART_SEARCH_REQUEST = "ATTENDANCESTART_SEARCH_REQUEST";
+export const ATTENDANCESTART_SEARCH_SUCCESS = "ATTENDANCESTART_SEARCH_SUCCESS";
+export const ATTENDANCESTART_SEARCH_FAILURE = "ATTENDANCESTART_SEARCH_FAILURE";
 
 const reducer = (state = initialState, action) => {
     return produce(state, (draft) => {
@@ -183,10 +192,24 @@ const reducer = (state = initialState, action) => {
                 draft.attendanceStart_today_admin_Loading = false;
                 draft.attendanceStartToday = action.data
                 draft.attendanceStart_today_admin_done = true;
-                break;         
+                break;
             case ATTENDANCESTART_TODAY_ADMIN_FAILURE:
                 draft.attendanceStart_today_admin_Loading = false;
                 draft.attendanceStart_today_admin_error = action.error;
+                break;
+            case ATTENDANCESTART_SEARCH_REQUEST:
+                draft.attendanceStart_search_Loading = true;
+                draft.attendanceStart_search_error = null;
+                draft.attendanceStart_search_done = false;
+                break;
+            case ATTENDANCESTART_SEARCH_SUCCESS:
+                draft.attendanceStart_search_Loading = false;
+                draft.attendanceStartSearch = action.data
+                draft.attendanceStart_search_done = true;
+                break;
+            case ATTENDANCESTART_SEARCH_FAILURE:
+                draft.attendanceStart_search_Loading = false;
+                draft.attendanceStart_search_error = action.error;
                 break;
             default:
                 return state;

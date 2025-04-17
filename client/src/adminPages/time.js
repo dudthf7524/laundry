@@ -54,7 +54,7 @@ const Time = () => {
 
     const timeOptions = {
         hours: Array.from({ length: 24 }, (_, i) => (i < 10 ? `0${i}` : `${i}`)),
-        minutes: ["00", "30"],
+        minutes: ["00", "10", "20", "30", "40", "50"],
     };
 
     const { userLists } = useSelector((state) => state.user) || { userLists: [] };

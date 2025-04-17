@@ -2,7 +2,7 @@ const { companyAddress } = require("../models");
 const db = require("../models/index");
 
 const companyRegister = async (data) => {
-
+console.log(data)
     try {
         const count = await db.companyAddress.count();
         if (count > 0) {

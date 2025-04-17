@@ -35,7 +35,7 @@ function* companyRegister(action) {
         }
         if(result){
             alert('근무지가 등록되었습니다.')
-            window.location.href = "/admin/company/address"
+            window.location.href = "/admin/settings"
         }
         yield put({
             type: COMPANYADDRESS_REGISTER_SUCCESS,

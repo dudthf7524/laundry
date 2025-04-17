@@ -56,8 +56,21 @@ router.post("/year", async (req, res) => {
 
 router.get("/today", authMiddlewareSession, async (req, res) => {
     const user_code = req.user.user_code;
+   
     try {
         const result = await attendanceStart.attendanceToday(user_code)
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
+
+router.post("/search", authMiddlewareSession, async (req, res) => {
+    const user_code = req.user.user_code;
+    const searchDate = req.body.searchDate
+    console.log(req.body.searchDate);
+    try {
+        const result = await attendanceStart.attendanceSearch(user_code, searchDate)
         return res.json(result);
     } catch (error) {
         console.error(error)

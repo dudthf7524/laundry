@@ -72,7 +72,7 @@ const CompanyAddress = () => {
 
   const { companyAddressLists } = useSelector((state) => state.companyAddress);
   const handleDelete = (company_address_id) => {
-    if (window.confirm(`업무를 삭제하시겠습니까?`)) {
+    if (window.confirm(`설정된 근무지를 삭제하시겠습니까?`)) {
 
       const data = {
         company_address_id: company_address_id
@@ -101,20 +101,48 @@ const CompanyAddress = () => {
           </div>
 
           {/* 구글 지도 */}
-          <div className="w-full mb-4">
-            <GoogleMap mapContainerStyle={containerStyle} center={location} zoom={15}>
-              <Marker position={location} />
-              <Circle
-                center={location}
-                radius={radius}
-                options={{
-                  fillColor: "#6495ED55",
-                  strokeColor: "#6495ED",
-                  strokeWeight: 1,
-                }}
-              />
-            </GoogleMap>
-          </div>
+          {
+            companyAddressLists ? (
+              <div className="w-full mb-4">
+                <GoogleMap mapContainerStyle={containerStyle} center={{
+                  lat: companyAddressLists?.location_latitude,
+                  lng: companyAddressLists?.location_hardness,
+                }} zoom={15}>
+                  <Marker position={{
+                    lat: companyAddressLists?.location_latitude,
+                    lng: companyAddressLists?.location_hardness,
+                  }} />
+                  <Circle
+                    center={{
+                      lat: companyAddressLists?.location_latitude,
+                      lng: companyAddressLists?.location_hardness,
+                    }}
+                    radius={companyAddressLists?.radius}
+                    options={{
+                      fillColor: "#6495ED55",
+                      strokeColor: "#6495ED",
+                      strokeWeight: 1,
+                    }}
+                  />
+                </GoogleMap>
+              </div>
+            ) : (
+              <div className="w-full mb-4">
+                <GoogleMap mapContainerStyle={containerStyle} center={location} zoom={15}>
+                  <Marker position={location} />
+                  <Circle
+                    center={location}
+                    radius={radius}
+                    options={{
+                      fillColor: "#6495ED55",
+                      strokeColor: "#6495ED",
+                      strokeWeight: 1,
+                    }}
+                  />
+                </GoogleMap>
+              </div>
+            )
+          }
 
           {/* 근무지 주소 및 반경 */}
           <div className="text-center">
@@ -139,7 +167,7 @@ const CompanyAddress = () => {
             </button>
           </div>
         </LoadScript>
-      </div>
+      </div >
       <div className="grid grid-cols-3 gap-4 p-3 font-semibold bg-gray-200 rounded-md text-gray-900">
         <p>주소</p>
         <p>반경</p>
@@ -157,7 +185,7 @@ const CompanyAddress = () => {
       </div>
 
 
-    </div>
+    </div >
   );
 };
 
