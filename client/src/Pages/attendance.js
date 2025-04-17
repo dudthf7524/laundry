@@ -35,15 +35,15 @@ const Attendance = () => {
             return;
         }
 
-        // if (attendanceStartToday?.attendance_start_date) {
-        //     alert('이미 출근 기록이 존재합니다.');
-        //     return;
-        // }
+        if (attendanceStartToday?.attendance_start_date) {
+            alert('이미 출근 기록이 존재합니다.');
+            return;
+        }
 
-        // if (!isWithinRadius) {
-        //     alert('근무지 반경 외부입니다. 출근할 수 없습니다.');
-        //     return;
-        // }
+        if (!isWithinRadius) {
+            alert('근무지 반경 외부입니다. 출근할 수 없습니다.');
+            return;
+        }
 
         const attendance_start_date = year + "-" + month + "-" + date;
         const attendance_start_time = hours + ":" + minutes;
@@ -75,10 +75,10 @@ const Attendance = () => {
             alert('지정된 출근/퇴근 시간이 존재하지 않습니다.\n관리자에게 문의 해주세요.');
             return;
         }
-        // if (!isWithinRadius) {
-        //     alert('근무지 반경 외부입니다. 퇴근할 수 없습니다.');
-        //     return;
-        // }
+        if (!isWithinRadius) {
+            alert('근무지 반경 외부입니다. 퇴근할 수 없습니다.');
+            return;
+        }
         const attendance_end_date = year + "-" + month + "-" + date;
         const attendance_end_time = hours + ":" + minutes;
 
