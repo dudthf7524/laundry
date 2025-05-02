@@ -11,7 +11,7 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
   const filteredByName = (baseData || []).filter((item) =>
     item.user.user_name.includes(searchName)
   );
-  
+
   const getTotalWorkTime = (dataArray) => {
     let totalMinutes = 0;
     dataArray.forEach((item) => {
@@ -95,6 +95,7 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
   });
 
 
+
   const getSortableHeaderClass = (field) => {
     return `px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50 ${sortConfig.field === field ? 'bg-gray-50' : ''
       }`;
@@ -116,7 +117,7 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
       <div className="p-4">
-      <input
+        <input
           type="text"
           placeholder="이름으로 검색"
           className="p-2 border rounded w-full "
@@ -180,6 +181,9 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
                 지정 시간당 개수
               </th>
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                개수당 평균시간
+              </th>
+              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 평균대비
               </th>
             </tr>
@@ -205,6 +209,20 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
                     {data.avg_count_per_hour}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">{data.task_end?.hour_average}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {(() => {
+                      const totalMinutes = (parseInt(data.sum_hour || 0) * 60) + parseInt(data.sum_minute || 0);
+                      const totalSeconds = totalMinutes * 60;
+                      const count = data.task_end?.total_count || 1;
+                      const avgSeconds = Math.floor(totalSeconds / count);
+
+                      const hours = Math.floor(avgSeconds / 3600);
+                      const minutes = Math.floor((avgSeconds % 3600) / 60);
+                      const seconds = avgSeconds % 60;
+
+                      return `${hours}시간 ${minutes}분 ${seconds}초`;
+                    })()}
+                  </td>
                   <td className="px-4 py-3 whitespace-nowrap">{calculateDifference(data.avg_count_per_hour, data.task_end?.hour_average)}</td>
                 </tr>
               ))
