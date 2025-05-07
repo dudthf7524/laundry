@@ -6,12 +6,13 @@ import { COMPANY_VACATION_LIST_REQUEST } from "../reducers/companyVacation";
 const VacationList = () => {
   const [date, setDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
+  const [yearInput, setYearInput] = useState(date.getFullYear());
+  const [monthInput, setMonthInput] = useState(date.getMonth() + 1);
 
   const dispatch = useDispatch();
 
   const { vacationLists = [] } = useSelector((state) => state.vacation);
   const { conpanyVacationLists = [] } = useSelector((state) => state.companyVacation);
-
 
   useEffect(() => {
     dispatch({ type: VACATION_LIST_REQUEST });
@@ -24,19 +25,17 @@ const VacationList = () => {
   var vacationDays;
   var vacationAllows;
 
-
   if (vacationLists) {
     vacationDays = vacationLists
       .filter((v) => v.vacation_state === "신청")
-      .map((v) => v.vacation_date); // 전체 날짜 문자열 저장
+      .map((v) => v.vacation_date);
   }
 
   if (vacationLists) {
     vacationAllows = vacationLists
       .filter((v) => v.vacation_state === "승인")
-      .map((v) => v.vacation_date); // 전체 날짜 문자열 저장
+      .map((v) => v.vacation_date);
   }
-
 
   const changeMonth = (offset) => {
     setDate((prev) => {
@@ -46,16 +45,12 @@ const VacationList = () => {
       return newDate;
     });
   };
+
   const goToday = () => {
     setDate(new Date());
   };
+
   // 신청된 휴가 날짜 목록 추출
-
-
-  // 선택한 날짜의 휴가 정보
-
-
-
   const selectedVacation = Array.isArray(vacationLists)
     ? vacationLists.filter((v) => v.vacation_state === "신청" && v.vacation_date === selectedDate)
     : [];
@@ -68,25 +63,22 @@ const VacationList = () => {
     ? conpanyVacationLists.find((v) => v.company_vacation_date === selectedDate)
     : null;
 
-
-  // 날짜 클릭 시
   const handleDateClick = (year, month, day) => {
     const formattedDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     setSelectedDate(formattedDate);
   };
 
   const vacationAllow = (vacation_id) => {
-    alert('휴가가 승인 되었습니다.')
+    alert('휴가가 승인 되었습니다.');
     const data = {
       vacation_id: vacation_id
-    }
+    };
     dispatch({
       type: VACATION_ALLOW_REQUEST,
       data: data
     });
-  }
+  };
 
-  // 캘린더 렌더링
   const renderCalendar = () => {
     const viewYear = date.getFullYear();
     const viewMonth = date.getMonth();
@@ -103,19 +95,23 @@ const VacationList = () => {
       if (d === "") return <div key={i} className="date empty"></div>;
 
       const formattedDate = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-      const isVacation = vacationDays?.includes(formattedDate); // 문자열 비교
-      const vacation_allow = vacationAllows?.includes(formattedDate); // 문자열 비교
-      const company_vacation = conpanyVacationLists?.some(v => v.company_vacation_date === formattedDate); // 회사 휴무일 (🟠)
+      const isVacation = vacationDays?.includes(formattedDate);
+      const vacation_allow = vacationAllows?.includes(formattedDate);
+      const company_vacation = conpanyVacationLists?.some(v => v.company_vacation_date === formattedDate);
       const isToday = today.getDate() === d && today.getMonth() === viewMonth && today.getFullYear() === viewYear;
       const isSelected = selectedDate === formattedDate;
       const dayOfWeek = (i % 7);
       const textColor = dayOfWeek === 0 ? "text-red-500" : dayOfWeek === 6 ? "text-blue-500" : "text-gray-900";
       const bgColor = isSelected ? "bg-blue-300" : isToday ? "bg-yellow-300" : "";
+      // const vacationUsers = vacationLists
+      //   ?.filter((v) => v.vacation_date === formattedDate && v.vacation_state === "승인")
+      //   ?.map((v) => v.user?.user_name);
 
       return (
         <div
           key={i}
-          className={`flex items-center justify-center p-4 cursor-pointer flex-col text-lg  ${bgColor}`}
+          className={`flex items-center justify-center p-4 cursor-pointer flex-col text-lg ${bgColor}
+                  ${dayOfWeek === 0 ? "cursor-not-allowed opacity-40" : "cursor-pointer hover:bg-blue-200 transition"} `}
           onClick={() => handleDateClick(viewYear, viewMonth, d)}
         >
           <div className={`h-8 text-lg ${textColor}`}>
@@ -124,19 +120,53 @@ const VacationList = () => {
           <div className="text-xl font-bold h-8">
             {isVacation ? "⭕" : ""}
             {vacation_allow ? "🔴" : ""}
-            {company_vacation ? "🟠" : ""}
+            {company_vacation ? "🔵" : ""}
           </div>
+          {/* {vacationUsers?.length > 0 && (
+            <div className="text-black text-2xl font-semibold flex flex-col items-center">
+              {vacationUsers.map((name, idx) => (
+                <span key={idx} className="">{name}</span>
+              ))}
+            </div>
+          )} */}
         </div>
       );
     });
   };
 
+  const handleYearMonthChange = () => {
+    const newDate = new Date(yearInput, monthInput - 1);
+    setDate(newDate);
+  };
+
   return (
     <div>
-
-
       {/* 캘린더 */}
       <div className="bg-white p-4 shadow mb-6">
+        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+          <input
+            type="number"
+            value={yearInput}
+            onChange={(e) => setYearInput(e.target.value)}
+            className="w-full sm:w-24 p-2 border border-gray-300 rounded"
+            min="1900"
+            max="2100"
+          />
+          <input
+            type="number"
+            value={monthInput}
+            onChange={(e) => setMonthInput(e.target.value)}
+            className="w-full sm:w-16 p-2 border border-gray-300 rounded"
+            min="1"
+            max="12"
+          />
+          <button
+            onClick={handleYearMonthChange}
+            className="w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            이동
+          </button>
+        </div>
         <div className="flex justify-between items-center py-4">
           <div className="flex justify-center items-center py-4 relative mb-2 w-full">
             <button className="pr-10 nav-btn go-prev text-2xl font-bold" onClick={() => changeMonth(-1)}>
@@ -149,6 +179,8 @@ const VacationList = () => {
               &gt;
             </button>
           </div>
+          {/* Year and Month Input */}
+
         </div>
 
         <div className="grid grid-cols-7 gap-2 text-center text-lg font-semibold">
@@ -164,7 +196,7 @@ const VacationList = () => {
           {renderCalendar()}
         </div>
         <div className="mt-5">
-          🔴 : 휴가 ⭕ : 휴가 신청 🟠 : 휴무일
+          🔴 : 휴가 ⭕ : 휴가 신청 🔵 : 휴무일
         </div>
       </div>
 
@@ -276,7 +308,6 @@ const VacationList = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };

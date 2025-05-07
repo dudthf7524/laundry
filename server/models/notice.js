@@ -14,7 +14,7 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     notice_content: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
   }, {

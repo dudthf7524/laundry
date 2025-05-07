@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../Styles/Schedule.css';
-import BottomBar from '../components/BottomBar';
 import { VACATION_REGISTER_REQUEST, VACATION_USER_REQUEST } from '../reducers/vacation';
 import { useDispatch, useSelector } from 'react-redux';
-import { select } from 'redux-saga/effects';
 import { COMPANY_VACATION_LIST_REQUEST } from '../reducers/companyVacation';
 
 const WorkLogs = () => {
@@ -13,9 +11,6 @@ const WorkLogs = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const reasonInputRef = useRef(null);
     const { vacationUser } = useSelector((state) => state.vacation);
-
-
-
 
     var userVaction;
 
@@ -28,9 +23,6 @@ const WorkLogs = () => {
                 vacation_content: v.vacation_content,  // 상태도 포함
             })); // 전체 날짜 문자열 저장
     }
-
-
-
     var vacationDays;
     var vacationAllows;
 
@@ -74,7 +66,6 @@ const WorkLogs = () => {
             if (d === '') {
                 return <div key={i} className="date empty"></div>;
             }
-
             const dayOfWeek = new Date(viewYear, viewMonth, d).getDay();
             const isToday = today.getDate() === d && today.getMonth() === viewMonth && today.getFullYear() === viewYear;
             const formattedDate = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
@@ -84,7 +75,10 @@ const WorkLogs = () => {
             const bgColor = isSelected ? "bg-blue-300" : isToday ? "bg-yellow-300" : "";
             const company_vacation = conpanyVacationLists?.some(v => v.company_vacation_date === formattedDate); // 회사 휴무일 (🟠)
 
-            const handleDateClick = () => {
+            const handleDateClick = (dayOfWeek) => {
+                if (dayOfWeek === 0) {
+                    return;
+                }
                 const formattedDate = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 setSelectedDate(formattedDate);
 
@@ -95,10 +89,11 @@ const WorkLogs = () => {
             return (
                 <div
                     key={i}
-                    className={`flex items-center justify-center p-4 text-center cursor-pointer flex-col  text-lg 
-                        ${isSelected ? "bg-blue-500 text-white font-bold" : "text-gray-900"} 
-                        hover:bg-blue-200 transition ${bgColor}`}
-                    onClick={handleDateClick}
+                    className={`flex items-center justify-center p-4 text-center flex-col text-lg 
+        ${isSelected ? "bg-blue-500 text-white font-bold" : "text-gray-900"} 
+        ${dayOfWeek === 0 ? "cursor-not-allowed opacity-40" : "cursor-pointer hover:bg-blue-200 transition"} 
+        ${bgColor}`}
+                    onClick={() => { handleDateClick(dayOfWeek) }}
                 >
                     <div className={`day-number h-8 ${isSelected ? "text-white font-bold" : ""}  ${dayOfWeek === 0 ? "text-red-500" : dayOfWeek === 6 ? "text-blue-500" : "text-gray-900"}`}>
                         {d}
@@ -106,7 +101,7 @@ const WorkLogs = () => {
                     <div className="text-xl text-red-500 font-bold h-8">
                         {isVacation ? "⭕" : ""}
                         {vacation_allow ? "🔴" : ""}
-                        {company_vacation ? "🟠" : ""}
+                        {company_vacation ? "🔵" : ""}
                     </div>
                 </div>
             );

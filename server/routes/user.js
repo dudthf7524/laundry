@@ -125,4 +125,13 @@ router.get("/information", authMiddlewareSession, async (req, res) => {
     }
 });
 
+router.post("/delete", async (req, res) => {
+    try {
+        const result = await user.userDelete(req.body);
+        res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
+
 module.exports = router;

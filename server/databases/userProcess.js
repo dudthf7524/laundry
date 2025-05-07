@@ -1,4 +1,3 @@
-const { raw } = require("express");
 const { userProcess } = require("../models");
 const { process } = require("../models");
 
@@ -76,10 +75,32 @@ const userProcessDelete = async (data) => {
     }
 };
 
+const userProcessUpdate = async (data) => {
+    try {
+        const result = await userProcess.update(
+            {
+                user_process_count: data.user_process_count,
+            },
+
+            {
+                where: {
+                    user_process_id: data.user_process_id,
+                    user_code: data.user_code,
+                },
+            },
+
+        )
+        return result;
+
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 module.exports = {
     userProcessRegister,
     userProcessOneList,
     userProcessList,
     userProcessDelete,
-
+    userProcessUpdate,
 };

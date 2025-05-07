@@ -46,7 +46,7 @@ const userLogin = async (user_id, user_password) => {
 const userList = async () => {
     try {
         const result = await user.findAll({
-            attributes: ['user_code', 'user_name', 'user_nickname', 'user_hire_date', 'user_position'],
+            attributes: ['user_code', 'user_id', 'user_name', 'user_nickname', 'user_hire_date', 'user_position'],
             include: [
                 {
                     model: auth,
@@ -127,7 +127,7 @@ const userCheckId = async (data) => {
 
 const userCheckPassword = async (data, user_code) => {
     try {
-        const result = await user.findOne({ 
+        const result = await user.findOne({
             where: { user_code: user_code },
             attributes: ['user_password',],
             raw: true,
@@ -204,6 +204,16 @@ const userInformation = async (user_code) => {
 
 };
 
+const userDelete = async (data) => {
+    try {
+        const result = await user.destroy({
+            where: { user_code: data.user_code },
+        });
+        return result;
+    } catch (error) {
+        console.error(error)
+    }
+};
 
 
 module.exports = {
@@ -217,4 +227,5 @@ module.exports = {
     userChangeId,
     userChangePassword,
     userInformation,
+    userDelete,
 };

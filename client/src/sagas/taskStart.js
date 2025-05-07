@@ -30,6 +30,10 @@ import {
     TASKSTART_UPDATE_SUCCESS,
     TASKSTART_UPDATE_FAILURE,
 
+    TASKSTART_SEARCH_REQUEST,
+    TASKSTART_SEARCH_SUCCESS,
+    TASKSTART_SEARCH_FAILURE,
+
 } from "../reducers/taskStart";
 
 function* watchTaskStartRegister() {
@@ -234,6 +238,32 @@ function* taskStartUpdate(action) {
     }
 }
 
+function* watchTaskStartSearch() {
+    yield takeLatest(TASKSTART_SEARCH_REQUEST, taskStartSearch);
+}
+
+function taskStartSearchAPI(data) {
+
+    return axios.post("/taskStart/search", data);
+}
+
+function* taskStartSearch(action) {
+    try {
+        const result = yield call(taskStartSearchAPI, action.data);
+        yield put({
+            type: TASKSTART_SEARCH_SUCCESS,
+            data: result.data,
+        });
+        if (result.data) { }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: TASKSTART_SEARCH_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
 export default function* taskStartSaga() {
     yield all([
         fork(watchTaskStartRegister),
@@ -243,5 +273,6 @@ export default function* taskStartSaga() {
         fork(watchTaskStartYear),
         fork(watchTaskStartToday),
         fork(watchTaskStartUpdate),
+        fork(watchTaskStartSearch),
     ]);
 }

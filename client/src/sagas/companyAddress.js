@@ -35,7 +35,7 @@ function* companyRegister(action) {
         }
         if(result){
             alert('근무지가 등록되었습니다.')
-            window.location.href = "/admin/company/address"
+            window.location.href = "/admin/settings?tab=address"
         }
         yield put({
             type: COMPANYADDRESS_REGISTER_SUCCESS,
@@ -97,7 +97,7 @@ function* companyDelete(action) {
         });
         if (result.data) {
             alert('근무지가 삭제되었습니다.')
-            window.location.href = "/admin/settings"
+            window.location.href = "/admin/settings?tab=address"
          }
     } catch (err) {
         console.error(err);

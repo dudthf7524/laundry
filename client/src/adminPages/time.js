@@ -3,10 +3,20 @@ import { USER_LIST_REQUEST } from '../reducers/user';
 import { AUTH_LIST_REQUEST } from "../reducers/auth";
 import { useDispatch, useSelector } from 'react-redux';
 import { TIME_LIST_REQUEST, TIME_REGISTER_REQUEST, TIME_UPDATE_REQUEST } from '../reducers/time';
+import { useLocation } from 'react-router-dom';
 
 const Time = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
+
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
+    var userCode = null
+
+    userCode = query.get("user_code");
+
+    console.log(userCode)
+
 
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
@@ -54,7 +64,7 @@ const Time = () => {
 
     const timeOptions = {
         hours: Array.from({ length: 24 }, (_, i) => (i < 10 ? `0${i}` : `${i}`)),
-        minutes: ["00", "30"],
+        minutes: ["00", "10", "20", "30", "40", "50"],
     };
 
     const { userLists } = useSelector((state) => state.user) || { userLists: [] };
@@ -69,10 +79,6 @@ const Time = () => {
         );
     });
 
-    // Handle selecting an employee to view/edit details
-   
-
-    // Get color for permission badge
     const getPermissionColor = (permission) => {
         switch (permission) {
             case 'A1':
@@ -88,7 +94,6 @@ const Time = () => {
         }
     };
 
-
     const handleCheckboxChange = (userList) => {
         setSelected(prev => ({
             ...prev,
@@ -103,6 +108,7 @@ const Time = () => {
             // 필요에 따라 더 많은 정보를 추가할 수 있습니다
         }));
     };
+
     const [selected, setSelected] = useState({
         user_code: "",
         user_name: "",
@@ -112,6 +118,12 @@ const Time = () => {
         auth_code: "",
         auth_name: "",
     });
+    // useEffect(() => {
+    //     if (userCode) {
+    //         setSelected(userCode)
+
+    //     }
+    // }, [userCode]);
     const getYearsOfService = (hireDate) => {
         const hire = new Date(hireDate); // 입사일을 Date 객체로 변환
         const today = new Date(); // 현재 날짜
@@ -164,13 +176,14 @@ const Time = () => {
         const rest_end_time = WorkHourss.breakEndHour + ":" + WorkHourss.breakEndMinute
 
         const data = {
-            time_id : WorkHourss.time_id,
+            user_code: selected.user_code,
+            time_id: WorkHourss.time_id,
             start_time: work_start_time,
             end_time: work_end_time,
             rest_start_time: rest_start_time,
             rest_end_time: rest_end_time,
         }
-      
+
         dispatch({
             type: TIME_UPDATE_REQUEST,
             data: data,
@@ -190,8 +203,28 @@ const Time = () => {
 
     const [hasWorkHours, setHasWorkHours] = useState(false);
     const [userWorkHours, setUserWorkHours] = useState(false);
-    
+
     useEffect(() => {
+        if (userCode && userLists?.length > 0) {
+            var matchedUser;
+            if (selected.user_code) {
+                matchedUser = userLists.find(user => user.user_code === Number(selected.user_code));
+            } else {
+                matchedUser = userLists.find(user => user.user_code === Number(userCode));
+            }
+            if (matchedUser) {
+                setSelected({
+                    user_code: matchedUser.user_code,
+                    user_name: matchedUser.user_name,
+                    user_nickname: matchedUser.user_nickname,
+                    user_position: matchedUser.user_position,
+                    user_hire_date: matchedUser.user_hire_date,
+                    auth_code: matchedUser.auth.auth_code,
+                    auth_name: matchedUser.auth.auth_name,
+                });
+            }
+        }
+
         if (selected.user_code) {
             const userWorkHours = timeLists.find(time => time.user_code === selected.user_code);
             setUserWorkHours(userWorkHours)
@@ -201,7 +234,7 @@ const Time = () => {
                 const [breakStartHour, breakStartMinute] = userWorkHours.rest_start_time.split(":");
                 const [breakEndHour, breakEndMinute] = userWorkHours.rest_end_time.split(":");
                 setWorkHourss({
-                    time_id : userWorkHours.time_id,
+                    time_id: userWorkHours.time_id,
                     startHour, startMinute,
                     endHour, endMinute,
                     breakStartHour, breakStartMinute,
@@ -212,11 +245,7 @@ const Time = () => {
                 setHasWorkHours(false);
             }
         }
-    }, [selected.user_code, timeLists]);
-
-   
-
-
+    }, [selected.user_code, timeLists, userCode]);
 
     const handleTimeChanges = (category, value) => {
         setWorkHourss((prev) => ({
@@ -224,9 +253,6 @@ const Time = () => {
             [category]: value,
         }));
     };
-
-
-
 
     return (
         <div>
