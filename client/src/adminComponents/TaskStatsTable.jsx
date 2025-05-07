@@ -11,7 +11,7 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
   const filteredByName = (baseData || []).filter((item) =>
     item.user.user_name.includes(searchName)
   );
-  
+
   const getTotalWorkTime = (dataArray) => {
     let totalMinutes = 0;
     dataArray.forEach((item) => {
@@ -95,6 +95,7 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
   });
 
 
+
   const getSortableHeaderClass = (field) => {
     return `px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50 ${sortConfig.field === field ? 'bg-gray-50' : ''
       }`;
@@ -111,12 +112,34 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
     return <span className="text-gray-500">↔</span>; // 동일할 경우
   };
 
+  const calculatePercentageDifference = (actual, expected) => {
+    if (!actual || !expected) return '업무중'; // 값이 없거나 null일 경우 처리
+  
+    const percentage = ((actual / expected) * 100).toFixed(1);
+  
+    if (percentage > 100) {
+      return <span className="text-green-500">{percentage}% ↑</span>; // 초과
+    } else if (percentage < 100) {
+      return <span className="text-red-500">{percentage}% ↓</span>; // 미달
+    }
+    return <span className="text-gray-500">100% ↔</span>; // 동일
+  };
+
+  // const calculatePercentageDifference = (actual, expected) => {
+  //   if (!actual || !expected || expected === 0) return 'N/A';
+  //   const percentage = ((actual - expected) / expected) * 100;
+  //   const rounded = percentage.toFixed(1);
+  //   const colorClass = percentage > 0 ? 'text-green-500' : percentage < 0 ? 'text-red-500' : 'text-gray-500';
+  
+  //   return <span className={colorClass}>{rounded}%</span>;
+  // };
+
   const { user } = useSelector((state) => state.user);
 
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
       <div className="p-4">
-      <input
+        <input
           type="text"
           placeholder="이름으로 검색"
           className="p-2 border rounded w-full "
@@ -158,17 +181,17 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
               <th className={getSortableHeaderClass('taskType')} onClick={() => handleSort('taskType')}>
                 업무유형
               </th>
-              <th className={getSortableHeaderClass('startTime')} onClick={() => handleSort('startTime')}>
-                시작 시간
-              </th>
               <th className={getSortableHeaderClass('endTime')} onClick={() => handleSort('endTime')}>
                 업무 종료 날짜
+              </th>
+              <th className={getSortableHeaderClass('startTime')} onClick={() => handleSort('startTime')}>
+                시작 시간
               </th>
               <th className={getSortableHeaderClass('totalDuration')} onClick={() => handleSort('totalDuration')}>
                 종료 시간
               </th>
               <th className={getSortableHeaderClass('count')} onClick={() => handleSort('count')}>
-                개수
+                수행개수
               </th>
               <th className={getSortableHeaderClass('count')} onClick={() => handleSort('count')}>
                 총 소요 시간
@@ -179,8 +202,14 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 지정 시간당 개수
               </th>
+              {/* <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                개수당 평균시간
+              </th> */}
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 평균대비
+              </th>
+              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                평균대비(%)
               </th>
             </tr>
           </thead>
@@ -196,8 +225,8 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
                   <td className="px-4 py-3 whitespace-nowrap">{data.task_start_date}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{data.user.user_name}({data.user.user_position})</td>
                   <td className="px-4 py-3 whitespace-nowrap">{data.process.process_name}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{data.task_start_time}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{data.task_end?.task_end_date}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{data.task_start_time}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{data.task_end?.task_end_time}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{data.task_end?.total_count}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{data.sum_hour}:{data.sum_minute}</td>
@@ -205,8 +234,23 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
                     {data.avg_count_per_hour}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">{data.task_end?.hour_average}</td>
+                  {/* <td className="px-4 py-3 whitespace-nowrap">
+                    {(() => {
+                      const totalMinutes = (parseInt(data.sum_hour || 0) * 60) + parseInt(data.sum_minute || 0);
+                      const totalSeconds = totalMinutes * 60;
+                      const count = data.task_end?.total_count || 1;
+                      const avgSeconds = Math.floor(totalSeconds / count);
+
+                      const hours = Math.floor(avgSeconds / 3600);
+                      const minutes = Math.floor((avgSeconds % 3600) / 60);
+                      const seconds = avgSeconds % 60;
+
+                      return `${hours}시간 ${minutes}분 ${seconds}초`;
+                    })()}
+                  </td> */}
                   <td className="px-4 py-3 whitespace-nowrap">{calculateDifference(data.avg_count_per_hour, data.task_end?.hour_average)}</td>
-                </tr>
+                  <td className="px-4 py-3 whitespace-nowrap">{calculatePercentageDifference(data.avg_count_per_hour, data.task_end?.hour_average)}</td>
+                  </tr>
               ))
             ) : (
               <tr>

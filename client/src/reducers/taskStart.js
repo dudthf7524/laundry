@@ -30,11 +30,19 @@ export const initialState = {
     taskStart_update_done: false,
     taskStart_update_error: null,
 
+    taskStart_search_Loading: false,
+    taskStart_search_done: false,
+    taskStart_search_error: null,
+
     taskStartNewOne: null,
 
     taskStartFilterData: null,
 
     taskStartToday: null,
+
+    taskStartSearch: null,
+
+
 };
 
 export const TASKSTART_REGISTER_REQUEST = "TASKSTART_REGISTER_REQUEST";
@@ -64,6 +72,10 @@ export const TASKSTART_TODAY_FAILURE = "TASKSTART_TODAY_FAILURE";
 export const TASKSTART_UPDATE_REQUEST = "TASKSTART_UPDATE_REQUEST";
 export const TASKSTART_UPDATE_SUCCESS = "TASKSTART_UPDATE_SUCCESS";
 export const TASKSTART_UPDATE_FAILURE = "TASKSTART_UPDATE_FAILURE";
+
+export const TASKSTART_SEARCH_REQUEST = "TASKSTART_SEARCH_REQUEST";
+export const TASKSTART_SEARCH_SUCCESS = "TASKSTART_SEARCH_SUCCESS";
+export const TASKSTART_SEARCH_FAILURE = "TASKSTART_SEARCH_FAILURE";
 
 const reducer = (state = initialState, action) => {
     return produce(state, (draft) => {
@@ -163,6 +175,20 @@ const reducer = (state = initialState, action) => {
             case TASKSTART_UPDATE_FAILURE:
                 draft.taskStart_update_Loading = false;
                 draft.taskStart_update_error = action.error;
+                break;
+            case TASKSTART_SEARCH_REQUEST:
+                draft.taskStart_search_Loading = true;
+                draft.taskStart_search_error = null;
+                draft.taskStart_search_done = false;
+                break;
+            case TASKSTART_SEARCH_SUCCESS:
+                draft.taskStart_search_Loading = false;
+                draft.taskStartSearch = action.data;
+                draft.taskStart_search_done = true;
+                break;
+            case TASKSTART_SEARCH_FAILURE:
+                draft.taskStart_search_Loading = false;
+                draft.taskStart_search_error = action.error;
                 break;
             default:
                 return state;

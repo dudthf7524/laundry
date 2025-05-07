@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { employees } from '../data/mockData';
+import { useSelector } from 'react-redux';
 
 const FilterTask = ({
   setFilterType,
@@ -11,6 +12,7 @@ const FilterTask = ({
   setYear,
   handleEditClick,
 }) => {
+  const { user } = useSelector((state) => state.user);
   const [filterType, setFilterTypess] = useState('date'); // 'date', 'month', or 'year'
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 2019 }, (_, i) => currentYear - i);
@@ -184,12 +186,14 @@ const FilterTask = ({
          
         </form>
       )}
-      <div className="flex justify-end p-4">
+      {
+        user?.auth_code === "A1" ? <div className="flex justify-end p-4">
           {/* ✅ 수정 버튼 추가 */}
-          <button  onClick={handleEditClick}  className="bg-blue-500 text-white px-4 py-2 rounded">
+          <button onClick={handleEditClick} className="bg-blue-500 text-white px-4 py-2 rounded">
             수정
           </button>
-        </div>
+        </div> : ''
+      }
     </div>
   );
 };

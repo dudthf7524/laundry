@@ -80,4 +80,17 @@ router.post("/update", authMiddlewareSession, async (req, res) => {
     }
 });
 
+router.post("/search", authMiddlewareSession, async (req, res) => {
+    const user_code = req.user.user_code;
+    const searchDate = req.body.searchDate
+    console.log(req.body.searchDate);
+    try {
+        const result = await taskStart.taskStartSearch(user_code, searchDate)
+        return res.json(result);
+    } catch (error) {
+        console.error(error)
+    }
+});
+
+
 module.exports = router;

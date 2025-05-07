@@ -19,7 +19,6 @@ const Task = () => {
     const today = format(new Date(), 'yyyy-MM-dd');
     const formattedDate = today;
 
-    console.log(userProcessOneLists)
 
     useEffect(() => {
         userProcessOneList();
@@ -49,7 +48,6 @@ const Task = () => {
 
     const [selectedProcess, setSelectedProcess] = useState(null);
 
-    console.log(selectedProcess)
 
     // 선택 시 데이터 업데이트
     const handleChange = (event) => {
@@ -291,6 +289,27 @@ const Task = () => {
                             />
                         </div>
                         <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">시간당 목표치</label>
+                            <input
+                                type="text"
+                                name="notice_title"
+                                className="mb-2 w-full text-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                value={taskStartNewOne.process?.hour_average || ''}
+                                readOnly
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">분당 목표치</label>
+                            <input
+                                type="text"
+                                name="notice_title"
+                                className="mb-2 w-full text-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                value={taskStartNewOne.process?.hour_average / 60 || ''} 
+                                readOnly
+                            />
+                        </div>
+                        <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">총 업무 시간</label>
                             <input
                                 type="text"
@@ -300,6 +319,7 @@ const Task = () => {
                                 value={totalWorkTime || ''}
                             />
                         </div>
+
                         {totalCount > 0 && (
                             <>
                                 <div>

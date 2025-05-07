@@ -6,6 +6,7 @@ const UserAttendance = () => {
     const dispatch = useDispatch();
     const today = new Date().toISOString().split('T')[0];
     const [searchDate, setSearchDate] = useState(today);
+    
     useEffect(() => {
         attendanceToday();
     }, [searchDate]);

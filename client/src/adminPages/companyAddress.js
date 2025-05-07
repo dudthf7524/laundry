@@ -71,6 +71,9 @@ const CompanyAddress = () => {
   }, [dispatch]);
 
   const { companyAddressLists } = useSelector((state) => state.companyAddress);
+
+  console.log(companyAddressLists)
+
   const handleDelete = (company_address_id) => {
     if (window.confirm(`설정된 근무지를 삭제하시겠습니까?`)) {
 
