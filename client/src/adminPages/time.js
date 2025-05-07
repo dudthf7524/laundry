@@ -245,7 +245,7 @@ const Time = () => {
                 setHasWorkHours(false);
             }
         }
-    }, [selected.user_code, timeLists, userCode]);
+    }, [selected.user_code, timeLists, userCode, window.location.search]);
 
     const handleTimeChanges = (category, value) => {
         setWorkHourss((prev) => ({
