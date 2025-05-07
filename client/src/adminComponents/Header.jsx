@@ -48,7 +48,7 @@ const Header = () => {
       category: '관리',
       links: [
         { name: '직원관리', path: '/admin/employees' },
-        { name: '설정', path: '/admin/settings', requiredPermission: ['master'] },
+        // { name: '설정', path: '/admin/settings?tab=address', requiredPermission: ['master'] },
         { name: '휴가관리', path: '/admin/vacation' },
         { name: '시간관리', path: '/admin/time' },
         { name: '업무관리', path: '/admin/task' },
@@ -59,8 +59,8 @@ const Header = () => {
     {
       category: '설정',
       links: [
-        { name: '시스템 설정', path: '/admin/settings' },
-        { name: '설정', path: '/admin/settings', requiredPermission: ['master'] },
+        { name: '시스템 설정', path: '/admin/settings?tab=task' },
+        // { name: '설정', path: '/admin/settings', requiredPermission: ['master'] },
       ],
     },
 

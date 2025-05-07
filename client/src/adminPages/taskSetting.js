@@ -10,9 +10,6 @@ const TaskSetting = () => {
     }, []);
 
     const { processLists } = useSelector((state) => state.process);
-
-    console.log(processLists)
-
     const processList = () => {
         dispatch({
             type: PROCESS_LIST_REQUEST,

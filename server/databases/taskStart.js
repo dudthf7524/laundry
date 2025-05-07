@@ -304,10 +304,36 @@ const taskStartUpdate = async (data) => {
     } catch (error) {
         console.error(error);
     }
-
-
 };
 
+const taskStartSearch = async (user_code, searchDate) => {
+
+    try {
+        const result = await taskStart.findAll({
+            where: {
+                user_code: user_code,
+                task_start_date: searchDate,
+            },
+            include: [{
+                model: process, // process 모델을 포함
+                required: true,  // 조인 방식 설정 (INNER JOIN)
+                attributes: ['process_code', 'process_name', 'hour_average'],  // 필요한 속성만 포함
+            },
+            {
+                model: taskEnd, // process 모델을 포함
+                required: false,  // 조인 방식 설정 (INNER JOIN)
+                attributes: ['task_end_id', 'task_end_date', 'task_end_time'],  // 필요한 속성만 포함
+            }
+            ],
+            order: [['task_start_id', 'DESC']],
+
+        });
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+
+};
 
 module.exports = {
     taskStartRegister,
@@ -317,4 +343,5 @@ module.exports = {
     taskStartYear,
     taskStartToday,
     taskStartUpdate,
+    taskStartSearch,
 };

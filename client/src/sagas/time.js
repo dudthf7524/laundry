@@ -6,7 +6,7 @@ import {
     TIME_REGISTER_REQUEST,
     TIME_REGISTER_SUCCESS,
     TIME_REGISTER_FAILURE,
-    
+
     TIME_LIST_REQUEST,
     TIME_LIST_SUCCESS,
     TIME_LIST_FAILURE,
@@ -33,9 +33,9 @@ function timeRegisterListAPI(data) {
 function* timeRegister(action) {
     try {
         const result = yield call(timeRegisterListAPI, action.data);
-        if(result.data){
+        if (result.data) {
             alert('시간등록이 완료되었습니다.')
-            window.location.href = "/admin/time"
+            window.location.href = `/admin/time?user_code=${result.data.user_code}`
         }
         yield put({
             type: TIME_REGISTER_SUCCESS,
@@ -103,7 +103,7 @@ function* timeDetail() {
             type: TIME_DETAIL_SUCCESS,
             data: result.data,
         });
-        
+
     } catch (err) {
         console.error(err);
         yield put({
@@ -125,15 +125,16 @@ function timeUpdateAPI(data) {
 function* timeUpdate(action) {
     try {
         const result = yield call(timeUpdateAPI, action.data);
-        if(result.data){
+        console.log(result.data.user_code)
+        if (result.data) {
             alert('시간수정이 완료되었습니다.')
-            window.location.href = "/admin/time"
+            window.location.href = `/admin/time?user_code=${result.data.user_code}`;
         }
         yield put({
             type: TIME_UPDATE_SUCCESS,
             data: result.data,
         });
-        
+
     } catch (err) {
         console.error(err);
         yield put({
