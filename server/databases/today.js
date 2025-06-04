@@ -4,10 +4,12 @@ const { attendanceEnd } = require("../models");
 const { taskStart } = require("../models");
 const { taskEnd } = require("../models");
 
+
 const today = format(new Date(), 'yyyy-MM-dd');
 
 const todayAttendance = async () => {
 
+    console.log(today)
     try {
         const result = await attendanceStart.findAll({
             where: {
@@ -20,10 +22,12 @@ const todayAttendance = async () => {
 
                 }
             ],
-            order: [['attendance_start_id', 'DESC']],
+            // order: [['attendance_start_id', 'DESC']],
 
         });
+        console.log(result.length)
         return result;
+
     } catch (error) {
         console.error(error);
     }
@@ -31,6 +35,7 @@ const todayAttendance = async () => {
 };
 
 const todayTask = async () => {
+    console.log(today)
     try {
         const result = await taskStart.findAll({
             where: {
@@ -45,6 +50,7 @@ const todayTask = async () => {
             ],
             order: [['task_start_id', 'DESC']],
         });
+        console.log(result.length)
         return result;
     } catch (error) {
         console.error(error);

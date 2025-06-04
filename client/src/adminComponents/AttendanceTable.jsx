@@ -21,17 +21,17 @@ const AttendanceTable = ({ setSelected, selected, setSortedData }) => {
 
   const totalWorkTime = useMemo(() => {
     if (!filteredData.length) return { totalHours: 0, totalMinutes: 0 };
-  
+
     const totalMinutes = filteredData.reduce((acc, item) => {
       const rawHour = item.sum_hour || '0시';
       const rawMinute = item.sum_minute || '0분';
-  
+
       const hours = parseInt(rawHour.replace('시', ''), 10) || 0;
       const minutes = parseInt(rawMinute.replace('분', ''), 10) || 0;
-  
+
       return acc + (hours * 60 + minutes);
     }, 0);
-  
+
     return {
       totalHours: Math.floor(totalMinutes / 60),
       totalMinutes: totalMinutes % 60,
@@ -225,7 +225,7 @@ const AttendanceTable = ({ setSelected, selected, setSortedData }) => {
                 퇴근상태
               </th>
               <th className={getSortableHeaderClass('sum_hour')} >
-                총근무시간
+                총 근무시간
               </th>
             </tr>
           </thead>
@@ -250,9 +250,11 @@ const AttendanceTable = ({ setSelected, selected, setSortedData }) => {
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end?.attendance_end_time}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{asy.attendance_end?.attendance_end_state}</td>
                   <td className="px-4 py-3 whitespace-nowrap">
-                    {(asy.sum_hour < 0 || asy.sum_minute < 0)
-                      ? "0시간 0분"
-                      : `${asy.sum_hour}시간 ${asy.sum_minute}분`}
+                    {(asy.sum_hour === null || asy.sum_minute === null)
+                      ? "출근중"
+                      : (asy.sum_hour < 0 || asy.sum_minute < 0)
+                        ? "0시간 0분"
+                        : `${asy.sum_hour}시간 ${asy.sum_minute}분`}
                   </td>
                 </tr>
               ))
