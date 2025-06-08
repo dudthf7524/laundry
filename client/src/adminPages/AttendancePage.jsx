@@ -4,6 +4,7 @@ import AttendanceTable from '../adminComponents/AttendanceTable';
 import { useDispatch } from 'react-redux';
 import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCESTART_UPDATE_REQUEST, ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
 import { format } from 'date-fns';
+import { ATTENDANCEEND_TIME_REQUEST } from '../reducers/attendanceEnd';
 
 const AttendancePage = () => {
   const today = format(new Date(), 'yyyy-MM-dd');
@@ -16,6 +17,7 @@ const AttendancePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState({});
   const [sortedData, setSortedData] = useState({});
+  const [isCheckoutOnlyModalOpen, setIsCheckoutOnlyModalOpen] = useState(false);
 
   const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
   const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
@@ -78,7 +80,12 @@ const AttendancePage = () => {
   const handleEditClick = () => {
     if (selected) {
       setEditData({ ...selected });
-      setIsModalOpen(true);
+
+      if (!selected.attendance_end_date || !selected.attendance_end_time) {
+        setIsCheckoutOnlyModalOpen(true);
+      } else {
+        setIsModalOpen(true);
+      }
     } else {
       alert("수정할 항목을 선택해주세요.");
     }
@@ -99,8 +106,13 @@ const AttendancePage = () => {
     });
 
     setIsModalOpen(false);
-
-
+  };
+  const handleSaveInsert = () => {
+    console.log(editData)
+    dispatch({
+      type: ATTENDANCEEND_TIME_REQUEST,
+      data: editData
+    });
   };
 
   const attendanceStartYearSum = sortedData ? sortedData.length : 0;
@@ -138,7 +150,6 @@ const AttendancePage = () => {
           setSelected={setSelected}
           selected={selected}
           setSortedData={setSortedData}
-
         />
       </div>
 
@@ -217,6 +228,56 @@ const AttendancePage = () => {
               저장
             </button>
             <button onClick={() => setIsModalOpen(false)} className="w-full bg-gray-300 text-black px-4 py-2 rounded text-center mt-2">
+              취소
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isCheckoutOnlyModalOpen && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white w-4/5 p-6 rounded-lg shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">퇴근 등록</h2>
+
+            <label>이름</label>
+            <input type="text" readOnly value={editData.user_name} className="border p-2 w-full mb-2" />
+
+            <label>퇴근날짜</label>
+            <input
+              type="date"
+              name="attendance_end_date"
+              value={editData.attendance_end_date || ""}
+              onChange={handleInputChange}
+              className="border p-2 w-full mb-2"
+            />
+
+            <label>퇴근시간</label>
+            <div className="flex gap-2 mb-2">
+              <select
+                value={editData.attendance_end_time?.split(":")[0] || "00"}
+                onChange={(e) => handleTimeChange("attendance_end_time", e.target.value, "hour")}
+                className="w-full border p-2"
+              >
+                {hours.map((h) => (
+                  <option key={h} value={h}>{h}</option>
+                ))}
+              </select>
+              :
+              <select
+                value={editData.attendance_end_time?.split(":")[1] || "00"}
+                onChange={(e) => handleTimeChange("attendance_end_time", e.target.value, "minute")}
+                className="w-full border p-2"
+              >
+                {minutes.map((m) => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            </div>
+
+            <button onClick={handleSaveInsert} className="w-full bg-blue-500 text-white px-4 py-2 rounded text-center">
+              저장
+            </button>
+            <button onClick={() => setIsCheckoutOnlyModalOpen(false)} className="w-full bg-gray-300 text-black px-4 py-2 rounded text-center mt-2">
               취소
             </button>
           </div>
