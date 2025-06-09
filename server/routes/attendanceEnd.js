@@ -14,6 +14,8 @@ router.post("/register", authMiddlewareSession, async (req, res) => {
 });
 
 router.post("/admin/register", authMiddlewareSession, async (req, res) => {
+    console.log(req.body);
+    req.body.attendance_end_state = '퇴근';
     const user_code = req.body.user_code;
     var end_time;
     try {
