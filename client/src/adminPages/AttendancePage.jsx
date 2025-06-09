@@ -4,7 +4,7 @@ import AttendanceTable from '../adminComponents/AttendanceTable';
 import { useDispatch } from 'react-redux';
 import { ATTENDANCESTART_DATE_REQUEST, ATTENDANCESTART_MONTH_REQUEST, ATTENDANCESTART_UPDATE_REQUEST, ATTENDANCESTART_YEAR_REQUEST } from '../reducers/attendanceStart';
 import { format } from 'date-fns';
-import { ATTENDANCEEND_TIME_REQUEST } from '../reducers/attendanceEnd';
+import { ATTENDANCEEND_TIME_ADMIN_REQUEST, ATTENDANCEEND_TIME_REQUEST } from '../reducers/attendanceEnd';
 
 const AttendancePage = () => {
   const today = format(new Date(), 'yyyy-MM-dd');
@@ -110,7 +110,7 @@ const AttendancePage = () => {
   const handleSaveInsert = () => {
     console.log(editData)
     dispatch({
-      type: ATTENDANCEEND_TIME_REQUEST,
+      type: ATTENDANCEEND_TIME_ADMIN_REQUEST,
       data: editData
     });
   };
@@ -127,7 +127,7 @@ const AttendancePage = () => {
     <div>
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">근태</h1>
+          <h1 className="text-2xl font-bold text-gray-900">근태 통계</h1>
           <p className="text-gray-600 mt-1">
             직원들의 근태 기록을 조회하고 관리합니다
           </p>

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TASKSTART_DATE_REQUEST, TASKSTART_MONTH_REQUEST, TASKSTART_UPDATE_REQUEST, TASKSTART_YEAR_REQUEST } from '../reducers/taskStart';
 import { PROCESS_LIST_REQUEST } from '../reducers/process';
 import { format } from 'date-fns';
+import { TASKEND_REGISTER_ADMIN_REQUEST } from '../reducers/taskEnd';
 
 const TaskStatsPage = () => {
   const today = format(new Date(), 'yyyy-MM-dd');
@@ -19,6 +20,7 @@ const TaskStatsPage = () => {
   const [year, setYear] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState({});
+  const [isCheckoutOnlyModalOpen, setIsCheckoutOnlyModalOpen] = useState(false);
 
   const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
   const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
@@ -103,10 +105,20 @@ const TaskStatsPage = () => {
   const handleEditClick = () => {
     if (selected) {
       setEditData({ ...selected });
-      setIsModalOpen(true);
-    } else {
-      alert("수정할 항목을 선택해주세요.");
+
+      if (!selected.task_end_date || !selected.task_end_time) {
+        setIsCheckoutOnlyModalOpen(true)
+      } else {
+        setIsModalOpen(true);
+      }
     }
+
+    // if (selected) {
+    //   setEditData({ ...selected });
+    //   setIsModalOpen(true);
+    // } else {
+    //   alert("수정할 항목을 선택해주세요.");
+    // }
   };
 
   const handleInputChange = (e) => {
@@ -124,8 +136,16 @@ const TaskStatsPage = () => {
     });
 
     setIsModalOpen(false);
+  };
 
+  const handleSaveInsert = () => {
+    console.log(editData)
+    dispatch({
+      type: TASKEND_REGISTER_ADMIN_REQUEST,
+      data: editData,
+    });
 
+    setIsCheckoutOnlyModalOpen(false);
   };
   return (
     <div>
@@ -280,6 +300,70 @@ const TaskStatsPage = () => {
               저장
             </button>
             <button onClick={() => setIsModalOpen(false)} className="w-full bg-gray-300 text-black px-4 py-2 rounded text-center mt-2">
+              취소
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isCheckoutOnlyModalOpen && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white w-4/5 p-6 rounded-lg shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">업무 정보 수정</h2>
+
+            <label>이름</label>
+            <input type="text" readOnly value={editData.user_name} className="border p-2 w-full mb-2" />
+
+            <label>직무형태</label>
+            <input type="text" readOnly value={editData.user_position} className="border p-2 w-full mb-2" />
+
+            <label>업무 종료 날짜</label>
+            <input type="date" name="task_end_date" value={editData.task_end_date || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <label>종료 시간</label>
+            <div className="flex gap-2 mb-2">
+              <select
+                value={editData.task_end_time?.split(':')[0] || '00'}
+                onChange={(e) =>
+                  setEditData((prev) => ({
+                    ...prev,
+                    task_end_time: `${e.target.value}:${prev.task_end_time?.split(':')[1] || '00'}`,
+                  }))
+                }
+                className="border p-2 w-1/2"
+              >
+                {[...Array(24)].map((_, i) => (
+                  <option key={i} value={String(i).padStart(2, '0')}>
+                    {String(i).padStart(2, '0')}
+                  </option>
+                ))}
+              </select>
+              :
+              <select
+                value={editData.task_end_time?.split(':')[1] || '00'}
+                onChange={(e) =>
+                  setEditData((prev) => ({
+                    ...prev,
+                    task_end_time: `${prev.task_end_time?.split(':')[0] || '00'}:${e.target.value}`,
+                  }))
+                }
+                className="border p-2 w-1/2"
+              >
+                {[...Array(60)].map((_, i) => (
+                  <option key={i} value={String(i).padStart(2, '0')}>
+                    {String(i).padStart(2, '0')}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <label>개수</label>
+            <input type="number" name="total_count" value={editData.total_count || ""} onChange={handleInputChange} className="border p-2 w-full mb-2" />
+
+            <button onClick={handleSaveInsert} className="w-full bg-blue-500 text-white px-4 py-2 rounded text-center">
+              저장
+            </button>
+            <button onClick={() => setIsCheckoutOnlyModalOpen(false)} className="w-full bg-gray-300 text-black px-4 py-2 rounded text-center mt-2">
               취소
             </button>
           </div>

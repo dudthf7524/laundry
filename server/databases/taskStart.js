@@ -60,12 +60,12 @@ const taskStartDate = async (data) => {
                 {
                     model: user,
                     required: true,
-                    attributes: ['user_name', 'user_position'], // ✅ 필요한 필드만 가져오기
+                    attributes: ['user_code', 'user_name', 'user_position'], // ✅ 필요한 필드만 가져오기
                 },
                 {
                     model: process,
                     required: true,
-                    attributes: ['process_code', 'process_name'], // ✅ 필요한 필드만 가져오기
+                    attributes: ['process_code', 'process_name', 'hour_average'], // ✅ 필요한 필드만 가져오기
                 },
             ],
             where: {
@@ -124,12 +124,12 @@ const taskStartMonth = async (data) => {
                 {
                     model: user,
                     required: true,
-                    attributes: ['user_name', 'user_position'], // ✅ 필요한 필드만 가져오기
+                    attributes: ['user_code', 'user_name', 'user_position'], // ✅ 필요한 필드만 가져오기
                 },
                 {
                     model: process,
                     required: true,
-                    attributes: ['process_code', 'process_name'], // ✅ 필요한 필드만 가져오기
+                    attributes: ['process_code', 'process_name', 'hour_average'], // ✅ 필요한 필드만 가져오기
                 },
             ],
             where: Sequelize.literal(`SUBSTRING(task_start_date, 1, 7) = '${data.year}-${data.month}'`),
@@ -183,12 +183,12 @@ const taskStartYear = async (data) => {
                 {
                     model: user,
                     required: true,
-                    attributes: ['user_name', 'user_position'], // ✅ 필요한 필드만 가져오기
+                    attributes: ['user_code', 'user_name', 'user_position'], // ✅ 필요한 필드만 가져오기
                 },
                 {
                     model: process,
                     required: true,
-                    attributes: ['process_code', 'process_name'], // ✅ 필요한 필드만 가져오기
+                    attributes: ['process_code', 'process_name', 'hour_average'], // ✅ 필요한 필드만 가져오기
                 },
             ],
             where: Sequelize.literal(`SUBSTRING(task_start_date, 1, 4) = '${data.year}'`),
