@@ -44,23 +44,35 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
   };
 
   const handleCheckboxChange = (data) => {
+    console.log(data)
     if (!data.task_end) {
-      alert('업무완료에 대한 데이터가 존재하지 않습니다. 근무자에게 요청해주세요!!')
-      return;
+      // alert('업무완료에 대한 데이터가 존재하지 않습니다. 근무자에게 요청해주세요!!')
+      // return;
+      setSelected({
+        user_code: data.user.user_code,
+        user_name: data.user.user_name,
+        user_position: data.user.user_position,
+        task_start_id: data.task_start_id,
+        task_start_date: data.task_start_date,
+        task_start_time: data.task_start_time,
+        hour_average: data.process.hour_average,
+        
+      });
+    } else {
+      setSelected({
+        user_code: data.user.user_code,
+        user_name: data.user.user_name,
+        user_position: data.user.user_position,
+        task_start_id: data.task_start_id,
+        task_start_date: data.task_start_date,
+        task_start_time: data.task_start_time,
+        task_end_id: data.task_end.task_end_id,
+        task_end_date: data.task_end.task_end_date,
+        task_end_time: data.task_end.task_end_time,
+      });
     }
-    setSelected({
-      user_name: data.user.user_name,
-      user_position: data.user.user_position,
-      task_start_id: data.task_start_id,
-      task_start_date: data.task_start_date,
-      task_start_time: data.task_start_time,
-      task_end_id: data.task_end.task_end_id,
-      task_end_date: data.task_end.task_end_date,
-      task_end_time: data.task_end.task_end_time,
-      total_count: data.task_end.total_count,
-    });
+
   };
-  console.log(selected)
 
   // const getComparisonArrow = (comparedToAverage) => {
   //   switch (comparedToAverage) {
@@ -114,9 +126,9 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
 
   const calculatePercentageDifference = (actual, expected) => {
     if (!actual || !expected) return '업무중'; // 값이 없거나 null일 경우 처리
-  
+
     const percentage = ((actual / expected) * 100).toFixed(1);
-  
+
     if (percentage > 100) {
       return <span className="text-green-500">{percentage}% ↑</span>; // 초과
     } else if (percentage < 100) {
@@ -130,7 +142,7 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
   //   const percentage = ((actual - expected) / expected) * 100;
   //   const rounded = percentage.toFixed(1);
   //   const colorClass = percentage > 0 ? 'text-green-500' : percentage < 0 ? 'text-red-500' : 'text-gray-500';
-  
+
   //   return <span className={colorClass}>{rounded}%</span>;
   // };
 
@@ -250,7 +262,7 @@ const TaskStatsTable = ({ taskName, filteredByTaskType, setSelected, selected })
                   </td> */}
                   <td className="px-4 py-3 whitespace-nowrap">{calculateDifference(data.avg_count_per_hour, data.task_end?.hour_average)}</td>
                   <td className="px-4 py-3 whitespace-nowrap">{calculatePercentageDifference(data.avg_count_per_hour, data.task_end?.hour_average)}</td>
-                  </tr>
+                </tr>
               ))
             ) : (
               <tr>

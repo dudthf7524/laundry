@@ -273,7 +273,7 @@ const Task = () => {
             {/* 업무 종료 모달 */}
             {isEndModalOpen && (
                 <div className="modal">
-                    <div className="modal_content">
+                    <div className="modal_content w-full max-h-[90vh] overflow-y-auto">
                         <h1 className="text-2xl font-bold text-gray-900 mb-1">업무종료</h1>
                         <p className="text-gray-600 mb-5">
                             업무를 종료하시겠습니까?
@@ -305,7 +305,7 @@ const Task = () => {
                                 type="text"
                                 name="notice_title"
                                 className="mb-2 w-full text-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                value={taskStartNewOne.process?.hour_average / 60 || ''} 
+                                value={taskStartNewOne.process?.hour_average / 60 || ''}
                                 readOnly
                             />
                         </div>

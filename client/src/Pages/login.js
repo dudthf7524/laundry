@@ -93,7 +93,7 @@ const Login = () => {
                             👋 {user.user_name}님, 환영합니다!
                         </div>
 
-                        <div className='w-full'>
+                        <div className='relative z-50'>
                             <button
                                 type="submit"
                                 onClick={goAdmin}
@@ -102,11 +102,11 @@ const Login = () => {
                                 관리자 페이지
                             </button>
                         </div>
-                        <div className='w-full'>
+                        <div className='relative z-50'>
                             <button
                                 type="submit"
                                 onClick={goClient}
-                                className="w-full mt-4 p-3 bg-[#00b7ff] text-white rounded-md hover:bg-[#0065b3] transition"
+                                className="w-full mt-4 p-3 bg-[#00b7ff] text-white rounded-md hover:bg-[#0065b3] transition z-50"
                             >
                                 근로자 페이지
                             </button>
@@ -118,7 +118,7 @@ const Login = () => {
                         <div className="welcome-message text-xl font-semibold text-gray-800 mt-6 text-center animate-fade-in">
                             👋 {user.user_name}님, 환영합니다!
                         </div>
-                        <div className='w-full'>
+                        <div className='relative z-50'>
                             <button
                                 type="submit"
                                 onClick={goClient}
@@ -132,6 +132,7 @@ const Login = () => {
                     <>
                         <form onSubmit={handleLogin}>
                             <input
+                                className="z-50"
                                 type="text"
                                 name="user_id"
                                 placeholder="아이디"
@@ -139,13 +140,14 @@ const Login = () => {
                                 onChange={handleInputChange}
                             />
                             <input
+                                className="z-50"
                                 type="password"
                                 name="user_password"
                                 placeholder="비밀번호"
                                 value={credentials.user_password}
                                 onChange={handleInputChange}
                             />
-                            <button type="submit">로그인</button>
+                            <button className="z-50" type="submit">로그인</button>
                         </form>
                         {error && <p className="error-message">{error}</p>}
                     </>

@@ -97,10 +97,23 @@ const userProcessUpdate = async (data) => {
     }
 };
 
+const userProcessDetail = async (user_code, process_code) => {
+    try {
+        const result = await userProcess.findOne({
+            attributes: ["user_process_count"],
+            where: { user_code: user_code, user_process_code: process_code },
+        });
+        return result
+    } catch (error) {
+        console.error(error)
+    }
+};
+
 module.exports = {
     userProcessRegister,
     userProcessOneList,
     userProcessList,
     userProcessDelete,
     userProcessUpdate,
+    userProcessDetail,
 };

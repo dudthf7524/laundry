@@ -1,6 +1,8 @@
 const { attendanceEnd } = require("../models");
 
 const attendanceEndRegister = async (data) => {
+    console.log(data)
+
     try {
         const result = await attendanceEnd.create({
             attendance_end_date: data.attendance_end_date,
@@ -15,7 +17,6 @@ const attendanceEndRegister = async (data) => {
     } catch (error) {
         console.error(error)
     }
-
 };
 
 module.exports = {
