@@ -306,33 +306,90 @@ const taskStartUpdate = async (data) => {
     }
 };
 
+// const taskStartSearch = async (user_code, searchDate) => {
+
+//     try {
+//         const result = await taskStart.findAll({
+//             where: {
+//                 user_code: user_code,
+//                 task_start_date: searchDate,
+//             },
+//             include: [{
+//                 model: process, // process 모델을 포함
+//                 required: true,  // 조인 방식 설정 (INNER JOIN)
+//                 attributes: ['process_code', 'process_name', 'hour_average'],  // 필요한 속성만 포함
+//             },
+//             {
+//                 model: taskEnd, // process 모델을 포함
+//                 required: false,  // 조인 방식 설정 (INNER JOIN)
+//                 attributes: ['task_end_id', 'task_end_date', 'task_end_time'],  // 필요한 속성만 포함
+//             }
+//             ],
+//             order: [['task_start_id', 'DESC']],
+
+//         });
+//         return result;
+//     } catch (error) {
+//         console.error(error);
+//     }
+
+// };
+
 const taskStartSearch = async (user_code, searchDate) => {
+  try {
+    const result = await taskStart.findAll({
+      where: {
+        user_code,
+        task_start_date: searchDate, // 특정 날짜만 필터링
+      },
+      include: [
+        {
+          model: process,
+          required: true,
+          attributes: ['process_code', 'process_name', 'hour_average'],
+        },
+        {
+          model: taskEnd,
+          required: false,
+          attributes: ['task_end_id', 'task_end_date', 'task_end_time', 'total_count', 'hour_average'],
+        },
+      ],
+      attributes: [
+        'task_start_id',
+        'task_start_date',
+        'task_start_time',
+        [
+          Sequelize.literal(`
+            LPAD(FLOOR(TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) / 3600), 2, '0')
+          `),
+          'sum_hour',
+        ],
+        [
+          Sequelize.literal(`
+            LPAD(FLOOR((TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) % 3600) / 60), 2, '0')
+          `),
+          'sum_minute',
+        ],
+        [
+          Sequelize.literal(`
+            ROUND(
+              total_count / 
+              (FLOOR(TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) / 3600) +
+              (FLOOR((TIMESTAMPDIFF(SECOND, CONCAT(task_start_date, ' ', task_start_time), CONCAT(task_end_date, ' ', task_end_time)) % 3600) / 60) / 60)), 
+              2
+            )
+          `),
+          'avg_count_per_hour',
+        ],
+      ],
+      order: [['task_start_id', 'DESC']],
+    });
 
-    try {
-        const result = await taskStart.findAll({
-            where: {
-                user_code: user_code,
-                task_start_date: searchDate,
-            },
-            include: [{
-                model: process, // process 모델을 포함
-                required: true,  // 조인 방식 설정 (INNER JOIN)
-                attributes: ['process_code', 'process_name', 'hour_average'],  // 필요한 속성만 포함
-            },
-            {
-                model: taskEnd, // process 모델을 포함
-                required: false,  // 조인 방식 설정 (INNER JOIN)
-                attributes: ['task_end_id', 'task_end_date', 'task_end_time'],  // 필요한 속성만 포함
-            }
-            ],
-            order: [['task_start_id', 'DESC']],
-
-        });
-        return result;
-    } catch (error) {
-        console.error(error);
-    }
-
+    return result;
+  } catch (error) {
+    console.error('Error in taskStartSearch:', error);
+    throw error;
+  }
 };
 
 module.exports = {
