@@ -5,10 +5,10 @@ const { taskStart } = require("../models");
 const { taskEnd } = require("../models");
 
 
-const today = format(new Date(), 'yyyy-MM-dd');
+
 
 const todayAttendance = async () => {
-
+    const today = format(new Date(), 'yyyy-MM-dd');
     console.log(today)
     try {
         const result = await attendanceStart.findAll({
@@ -35,6 +35,7 @@ const todayAttendance = async () => {
 };
 
 const todayTask = async () => {
+    const today = format(new Date(), 'yyyy-MM-dd');
     console.log(today)
     try {
         const result = await taskStart.findAll({
